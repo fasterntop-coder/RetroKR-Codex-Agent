@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 from pathlib import Path
 from typing import Annotated
 
@@ -9,6 +10,14 @@ import typer
 from rich.console import Console
 from rich.panel import Panel
 from rich.table import Table
+
+from retrokr.analyzer.console import ConsoleDetector
+from retrokr.analyzer.encoding import EncodingDetector
+from retrokr.analyzer.rom import RomLoader
+from retrokr.core.result import AnalysisResult
+from retrokr.exceptions import RomLoadError
+from retrokr.report.json_report import JsonReport
+from retrokr.report.markdown import MarkdownReport
 
 app = typer.Typer(
     name="retrokr",
@@ -45,8 +54,10 @@ def doctor() -> None:
 
     table.add_row("Python package", "OK")
     table.add_row("CLI", "OK")
-    table.add_row("Analyzer", "Pending")
-    table.add_row("Reporter", "Pending")
+    table.add_row("ROM loader", "OK")
+    table.add_row("Console detector", "OK")
+    table.add_row("Encoding detector", "OK")
+    table.add_row("Reporter", "OK")
 
     console.print(table)
 
@@ -64,41 +75,77 @@ def analyze(
         ),
     ],
     output: Annotated[
-        Path | None,
+        Path,
         typer.Option(
             "--output",
             "-o",
             help="Directory for generated analysis reports.",
         ),
-    ] = None,
-    json: Annotated[
+    ] = Path("output"),
+    print_json: Annotated[
         bool,
         typer.Option(
             "--json",
-            help="Print machine-readable JSON output when supported.",
+            help="Print machine-readable JSON output to console.",
         ),
     ] = False,
 ) -> None:
-    """Analyze a ROM file.
+    """Analyze a ROM file and generate Markdown/JSON reports."""
+    output.mkdir(parents=True, exist_ok=True)
 
-    v0.1 only verifies CLI plumbing. The actual ROM analyzer is implemented
-    in the next commit.
-    """
-    del json
+    try:
+        rom_info = RomLoader(rom).load()
+    except RomLoadError as exc:
+        console.print(f"[red]ROM load failed:[/red] {exc}")
+        raise typer.Exit(code=1) from exc
 
-    output_dir = output or Path("output")
-    output_dir.mkdir(parents=True, exist_ok=True)
+    console_candidates = ConsoleDetector(rom_info.path, rom_info.data).detect()
+    encoding_candidates = EncodingDetector(rom_info.data).detect()
 
-    console.print(
-        Panel.fit(
-            f"[bold]ROM:[/bold] {rom}\n"
-            f"[bold]Output:[/bold] {output_dir}\n\n"
-            "[yellow]Analyzer backend is not implemented yet.[/yellow]\n"
-            "This command is wired for Commit 2 and will call the ROM loader "
-            "from Commit 3.",
-            title="RetroKR Analyze",
-        )
+    result = AnalysisResult(
+        rom=rom_info,
+        console=console_candidates,
+        encoding=encoding_candidates,
     )
+
+    markdown_text = MarkdownReport(result).render()
+    json_data = JsonReport(result).render()
+
+    report_md = output / "report.md"
+    report_json = output / "report.json"
+
+    report_md.write_text(markdown_text, encoding="utf-8")
+    report_json.write_text(
+        json.dumps(json_data, ensure_ascii=False, indent=2),
+        encoding="utf-8",
+    )
+
+    top_console = console_candidates[0]
+    top_encoding = encoding_candidates[0]
+
+    table = Table(title="RetroKR Analysis Result")
+    table.add_column("Field")
+    table.add_column("Value")
+
+    table.add_row("ROM", rom_info.filename)
+    table.add_row("Size", f"{rom_info.size} bytes")
+    table.add_row("SHA1", rom_info.sha1)
+    table.add_row("CRC32", rom_info.crc32)
+    table.add_row(
+        "Console",
+        f"{top_console.name} ({top_console.confidence:.2f})",
+    )
+    table.add_row(
+        "Encoding",
+        f"{top_encoding.name} ({top_encoding.confidence:.2f})",
+    )
+    table.add_row("Markdown Report", str(report_md))
+    table.add_row("JSON Report", str(report_json))
+
+    console.print(table)
+
+    if print_json:
+        console.print_json(json.dumps(json_data, ensure_ascii=False))
 
 
 @app.command()
@@ -138,7 +185,8 @@ def info() -> None:
             "AI-powered Retro Game Korean Translation Framework\n\n"
             "Status: 0.1.0-alpha.1\n"
             "CLI: Ready\n"
-            "ROM analyzer: Next commit",
+            "ROM analyzer: Ready\n"
+            "Report generator: Ready",
             title="RetroKR",
         )
     )
