@@ -18,6 +18,10 @@ class ConsoleCandidate:
 class ConsoleDetector:
     """Detect likely console/platform from ROM metadata and header bytes."""
 
+    GAME_BOY_LOGO_PREFIX = bytes.fromhex(
+        "CEED6666CC0D000B03730083000C000D0008111F8889000E"
+    )
+
     def __init__(self, path: str | Path, data: bytes) -> None:
         self.path = Path(path)
         self.data = data
@@ -27,12 +31,11 @@ class ConsoleDetector:
         """Return ranked console candidates."""
         candidates: list[ConsoleCandidate] = []
 
-        by_extension = self._detect_by_extension()
-        if by_extension is not None:
-            candidates.append(by_extension)
+        extension_candidate = self._detect_by_extension()
+        if extension_candidate is not None:
+            candidates.append(extension_candidate)
 
-        by_header = self._detect_by_header()
-        candidates.extend(by_header)
+        candidates.extend(self._detect_by_header())
 
         if not candidates:
             candidates.append(
@@ -77,28 +80,25 @@ class ConsoleDetector:
                 )
             )
 
-        if len(self.data) > 0xA0 and self.data[0xA0:0xAC] == b"Nintendo":
+        if len(self.data) > 0xAC and self.data[0xA0:0xAC] == b"Nintendo":
             candidates.append(
                 ConsoleCandidate(
                     name="GBA",
                     confidence=0.95,
-                    reason="Nintendo logo text marker found near GBA header region.",
+                    reason="Nintendo marker found near GBA header region.",
                 )
             )
 
-        if len(self.data) > 0x104 and self.data[0x104:0x134].startswith(
-            bytes.fromhex(
-                "CEED6666CC0D000B03730083000C000D0008111F8889000E"
-                "DCCC6EE6DDDD999BBB67663E6"
-            )[:16]
-        ):
-            candidates.append(
-                ConsoleCandidate(
-                    name="GB/GBC",
-                    confidence=0.92,
-                    reason="Game Boy Nintendo logo header pattern detected.",
+        if len(self.data) > 0x134:
+            logo_prefix = self.data[0x104 : 0x104 + len(self.GAME_BOY_LOGO_PREFIX)]
+            if logo_prefix == self.GAME_BOY_LOGO_PREFIX:
+                candidates.append(
+                    ConsoleCandidate(
+                        name="GB/GBC",
+                        confidence=0.92,
+                        reason="Game Boy Nintendo logo header pattern detected.",
+                    )
                 )
-            )
 
         if len(self.data) > 0x200 and self.data[0:4] == b"NDS\x00":
             candidates.append(
