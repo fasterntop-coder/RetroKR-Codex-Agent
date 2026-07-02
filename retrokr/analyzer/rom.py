@@ -42,4 +42,5 @@ class RomLoader:
             sha1=hashlib.sha1(data).hexdigest(),
             crc32=f"{zlib.crc32(data) & 0xFFFFFFFF:08x}",
             header_hex=header.hex(),
+            data=data,
         )
