@@ -16,3 +16,4 @@ class RomInfo:
     sha1: str
     crc32: str
     header_hex: str
+    data: bytes
