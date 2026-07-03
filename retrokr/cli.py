@@ -24,7 +24,12 @@ app = typer.Typer(
     help="AI-powered Retro Game Korean Translation Framework.",
     no_args_is_help=True,
 )
-
+app = typer.Typer(
+    name="retrokr",
+    help="AI-powered Retro Game Korean Translation Framework.",
+    no_args_is_help=True,
+    invoke_without_command=True,
+)
 console = Console()
 
 
