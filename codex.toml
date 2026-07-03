@@ -1,0 +1,155 @@
+[project]
+name = "RetroKR-Codex-Agent"
+package = "retrokr"
+version = "0.1.0-alpha.1"
+description = "AI-powered Retro Game Korean Translation Framework"
+language = "python"
+python = ">=3.12"
+status = "alpha"
+
+[project.repository]
+owner = "fasterntop-coder"
+name = "RetroKR-Codex-Agent"
+url = "https://github.com/fasterntop-coder/RetroKR-Codex-Agent"
+
+[agent]
+name = "RetroKR Codex Agent"
+instructions = "AGENTS.md"
+workflow = "WORKFLOW.md"
+mode = "implementation-first"
+primary_goal = "Build a tested, Codex-oriented retro game Korean localization framework."
+
+[agent.rules]
+no_fake_completion = true
+no_pseudocode_commits = true
+no_copyrighted_roms = true
+windows_compatible = true
+tests_required = true
+docs_required_for_user_facing_changes = true
+prefer_small_modules = true
+prefer_deterministic_output = true
+
+[paths]
+package = "retrokr"
+tests = "tests"
+docs = "docs"
+examples = "examples"
+output = "output"
+reports = "reports"
+projects = "projects"
+
+[paths.analyzer]
+rom = "retrokr/analyzer/rom.py"
+console = "retrokr/analyzer/console.py"
+encoding = "retrokr/analyzer/encoding.py"
+models = "retrokr/analyzer/models.py"
+
+[paths.core]
+result = "retrokr/core/result.py"
+
+[paths.report]
+markdown = "retrokr/report/markdown.py"
+json = "retrokr/report/json_report.py"
+
+[commands]
+help = "python -m retrokr --help"
+version = "python -m retrokr --version"
+doctor = "python -m retrokr doctor"
+info = "python -m retrokr info"
+analyze = "python -m retrokr analyze sample.gba"
+test = "python -m pytest"
+compile = "python -m compileall retrokr"
+lint = "python -m ruff check ."
+format_check = "python -m black --check ."
+type_check = "python -m mypy retrokr"
+
+[milestone]
+current = "v0.1-alpha"
+name = "MVP ROM Analyzer"
+status = "local-tests-passing"
+
+[milestone.v0_1_alpha]
+goal = "ROM analyzer MVP"
+implemented = [
+  "CLI entrypoint",
+  "ROM loader",
+  "SHA1 calculation",
+  "CRC32 calculation",
+  "Header preview extraction",
+  "Console candidate detection",
+  "Encoding candidate detection",
+  "Markdown report generation",
+  "JSON report generation",
+  "Basic tests",
+  "GitHub Actions CI"
+]
+required_test_result = "19 passed"
+
+[milestone.v0_2_alpha]
+goal = "String extraction foundation"
+planned_modules = [
+  "retrokr/extractor/string_scanner.py",
+  "retrokr/extractor/control_code.py",
+  "retrokr/project/builder.py"
+]
+planned_commands = [
+  "python -m retrokr extract game.gba"
+]
+
+[milestone.v0_3_alpha]
+goal = "Pointer candidate analysis"
+planned_modules = [
+  "retrokr/pointer/scanner.py",
+  "retrokr/pointer/validator.py",
+  "retrokr/pointer/graph.py"
+]
+planned_commands = [
+  "python -m retrokr pointer scan game.gba"
+]
+
+[milestone.v0_4_beta]
+goal = "Font and graphics analysis"
+planned_modules = [
+  "retrokr/font/detector.py",
+  "retrokr/font/tile.py",
+  "retrokr/font/glyph.py"
+]
+
+[milestone.v0_5_beta]
+goal = "Translation project pipeline"
+planned_features = [
+  "Glossary",
+  "Translation memory",
+  "Overflow checking",
+  "QA reports"
+]
+
+[milestone.v1_0_stable]
+goal = "Patch generation and complete workflow"
+planned_patch_formats = [
+  "IPS",
+  "BPS",
+  "XDelta"
+]
+
+[quality]
+python_compile_required = true
+pytest_required = true
+ruff_required_before_release = true
+black_required_before_release = true
+mypy_required_before_release = true
+
+[legal]
+include_rom_files = false
+include_pirated_content = false
+allowed_test_data = [
+  "Synthetic byte samples",
+  "Homebrew ROMs",
+  "Public domain binaries",
+  "User-owned backups"
+]
+
+[release]
+package_name = "retrokr-codex-agent"
+license = "MIT"
+default_branch = "main"
