@@ -40,7 +40,7 @@ class EncodingDetector:
 
     def _detect_ascii(self) -> EncodingCandidate:
         runs = self._count_printable_ascii_runs()
-        confidence = min(0.95, runs / 100)
+        confidence = min(0.95, runs / 50)
 
         return EncodingCandidate(
             name="ASCII",
@@ -58,7 +58,7 @@ class EncodingDetector:
             except UnicodeDecodeError:
                 continue
 
-            if self._looks_textual(decoded):
+            if self._looks_textual(decoded) and self._has_non_ascii(decoded):
                 sample_count += 1
 
         confidence = min(0.90, sample_count / 80)
@@ -66,7 +66,7 @@ class EncodingDetector:
         return EncodingCandidate(
             name="UTF-8",
             confidence=confidence,
-            reason=f"Found {sample_count} UTF-8 decodable text-like chunks.",
+            reason=f"Found {sample_count} UTF-8 decodable non-ASCII text-like chunks.",
             sample_count=sample_count,
         )
 
@@ -79,7 +79,7 @@ class EncodingDetector:
             except UnicodeDecodeError:
                 continue
 
-            if self._looks_textual(decoded):
+            if self._looks_textual(decoded) and self._has_non_ascii(decoded):
                 sample_count += 1
 
         confidence = min(0.92, sample_count / 80)
@@ -87,7 +87,7 @@ class EncodingDetector:
         return EncodingCandidate(
             name="Shift-JIS",
             confidence=confidence,
-            reason=f"Found {sample_count} Shift-JIS decodable text-like chunks.",
+            reason=f"Found {sample_count} Shift-JIS decodable non-ASCII text-like chunks.",
             sample_count=sample_count,
         )
 
@@ -155,6 +155,9 @@ class EncodingDetector:
         ratio = printable / max(len(text), 1)
 
         return ratio >= 0.85
+
+    def _has_non_ascii(self, text: str) -> bool:
+        return any(ord(char) > 0x7F for char in text)
 
     def _count_utf16_like_runs(self, *, little_endian: bool) -> int:
         count = 0
