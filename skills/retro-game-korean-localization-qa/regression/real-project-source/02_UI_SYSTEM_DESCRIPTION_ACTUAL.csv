@@ -1,0 +1,29 @@
+SOURCE,TYPE,CONTEXT,SPEAKER,LIMIT,SOURCE_FILE,SOURCE_RECORD,NOTES
+LV,UI,전투 하단 HUD 상태/능력치 레이블,,고정폭/렌더러 의존,tools/qa24_fix1_base.py,LV,최신 QA45 패키지 내부에 계승된 실제 원문 레이블
+Lv,UI,전투 하단 HUD 상태/능력치 레이블,,고정폭/렌더러 의존,tools/qa24_fix1_base.py,Lv,최신 QA45 패키지 내부에 계승된 실제 원문 레이블
+EXP,UI,전투 하단 HUD 상태/능력치 레이블,,고정폭/렌더러 의존,tools/qa24_fix1_base.py,EXP,최신 QA45 패키지 내부에 계승된 실제 원문 레이블
+HP,UI,전투 하단 HUD 상태/능력치 레이블,,고정폭/렌더러 의존,tools/qa24_fix1_base.py,HP,최신 QA45 패키지 내부에 계승된 실제 원문 레이블
+MP,UI,전투 하단 HUD 상태/능력치 레이블,,고정폭/렌더러 의존,tools/qa24_fix1_base.py,MP,최신 QA45 패키지 내부에 계승된 실제 원문 레이블
+ATT,UI,전투 하단 HUD 상태/능력치 레이블,,고정폭/렌더러 의존,tools/qa24_fix1_base.py,ATT,최신 QA45 패키지 내부에 계승된 실제 원문 레이블
+DEF,UI,전투 하단 HUD 상태/능력치 레이블,,고정폭/렌더러 의존,tools/qa24_fix1_base.py,DEF,최신 QA45 패키지 내부에 계승된 실제 원문 레이블
+行動終了しますか?,UI,전투 행동 종료 확인 프롬프트,,고정 길이,tools/qa24_fix1_base.py,OLD_ACTION_PROMPT,실제 잔존 원문 탐색 패턴
+のレベルが上がった！,SYSTEM,전투 결과/레벨 상승 메시지,,,tools/apply_arc3_qa43_qa30_village_polish_resultfix.py,LEVEL_SRC,실제 정적 결과 메시지
+やった!,SYSTEM,전투/성공 짧은 메시지,,,tools/apply_arc3_qa45_itio_town_screenfix.py,battle_yatta,실제 native-token 정적 스캔 대상
+キスカ湿原,UI,월드맵 지명,,,tools/apply_arc3_qa45_itio_town_screenfix.py,kisuka_wetland,실제 native-token 정적 스캔 대상
+イティオ,UI,월드맵 지명,,,tools/apply_arc3_qa45_itio_town_screenfix.py,itio_map_name,실제 native-token 정적 스캔 대상
+イティオの町,UI,월드맵/마을 지명,,,tools/apply_arc3_qa45_itio_town_screenfix.py,itio_town_label,실제 native-token 정적 스캔 대상
+イティオに登りますか?<NL><CC:01>はい<NL>いいえ,UI,이티오 진입 선택창(CC01 변형),,,tools/apply_arc3_qa45_itio_town_screenfix.py,itio_enter_cc01,실제 native-token 정적 스캔 대상
+イティオに登りますか?<NL><CC:00>はい<NL>いいえ,UI,이티오 진입 선택창(CC00 변형),,,tools/apply_arc3_qa45_itio_town_screenfix.py,itio_enter_cc00,실제 native-token 정적 스캔 대상
+<C5:01>町の外へでますか?<NL><CC:01>はい<NL>いいえ,UI,마을 밖 이동 선택창,,0/9/0/2/3,QA45_ITIO_TOWN_REVIEW.csv,itio_index=10,offset=0x14EC72
+<C5:01>港へでますか?<NL><CC:01>はい<NL>いいえ,UI,항구 이동 선택창,,0/7/0/2/3,QA45_ITIO_TOWN_REVIEW.csv,itio_index=11,offset=0x14EE36
+イティオの町,UI,마을 지명 표시,,6,QA45_ITIO_TOWN_REVIEW.csv,itio_index=12,offset=0x14F1F4
+レンバルの家,UI,건물/장소명 표시,,6,QA45_ITIO_TOWN_REVIEW.csv,itio_index=13,offset=0x14F6A4
+空き家,UI,건물/장소명 표시,,3,QA45_ITIO_TOWN_REVIEW.csv,itio_index=14,offset=0x14F710
+記録・宿泊・お預かり<NL>『宿屋』,DESCRIPTION,여관 표지/기능 안내,,10/4,QA45_ITIO_TOWN_REVIEW.csv,itio_index=15,offset=0x14F9C2
+アイテム・武器防具、売ります買います<NL>『ショップ』,DESCRIPTION,상점 표지/기능 안내,,18/6,QA45_ITIO_TOWN_REVIEW.csv,itio_index=16,offset=0x14FA0E
+歌姫シャンテの店<NL>『酒場　アルフ』,DESCRIPTION,주점 표지/시설 안내,,8/8,QA45_ITIO_TOWN_REVIEW.csv,itio_index=17,offset=0x14FA6E
+ハンターへの依頼はこちらへ<NL>『ギルド』,DESCRIPTION,길드 표지/기능 안내,,13/5,QA45_ITIO_TOWN_REVIEW.csv,itio_index=18,offset=0x14FABE
+この先、イティオの港,DESCRIPTION,방향 안내 표지,,10,QA45_ITIO_TOWN_REVIEW.csv,itio_index=19,offset=0x14FB12
+イティオの町にようこそ!<NL>宿屋、ショップ、酒場、ギルドあります,DESCRIPTION,마을 시설 안내 표지,,12/18,QA45_ITIO_TOWN_REVIEW.csv,itio_index=20,offset=0x14FB52
+モルモ草原、ルカエ川岸、キスカ湿原は<NL>モンスター出現!　危険!,SYSTEM,지역 위험 경고 표지,,18/12,QA45_ITIO_TOWN_REVIEW.csv,itio_index=21,offset=0x14FBBE
+トーデの橋にモンスター出現、注意!,SYSTEM,몬스터 출현 경고 표지,,17,QA45_ITIO_TOWN_REVIEW.csv,itio_index=22,offset=0x14FC2A

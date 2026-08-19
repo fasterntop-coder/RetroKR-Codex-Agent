@@ -1,0 +1,23 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "PROVISIONAL_TERM v1.0 (CR-008)",
+  "type": "array",
+  "uniqueItems": true,
+  "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": ["source_text","target_text","created_from","status"],
+    "properties": {
+      "source_text": {"type":"string","minLength":1},
+      "target_text": {"type":"string","minLength":1},
+      "created_from": {"type":"string","minLength":1},
+      "status": {"type":"string","enum":["ACTIVE","PROMOTED","REJECTED"]},
+      "promoted_to": {"type":["string","null"],"enum":["PROJECT_GLOSSARY","GOLDEN_LOCK",null]},
+      "note": {"type":"string"}
+    },
+    "allOf": [
+      {"if":{"properties":{"status":{"const":"PROMOTED"}}},"then":{"required":["promoted_to"],"properties":{"promoted_to":{"enum":["PROJECT_GLOSSARY","GOLDEN_LOCK"]}}}},
+      {"if":{"properties":{"status":{"enum":["ACTIVE","REJECTED"]}}},"then":{"properties":{"promoted_to":{"type":"null"}}}}
+    ]
+  }
+}

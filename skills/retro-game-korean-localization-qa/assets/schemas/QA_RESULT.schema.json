@@ -1,0 +1,23 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Machine-readable QA result v1.4",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["source","type","translation","term_source","pun_status","translation_quality","final_status","issues"],
+  "properties": {
+    "source": {"type":"string"},
+    "type": {"enum":["UI","DIALOGUE","ITEM","SYSTEM","DESCRIPTION"]},
+    "context": {"type":"string"},
+    "speaker": {"type":"string"},
+    "limit": {"type":"string"},
+    "translation": {"type":"string"},
+    "term_source": {"enum":["GOLDEN_LOCK","PROJECT_GLOSSARY","OFFICIAL_KR","ESTABLISHED_FANDOM","GENERIC_LEXICAL","SOURCE_SEMANTIC","NO_EVIDENCE"]},
+    "pun_status": {"enum":["NOT_APPLICABLE","PUN_EXACT","CREATIVE_PASS","PUN_INCOMPLETE","PUN_FAIL"]},
+    "translation_quality": {"type":"string"},
+    "length_status": {"type":"string"},
+    "spacing_status": {"type":"string"},
+    "voice_status": {"type":"string"},
+    "final_status": {"enum":["FAIL_CONTROL_CODE","FAIL_TRANSLATION","FAIL_VOICE","FAIL_LENGTH","FAIL_SPACING","TERM_PROPOSAL","CONTEXT_NEEDED","TECH_PENDING","PUN_FAIL","PUN_INCOMPLETE","PASS"]},
+    "issues": {"type":"array","items":{"type":"string"}}
+  }
+}

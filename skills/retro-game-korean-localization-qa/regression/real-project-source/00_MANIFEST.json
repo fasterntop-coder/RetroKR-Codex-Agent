@@ -1,0 +1,13 @@
+{
+  "project": "Arc the Lad III (Japan) (Disc 1) (Rev 1) Korean localization",
+  "source_package": "ARC3_KR_QA45_QA44_ITIO_TOWN_SCREENFIX.zip",
+  "source_package_library_created_utc": "2026-08-19T11:13:21.359689+00:00",
+  "policy": "Use latest QA45 package only; no other game data; no fabricated strings; NEXT_STORY_QUEUE_NOT_APPLIED excluded from dialogue set.",
+  "dialogue_rows": 200,
+  "additional_actual_rows": 28,
+  "additional_distribution": {"UI":18,"SYSTEM":4,"DESCRIPTION":6},
+  "standalone_item_skill_rows": 0,
+  "item_term_candidates_not_counted": 2,
+  "missing_targets": {"UI_requested":"50-60","UI_actual":18,"ITEM_SKILL_requested":"50-60","ITEM_SKILL_actual":0,"DESCRIPTION_requested":100,"DESCRIPTION_actual":6,"SYSTEM_requested":50,"SYSTEM_actual":4},
+  "important_note": "The latest QA45 package is story-focused. Missing category quotas are intentionally not filled with older games, guessed strings, or synthetic data."
+}

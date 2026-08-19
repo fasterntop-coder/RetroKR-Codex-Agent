@@ -1,0 +1,11 @@
+[
+  {
+    "id": "LOCK-001",
+    "source_text": "Critical Hit!",
+    "target_text": "치명타!",
+    "reason": "Approved UI anchor example",
+    "approved_version": "v1.4",
+    "change_forbidden": true,
+    "note": "Example only; do not treat as a project lock unless supplied by the project."
+  }
+]
