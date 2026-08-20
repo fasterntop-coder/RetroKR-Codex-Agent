@@ -1,35 +1,38 @@
 ---
 name: retro-game-korean-localization-qa
-description: QA and translate Japanese or English retro-game localization strings into Korean with evidence-based terminology, character voice, strict Korean spacing, pun handling, ROM display/byte limits, control-code integrity, and reproducible FINAL_STATUS decisions. Use for ROM-patch dialogue, UI, item, system, description, and regression QA.
-compatibility: Agent Skills-compatible clients. No external services required; byte, pixel-width, or hardware-fit judgments require project-provided technical evidence when applicable.
+description: Translate and QA Korean retro-game localizations with evidence-based terminology, character voice, spacing, puns, display/byte/control-code safety, plus static binary, glyph/font, archive, ROM/disc layout, readback, runtime-smoke, canonical, and release gating. Use for dialogue/UI/item/system/description QA, ROM/ISO/BIN patch validation, freezing regressions, RC verification, and release QA.
+compatibility: Agent Skills-compatible clients. Runtime, pixel-width, encoded-byte, glyph-slot, archive, physical-layout, or hardware judgments require project evidence when applicable.
 metadata:
-  version: "1.4-final"
+  version: "1.5-final"
   package-revision: "1"
 ---
 
-# Retro Game Korean Localization QA Skill — v1.4 FINAL
+# Retro Game Korean Localization QA Skill — v1.5 FINAL
 
-## Activation
-Use this skill for retro-game Korean localization translation or QA, especially ROM/ISO/BIN patch projects with fixed text slots, control codes, terminology locks, character voice, or regression requirements.
+## Architecture
+v1.5 has two independent result domains:
+1. `TRANSLATION_QA` — the locked v1.4 translation judgment engine.
+2. `BUILD_RUNTIME_QA` — additive static-binary/readback/runtime/release safety gates.
 
-This is both a translator and a QA judgment engine: it may draft Korean translations, but every output must be evaluated through the fixed QA pipeline.
+Never flatten them into one ambiguous PASS.
 
 ## Mandatory startup
-Before the first substantive QA judgment in a task, read:
+Read before substantive QA:
 - `references/CORE_RULES.md`
+- `references/BUILD_SAFETY_RULES.md`
 - `references/OUTPUT_FORMATS.md`
 
-Read these when needed:
-- `references/GOLDEN_EXAMPLES.md` for style or ambiguity checks.
-- `references/REGRESSION_POLICY.md` for version/regression work.
-- `references/CR_VERIFICATION.md` when validating CR-008/009/010 behavior.
-- `references/KNOWN_LIMITATIONS.md` before claiming a packaged regression dataset is complete.
+Read when applicable:
+- `references/GOLDEN_EXAMPLES.md`
+- `references/REGRESSION_POLICY.md`
+- `references/CR_VERIFICATION.md`
+- `references/KNOWN_LIMITATIONS.md`
 
-Treat project-supplied glossary/lock data as authoritative only when actually supplied. Never invent project evidence.
+Never invent glossary evidence, source hashes, renderer metrics, encodings, glyph capacity, pointer maps, archive layouts, LBA/sector contracts, or runtime proof.
 
-## Fixed pipeline
+## Layer A — translation pipeline, v1.4 preserved
 1. Input classification
-2. TERM_SOURCE determination
+2. TERM_SOURCE
 3. Draft translation
 4. LENGTH_QA
 5. CHARACTER_VOICE_QA
@@ -37,77 +40,57 @@ Treat project-supplied glossary/lock data as authoritative only when actually su
 7. SPACING_QA
 8. PUN_QA
 9. Type-specific QA
-10. Natural Korean re-reading
+10. Natural Korean reread
 11. FINAL_STATUS synthesis
 
-Do not skip a stage merely because another stage already fails. Preserve secondary failures/issues.
-
-## TERM_SOURCE priority
+TERM_SOURCE:
 `GOLDEN_LOCK > PROJECT_GLOSSARY > OFFICIAL_KR > ESTABLISHED_FANDOM > GENERIC_LEXICAL > SOURCE_SEMANTIC > NO_EVIDENCE`
 
-- `GENERIC_LEXICAL` is for ordinary dictionary/common lexical items, not unsupported proper nouns or franchise/world terms.
-- `NO_EVIDENCE` produces `TERM_PROPOSAL` unless a higher-priority FAIL becomes FINAL_STATUS.
-- CR-008 may suppress duplicate alerts, but never upgrades unsupported terms to PASS.
+CR-008: exact repeated unsupported terms may reuse `PROVISIONAL_TERM` and suppress duplicate alerts, but remain `NO_EVIDENCE` / `TERM_PROPOSAL` until explicitly approved.
 
-## CR-008: PROVISIONAL_TERM
-For the first exact `source_text` with `NO_EVIDENCE`:
-- keep `TERM_SOURCE: NO_EVIDENCE`
-- keep `FINAL_STATUS: TERM_PROPOSAL` unless a FAIL outranks it
-- register the candidate translation as provisional
-- record `PROVISIONAL_TERM_CREATED`
+CR-009 translation FAIL priority:
+`FAIL_CONTROL_CODE > FAIL_TRANSLATION > FAIL_VOICE > FAIL_LENGTH > FAIL_SPACING`.
+Keep one primary FINAL_STATUS and preserve lower FAILs as SECONDARY_FAIL.
+Without a FAIL:
+`TERM_PROPOSAL > CONTEXT_NEEDED > TECH_PENDING > PUN_FAIL > PUN_INCOMPLETE > PASS`.
 
-When the exact same `source_text` reappears:
-- reuse the existing provisional translation
-- keep `TERM_SOURCE: NO_EVIDENCE`
-- keep `TERM_PROPOSAL` semantics
-- record `PROVISIONAL_TERM_REUSED`
-- suppress only the duplicate user alert via `DUPLICATE_TERM_ALERT_SUPPRESSED`
+CR-010: DISPLAY and BYTE limits are separate; control codes have display width 0 but consume real encoded bytes; composite limits are checked per segment; `<NL>` is a mandatory boundary; control-code corruption => FAIL_CONTROL_CODE; visible overflow => FAIL_LENGTH; unresolved fit/mapping without proven corruption => TECH_PENDING.
 
-A partial/variant source string is a new candidate. Never auto-promote a provisional term to PASS, PROJECT_GLOSSARY, GOLDEN_LOCK, or OFFICIAL_KR. Promotion requires explicit user approval.
+Full translation semantics remain in `references/CORE_RULES.md`.
 
-## CR-009: multiple FAIL synthesis
-Known FAIL priority, highest first:
-`FAIL_CONTROL_CODE > FAIL_TRANSLATION > FAIL_VOICE > FAIL_LENGTH > FAIL_SPACING`
+## Layer B — v1.5 build/runtime stages
+Apply when a ROM/ISO/BIN/archive/font/graphics/build/RC/release artifact or runtime-safety claim is involved.
 
-Rules:
-- `FINAL_STATUS` is exactly one value.
-- Highest-priority FAIL is primary.
-- Every lower-priority FAIL is preserved in ISSUES as `SECONDARY_FAIL: ...`.
-- Any known `FAIL_*` outranks non-FAIL states.
-- If there is no FAIL, use:
-  `TERM_PROPOSAL > CONTEXT_NEEDED > TECH_PENDING > PUN_FAIL > PUN_INCOMPLETE > PASS`.
-- Do not invent new FAIL names inside v1.4.
+`SOURCE_QA -> STATIC_BINARY_QA -> RC_BUILD -> RC_READBACK_QA -> RUNTIME_SMOKE -> CANONICAL_PROMOTION -> PATCH_PACKAGE -> RELEASE`
 
-## CR-010: LIMIT and control-code safety
-- DISPLAY limits and BYTE limits are different.
-- Under DISPLAY_LIMIT, control codes have visual width 0.
-- Under BYTE_LIMIT, control codes consume their actual encoded byte size.
-- `/`-separated composite LIMIT values map to the corresponding control/visible segments as defined by the supplied format.
-- `<NL>` has display width 0 but is a mandatory segment boundary.
-- Preserve control codes exactly, including type, parameter, count, and order unless the project explicitly supplies a different technical contract.
-- Changed/deleted mandatory control code or boundary => `FAIL_CONTROL_CODE`.
-- Display segment overflow => `FAIL_LENGTH` and record the exact segment, e.g. `LENGTH_OVERFLOW: SEGMENT_2: 9 > 7`.
-- If fit must be verified but LIMIT/pixel/byte/hardware evidence is unavailable => `TECH_PENDING`.
-- If segment mapping cannot be resolved and no code corruption is proven => `TECH_PENDING` + `SEGMENT_COUNT_MISMATCH`.
+Per-stage BUILD_GATE_STATUS:
+`PASS | FAIL | PENDING | NOT_RUN | BLOCKED`
 
-## Locked v1.3 behavior remains in force
-The full definitions are in `references/CORE_RULES.md`. They include:
-- SPACING_STRICT
-- character-voice priority
-- translationese rejection
-- pun-state separation
-- locked-term conflict handling
-- retro display/length hierarchy and constrained 0.7 fallback
-- natural Korean punctuation/emotional-force handling
-- required status composition
+Build failure codes are not translation FINAL_STATUS values.
 
-Do not weaken or replace these inherited rules.
+CR-013: lock exact source revision/size/format/hash; preserve pristine source and known-good baselines; do not silently continue on source mismatch.
 
-## Output
-For normal QA, use the required Korean fields in `references/OUTPUT_FORMATS.md`.
-For Real Project Test logging, use the fixed detailed log there.
+CR-014: a narrower PASS proves only that stage. Translation PASS != binary/runtime PASS. Static PASS != runtime PASS. RC != canonical until required runtime confirmation passes on that exact RC.
 
-Do not create a new FINAL_STATUS for logging/meta issues such as `DATASET_TYPE_MISMATCH`, `LOG_DETAIL_MISSING`, `SOURCE_TEXT_SUSPECTED_CORRUPTION`, or `SOURCE_PUNCTUATION_RESIDUE`; record them in ISSUES unless an existing FAIL rule independently applies.
+CR-015: verify actual code-to-glyph mapping, active slots, physical glyph assets and shared consumers. Host TTF/OTF coverage is not runtime proof.
+
+CR-016: verify encoded byte budgets, terminators, record/block capacity, alignment/padding, pointers, offsets, sizes/counts, sentinels/checksums and protected regions. One confirmed byte beyond a fixed capacity is a build failure.
+
+CR-017: verify decompression/recompression, descriptors, allocation spans, archive entry order/flags/alignment and unaffected entries. Compressor/repacker success alone is not runtime proof.
+
+CR-018: verify offsets/LBA/sectors/FST or equivalent physical layout, overlap/out-of-range, protected regions and stream-specific contracts. Generic image rebuild/boot is insufficient for sensitive Mode2/2352, XA/STR or mixed-track regions.
+
+CR-019: build to a candidate, verify inputs, serialize, then re-read changed and protected regions from the final image and record output hash. Exit code 0 alone is not RC_READBACK_QA PASS.
+
+CR-020: record exact RC identity. If runtime is required but not executed, use NOT_RUN/PENDING. On freeze/crash preserve last-known-good and first-known-bad identities and isolate layers. Promote only the exact runtime-approved RC to canonical; package/release from canonical.
+
+## Interaction
+- Translation FINAL_STATUS remains the v1.4-compatible value set.
+- Build gates never overwrite translation FINAL_STATUS.
+- A translation can PASS while STATIC_BINARY_QA FAILs.
+- A static build can PASS while content still has TERM_PROPOSAL/FAIL_TRANSLATION.
+- Release readiness must name both content and build/runtime scope.
+- Project-specific stricter rules win.
 
 ## Version discipline
-This is v1.4 FINAL. During regression, do not modify rules in-place. Record deficiencies as future change-request evidence. CR-011 (TYPE reclassification) and CR-012 (speaker-info-poor VOICE policy) remain deferred.
+v1.5 FINAL is additive over v1.4. `CORE_RULES.md` and `GOLDEN_EXAMPLES.md` remain unchanged. CR-011/012 remain deferred. New rules are CR-013~020.

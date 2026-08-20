@@ -1,8 +1,6 @@
-# Output Formats
+# Output Formats — v1.5
 
-## A. Normal QA output — mandatory fields
-Use these fields unless the user explicitly asks for another structure:
-
+## A. Translation QA
 ```text
 원문:
 분류:
@@ -13,13 +11,9 @@ TERM_SOURCE:
 최종 상태:
 이슈:
 ```
+Translation `최종 상태` remains the v1.4-compatible FINAL_STATUS domain. Build failures never go in that field.
 
-Recommended values:
-- 말장난 상태: `해당없음`, `PUN_EXACT`, `CREATIVE_PASS`, `PUN_INCOMPLETE`, `PUN_FAIL`
-- 번역 품질: `PASS` or an explicit review/failure note supported by the analysis
-- 이슈: `없음` or comma/newline-separated structured issue labels/details
-
-## B. Real Project Test v1.0 — fixed detailed log
+## B. Real Project string log
 ```text
 PROJECT_TEST_ID:
 SOURCE:
@@ -37,30 +31,54 @@ VOICE_STATUS:
 FINAL_STATUS:
 ISSUES:
 ```
+Missing evidence => `LOG_DETAIL_MISSING`; never fabricate item results.
 
-Do not omit individual logs and replace them with ranges such as `076~078 PASS` when a locked test requires item-level evidence. If detail is missing, record `LOG_DETAIL_MISSING` in ISSUES and do not fabricate the missing result.
-
-## C. Multi-FAIL issue convention
-Example:
+## C. Multi-FAIL translation convention
 ```text
 FINAL_STATUS: FAIL_TRANSLATION
 ISSUES:
 - SECONDARY_FAIL: FAIL_LENGTH
-- SOURCE_PUNCTUATION_RESIDUE
 - LENGTH_OVERFLOW: SEGMENT_2: 10 > 8
 ```
 
-## D. Meta issue labels used by the locked real-project methodology
-These are ISSUES, not new FINAL_STATUS values:
-- `DATASET_TYPE_MISMATCH`
-- `TYPE_MISMATCH_SUSPECTED`
-- `LOG_DETAIL_MISSING`
-- `SOURCE_TEXT_SUSPECTED_CORRUPTION`
-- `SOURCE_PUNCTUATION_RESIDUE`
-- `PROVISIONAL_TERM_CREATED`
-- `PROVISIONAL_TERM_REUSED`
-- `DUPLICATE_TERM_ALERT_SUPPRESSED`
-- `CANDIDATE_CONFLICT_SUPPRESSED`
-- `SEGMENT_COUNT_MISMATCH`
-- `SEGMENT_STRUCTURE_CHANGED`
-- `LENGTH_CONFLICT`
+## D. Build/RC QA block
+```text
+BUILD_ID:
+PROJECT:
+SOURCE_ID:
+SOURCE_SHA256:
+SOURCE_SIZE:
+SOURCE_FORMAT:
+BASELINE_ID:
+BASELINE_SHA256:
+OUTPUT_ID:
+OUTPUT_SHA256:
+OUTPUT_SIZE:
+SOURCE_QA: PASS|FAIL|PENDING|NOT_RUN|BLOCKED
+STATIC_BINARY_QA: PASS|FAIL|PENDING|NOT_RUN|BLOCKED
+RC_BUILD: PASS|FAIL|PENDING|NOT_RUN|BLOCKED
+RC_READBACK_QA: PASS|FAIL|PENDING|NOT_RUN|BLOCKED
+RUNTIME_SMOKE: PASS|FAIL|PENDING|NOT_RUN|BLOCKED
+CANONICAL_PROMOTION: PASS|FAIL|PENDING|NOT_RUN|BLOCKED
+PATCH_PACKAGE: PASS|FAIL|PENDING|NOT_RUN|BLOCKED
+RELEASE: PASS|FAIL|PENDING|NOT_RUN|BLOCKED
+BUILD_FAIL_CODES:
+BUILD_WARNINGS:
+PROTECTED_REGION_STATUS:
+MISSING_GLYPHS:
+OVERFLOW_COUNT:
+POINTER_OFFSET_SIZE_MISMATCH_COUNT:
+PHYSICAL_OVERLAP_COUNT:
+PHYSICAL_OUT_OF_RANGE_COUNT:
+LKG_ID:
+FKB_ID:
+RUNTIME_TEST_PATH:
+RELEASE_STATE:
+BUILD_ISSUES:
+```
+Unknown/unmeasured values must not be invented as zero.
+
+Recommended RELEASE_STATE:
+`READY_FOR_STATIC_REVIEW | READY_FOR_RUNTIME | CANONICAL | READY_FOR_RELEASE | BLOCKED | PENDING`.
+
+Whenever PASS could be ambiguous, state its domain/stage. `STATIC_BINARY_QA: PASS; RUNTIME_SMOKE: NOT_RUN` is valid. `전체 PASS` is not valid without corresponding evidence.

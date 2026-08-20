@@ -1,9 +1,10 @@
-# Known Package Limitations
+# Known Package Limitations — v1.5
 
-This package corrects the original ZIP's format and self-containment problems without inventing missing evidence.
-
-1. The complete exact Synthetic TEST001–TEST100 source dataset is not present as a grounded file in this package build. The locked aggregate baseline and representative known anchors are included. Do not reconstruct missing test rows from memory or guesses.
-2. The Real Project Regression 001–100 final CHANGE_CLASS totals were locked only as approximate ranges, not exact per-item machine-readable counts. They must remain labeled estimated until an exact item-level result artifact is rebuilt from grounded logs.
-3. Arc the Lad III source material included here is the real QA45-based source pack (200 dialogue + 28 actual non-dialogue rows); it is source evidence, not a claim that all 228 rows have completed v1.4 result logs.
-4. Pixel width and encoded byte width are project/engine dependent. The skill cannot infer actual font metrics or encoding byte cost without supplied evidence.
-5. CR-011 TYPE reclassification and CR-012 speaker-info-poor VOICE policy are explicitly deferred.
+1. The complete exact Synthetic TEST001–TEST100 source dataset is not bundled; v1.5 preserves the normative v1.4 translation core instead of fabricating missing rows.
+2. Real Project Regression 001–100 final CHANGE_CLASS totals remain approximate ranges.
+3. Arc the Lad III QA45 source pack is source evidence, not proof every row has completed v1.5 build/runtime QA.
+4. Pixel width, encoded bytes, glyph slots, pointers, compression/archive layout, LBA/sector contracts, EDC/ECC and hardware behavior are engine-specific. Missing evidence => PENDING/NOT_RUN/BLOCKED, not guessed PASS.
+5. This skill is a policy/adjudication layer, not an emulator, font extractor, binary parser, compressor, image rebuilder, EDC/ECC generator or hardware automation tool.
+6. CR-011 TYPE reclassification and CR-012 speaker-info-poor VOICE policy remain deferred.
+7. BUILD_GATE_STATUS is deliberately separate from translation FINAL_STATUS.
+8. Runtime smoke coverage is project-specific; a generic checklist is not proof of full-game execution.

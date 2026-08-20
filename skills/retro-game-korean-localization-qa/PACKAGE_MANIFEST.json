@@ -1,13 +1,13 @@
 {
   "skill_name": "retro-game-korean-localization-qa",
-  "rule_version": "v1.4 FINAL",
+  "rule_version": "v1.5 FINAL",
   "package_revision": 1,
-  "created_date": "2026-08-19",
+  "created_date": "2026-08-21",
   "agent_skills_frontmatter": true,
-  "core_rule_changes_from_locked_v1.4": false,
-  "deferred": [
-    "CR-011",
-    "CR-012"
-  ],
+  "translation_core_inherited_from": "v1.4 FINAL",
+  "translation_core_changed": false,
+  "new_crs": ["CR-013","CR-014","CR-015","CR-016","CR-017","CR-018","CR-019","CR-020"],
+  "new_verification": "24/24 specification simulations PASS",
+  "deferred": ["CR-011","CR-012"],
   "known_regression_limits": "See references/KNOWN_LIMITATIONS.md"
 }
