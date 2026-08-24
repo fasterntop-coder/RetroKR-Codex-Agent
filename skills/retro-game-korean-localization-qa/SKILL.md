@@ -4,7 +4,7 @@ description: Translate and QA Korean retro-game localizations with evidence-base
 compatibility: Agent Skills-compatible clients. Runtime, pixel-width, encoded-byte, glyph-slot, archive, physical-layout, or hardware judgments require project evidence when applicable.
 metadata:
   version: "1.5-final"
-  package-revision: "1"
+  package-revision: "2"
 ---
 
 # Retro Game Korean Localization QA Skill — v1.5 FINAL
@@ -27,8 +27,13 @@ Read when applicable:
 - `references/REGRESSION_POLICY.md`
 - `references/CR_VERIFICATION.md`
 - `references/KNOWN_LIMITATIONS.md`
+- `references/ADDRESS_RUNTIME_MATCH.md` — file offset/runtime address/module/overlay/consumer mapping
+- `references/RUNTIME_ASSET_CONSUMER_QA.md` — stored asset -> RAM/cache -> VRAM/palette -> renderer -> screen chain
+- `references/EXPECTED_WRITE_MANIFEST.md` — expected-source-byte guarded binary writes and final readback
+- `references/PS1_DISC_SECTOR_SAFETY.md` — PS1 BIN/CUE, Mode2/2352, ISO/LBA, XA/STR and sector safety
+- `references/SATURN_VDP_SH2_SAFETY.md` — Saturn SH-2 hook/moved-code and VDP1/VDP2 consumer safety
 
-Never invent glossary evidence, source hashes, renderer metrics, encodings, glyph capacity, pointer maps, archive layouts, LBA/sector contracts, or runtime proof.
+Never invent glossary evidence, source hashes, renderer metrics, encodings, glyph capacity, pointer maps, archive layouts, LBA/sector contracts, runtime address maps, expected source bytes, consumer paths, or runtime proof.
 
 ## Layer A — translation pipeline, v1.4 preserved
 1. Input classification
@@ -84,6 +89,19 @@ CR-019: build to a candidate, verify inputs, serialize, then re-read changed and
 
 CR-020: record exact RC identity. If runtime is required but not executed, use NOT_RUN/PENDING. On freeze/crash preserve last-known-good and first-known-bad identities and isolate layers. Promote only the exact runtime-approved RC to canonical; package/release from canonical.
 
+## Additive technical references — package revision 2
+These references refine CR-013~020 without changing their numbering or the v1.4 translation engine.
+
+- Use `ADDRESS_RUNTIME_MATCH.md` whenever a claimed file address must correspond to loaded code/data, an overlay, module, script VM, pointer, or in-game dialogue consumer.
+- Use `RUNTIME_ASSET_CONSUMER_QA.md` whenever a font, glyph, texture, title graphic, UI graphic, palette, or renderer-visible asset is added, replaced, enlarged, or moved.
+- Use `EXPECTED_WRITE_MANIFEST.md` for deterministic binary writes when original bytes are known. A source-byte mismatch blocks that write; never silently shift to a nearby match.
+- Use `PS1_DISC_SECTOR_SAFETY.md` for PlayStation raw-sector/ISO/LBA/XA/STR work.
+- Use `SATURN_VDP_SH2_SAFETY.md` for Sega Saturn SH-2, VDP1, VDP2, compressed asset, module-growth, or disc-layout work.
+
+For 100% dialogue projects, report discovery, address identification, address-runtime matching, translation, static expected-write, readback, and runtime/hardware completion separately. Do not collapse them into one percentage.
+
+`STATIC_RENDERABILITY_PASS` and `ADDRESS_RUNTIME_MATCH` are scoped technical judgments only. They never substitute for `RUNTIME_SMOKE` or hardware confirmation.
+
 ## Interaction
 - Translation FINAL_STATUS remains the v1.4-compatible value set.
 - Build gates never overwrite translation FINAL_STATUS.
@@ -93,4 +111,4 @@ CR-020: record exact RC identity. If runtime is required but not executed, use N
 - Project-specific stricter rules win.
 
 ## Version discipline
-v1.5 FINAL is additive over v1.4. `CORE_RULES.md` and `GOLDEN_EXAMPLES.md` remain unchanged. CR-011/012 remain deferred. New rules are CR-013~020.
+v1.5 FINAL is additive over v1.4. `CORE_RULES.md` and `GOLDEN_EXAMPLES.md` remain unchanged. CR-011/012 remain deferred. CR-013~020 remain the build/runtime rule set. Package revision 2 adds technical implementation references without redefining the locked translation judgments.
