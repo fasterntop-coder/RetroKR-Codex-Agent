@@ -1,0 +1,244 @@
+name: Build Cutey Honey FX KR ALPHA v0.10 FIXED
+permissions:
+  contents: write
+on:
+  push:
+    branches: [tmp-cutey-poc01]
+    paths: ['.github/workflows/cutey_full_alpha_v010_fixed.yml']
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@v4
+        with: {ref: tmp-cutey-poc01}
+      - name: Install tools and CLEAN parent
+        run: |
+          set -euxo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq p7zip-full unzip curl python3 python3-pil fonts-nanum golang-go
+          curl -L --retry 3 --fail -o /tmp/v810.zip https://github.com/jbrandwood/v810-gcc/releases/download/latest/v810-gcc-Linux-x86_64.zip
+          mkdir -p /tmp/v810 && unzip -q /tmp/v810.zip -d /tmp/v810
+          B=$(find /tmp/v810 -type f -name v810-gcc | head -1); ROOT=$(dirname "$(dirname "$B")"); echo "$ROOT/bin" >> "$GITHUB_PATH"
+          curl -L --retry 3 --fail -o /tmp/cutey.7z 'https://archive.org/download/noaen-redump-nec-pc-fx-pc-fxga/Cutey%20Honey%20FX%20%28Japan%29.7z'
+          mkdir -p /tmp/game /tmp/build /tmp/pkg analysis/cutey_full
+          7z x -y /tmp/cutey.7z -o/tmp/game >/dev/null
+          T1=$(find /tmp/game -maxdepth 1 -type f -name '*Track 1*.bin' | head -1); T2=$(find /tmp/game -maxdepth 1 -type f -name '*Track 2*.bin' | head -1)
+          echo 'ffae85763f581d312abb6b5096f6f7d62e771aae  '"$T1" | sha1sum -c -
+          echo '1dd574364e40cb90dd0ff25940fe8df9e6793edf  '"$T2" | sha1sum -c -
+          cp "$T1" /tmp/game/t1.bin; cp "$T2" /tmp/game/t2.bin
+      - name: Extract whole-disc Shift-JIS candidates and allocate text-safe proxies
+        run: |
+          set -euxo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          from collections import Counter
+          import csv,json,hashlib
+          t2=Path('/tmp/game/t2.bin').read_bytes();base=t2.find(b'PC-FX:Hu_CD-ROM')-16;assert base==0x81330
+          sectors=(len(t2)-base)//2352; logical=bytearray(sectors*2048)
+          for s in range(sectors):
+              ro=base+s*2352; logical[s*2048:(s+1)*2048]=t2[ro+16:ro+2064]
+          logical=bytes(logical); assert logical.startswith(b'PC-FX:Hu_CD-ROM')
+          def pair_ok(a,b):return ((0x81<=a<=0x9F) or (0xE0<=a<=0xEF)) and ((0x40<=b<=0x7E) or (0x80<=b<=0xFC))
+          def jpchar(ch):
+              o=ord(ch);return (0x3040<=o<=0x30FF) or (0x3400<=o<=0x9FFF) or (0xFF00<=o<=0xFFEF)
+          rows=[];used=set();i=0;N=len(logical)
+          while i<N-1:
+              if not pair_ok(logical[i],logical[i+1]):i+=1;continue
+              start=i;pos=i;toks=[];pairs=[];jp=0
+              while pos<N:
+                  if pos+1<N and pair_ok(logical[pos],logical[pos+1]):
+                      q=logical[pos:pos+2]
+                      try:ch=q.decode('shift_jis')
+                      except UnicodeDecodeError:break
+                      toks.append(q);pairs.append((q[0]<<8)|q[1]);jp+=int(any(jpchar(c) for c in ch));pos+=2;continue
+                  b=logical[pos]
+                  if b in (0x20,0x21,0x2C,0x2E,0x3A,0x3B,0x3F):toks.append(bytes([b]));pos+=1;continue
+                  break
+              raw=b''.join(toks)
+              if jp>=2 and len(raw)>=4:
+                  try:txt=raw.decode('shift_jis')
+                  except UnicodeDecodeError:txt=''
+                  if txt and not any(ord(c)<0x20 for c in txt):
+                      sec=start//2048;ins=start%2048;ro=base+sec*2352+16+ins
+                      rows.append((start,ro,sec,ins,len(raw),txt));used.update(pairs)
+              i=max(pos,start+1)
+          with open('/tmp/pkg/TEXT_INVENTORY.csv','w',encoding='utf-8-sig',newline='') as f:
+              w=csv.writer(f);w.writerow(['id','logical_offset','track2_raw_offset','sector','in_payload','byte_len','jp_text'])
+              for n,r in enumerate(rows,1):w.writerow([n,f'0x{r[0]:X}',f'0x{r[1]:X}',r[2],f'0x{r[3]:X}',r[4],r[5]])
+          cnt=Counter(r[5] for r in rows)
+          with open('/tmp/pkg/TEXT_UNIQUE.csv','w',encoding='utf-8-sig',newline='') as f:
+              w=csv.writer(f);w.writerow(['jp_text','occurrences']);w.writerows(sorted(cnt.items(),key=lambda x:(-x[1],x[0])))
+          chars=['저','장','하','기','불','러','오','선','택','으','로','타','이','틀','화','면','종','료','큐','티','니','변','신']
+          pool=[]
+          for lead in [0x87,0xEB,0xEC,0xED,0xEE,0xEF]:
+              for tr in list(range(0x40,0x7F))+list(range(0x80,0xFD)):
+                  c=(lead<<8)|tr
+                  if c not in used:pool.append(c)
+                  if len(pool)>=len(chars):break
+              if len(pool)>=len(chars):break
+          assert len(pool)>=len(chars),(len(pool),len(used))
+          m=dict(zip(chars,pool[:len(chars)]))
+          assert all(v not in used for v in m.values())
+          Path('/tmp/build/proxies.json').write_text(json.dumps(m,ensure_ascii=False,indent=2),encoding='utf-8')
+          Path('/tmp/pkg/HANGUL_PROXY_MAP.json').write_text(json.dumps({k:f'0x{v:04X}' for k,v in m.items()},ensure_ascii=False,indent=2),encoding='utf-8')
+          known=['選択に戻る','タイトル画面に戻る','ＥＸＩＴ','セーブする','ロードする','如月ハニー','キューティーハニーに変身！']
+          summary={'track2_sha1':hashlib.sha1(t2).hexdigest(),'data_raw_base':f'0x{base:X}','sectors':sectors,'logical_bytes':len(logical),'candidate_occurrences':len(rows),'candidate_unique':len(cnt),'known_counts':{x:logical.count(x.encode('shift_jis')) for x in known},'text_used_sjis_pairs':len(used),'allocated_proxy_count':len(m)}
+          Path('/tmp/pkg/TEXT_EXTRACTION_SUMMARY.json').write_text(json.dumps(summary,ensure_ascii=False,indent=2),encoding='utf-8');Path('/tmp/build/logical.bin').write_bytes(logical)
+          print(json.dumps(summary,ensure_ascii=False,indent=2))
+          PY
+      - name: Build Korean ROMFONT hook
+        run: |
+          set -euxo pipefail
+          python3 - <<'PY'
+          from PIL import Image,ImageDraw,ImageFont
+          from pathlib import Path
+          import json
+          m=json.loads(Path('/tmp/build/proxies.json').read_text(encoding='utf-8'));chars=list(m);font='/usr/share/fonts/truetype/nanum/NanumGothicBold.ttf'
+          def ras(ch,n,fs):
+              im=Image.new('1',(n,n),0);d=ImageDraw.Draw(im);f=ImageFont.truetype(font,fs);b=d.textbbox((0,0),ch,font=f);d.text(((n-(b[2]-b[0]))//2-b[0],(n-(b[3]-b[1]))//2-b[1]),ch,font=f,fill=1);return im
+          def p16(im):
+              o=[]
+              for y in range(16):
+                  r=0
+                  for x in range(16):
+                      if im.getpixel((x,y)):r|=1<<(15-x)
+                  o += [r>>8,r&255]
+              return o
+          def p12(im):
+              rr=[]
+              for y in range(12):
+                  r=0
+                  for x in range(12):
+                      if im.getpixel((x,y)):r|=1<<(11-x)
+                  rr.append(r)
+              o=[]
+              for i in range(0,12,2):a,b=rr[i],rr[i+1];o += [a>>4,((a&15)<<4)|((b>>8)&15),b&255]
+              return o
+          a16=[p16(ras(c,16,15)) for c in chars];a12=[p12(ras(c,12,12)) for c in chars]
+          def arr(n,a,w):return 'static const u8 %s[%d][%d] __attribute__((aligned(4)))={\n%s\n};'%(n,len(a),w,'\n'.join(' {'+','.join('0x%02X'%x for x in z)+'},' for z in a))
+          cond=[]
+          for i,ch in enumerate(chars):
+              c=int(m[ch]);sw=((c&255)<<8)|(c>>8);cond.append(('if' if i==0 else 'else if')+f'(sjis==0x{c:04X}u||sjis==0x{sw:04X}u)idx={i}u;')
+          src='typedef unsigned int u32;typedef unsigned char u8;\n'+arr('g16',a16,32)+'\n'+arr('g12',a12,18)+'\n__attribute__((noinline,section(".text.hook"))) u8* hook(u32 sjis,u32 type){unsigned idx=999u;\n'+'\n'.join(cond)+f'\nif(idx<{len(chars)}u){{if(type==0u)return (u8*)g16[idx];if(type==1u)return (u8*)g12[idx];}}return ((u8*(*)(u32,u32))0xFFF0000Cu)(sjis,type);}}\n'
+          Path('/tmp/build/hook.c').write_text(src,encoding='utf-8')
+          sheet=Image.new('1',(160,((len(chars)+7)//8)*20),0)
+          for i,c in enumerate(chars):sheet.paste(ras(c,16,15),((i%8)*20+2,(i//8)*20+2))
+          sheet.resize((480,sheet.height*3)).save('/tmp/pkg/GLYPH_PREVIEW.png')
+          PY
+          v810-gcc -Os -ffreestanding -fno-builtin -fno-jump-tables -c /tmp/build/hook.c -o /tmp/build/hook.o
+          cat >/tmp/build/hook.ld <<'EOF'
+          ENTRY(_hook)
+          SECTIONS { . = 0x6C800; .text : { *(.text.hook) *(.text*) } .rodata : { *(.rodata*) } .data : { *(.data*) } .bss : { *(.bss*) *(COMMON) } }
+          EOF
+          v810-ld -T /tmp/build/hook.ld -o /tmp/build/hook.elf /tmp/build/hook.o;v810-nm -n /tmp/build/hook.elf > /tmp/build/hook.nm;v810-objcopy -O binary /tmp/build/hook.elf /tmp/build/hook.bin
+          SZ=$(stat -c%s /tmp/build/hook.bin);test "$SZ" -gt 0;test "$SZ" -lt 8192;test $((0x6C800+SZ)) -le $((0x80000));echo HOOK_SIZE=$SZ > /tmp/pkg/HOOK_INFO.txt
+      - name: Patch system UI and first story text
+        run: |
+          set -euxo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import json,struct,hashlib,csv
+          t2=Path('/tmp/game/t2.bin').read_bytes();L=bytearray(Path('/tmp/build/logical.bin').read_bytes());hook=Path('/tmp/build/hook.bin').read_bytes();m=json.loads(Path('/tmp/build/proxies.json').read_text(encoding='utf-8'));base=0x81330;first=2;load=0x8000
+          def enc(s):
+              o=bytearray()
+              for ch in s:
+                  if ch in m:c=int(m[ch]);o+=bytes([c>>8,c&255])
+                  elif ch==' ':o+=bytes.fromhex('81 40')
+                  elif ch=='！':o+=bytes.fromhex('81 49')
+                  else:raise ValueError(ch)
+              return bytes(o)
+          progress=[]
+          for addr,jp,kr in [(0x18222,'選択に戻る','선택으로'),(0x18233,'タイトル画面に戻る','타이틀 화면으로'),(0x1824D,'ＥＸＩＴ','종료'),(0x1825C,'セーブする','저장하기'),(0x1826D,'ロードする','불러오기')]:
+              off=first*2048+addr-load;old=jp.encode('shift_jis');new=enc(kr);assert L[off:off+len(old)]==old;(pad:=len(old)-len(new));assert pad>=0 and pad%2==0;new+=bytes.fromhex('81 40')*(pad//2);L[off:off+len(old)]=new;progress.append((jp,kr,1,f'RAM 0x{addr:X}'))
+          jp='キューティーハニーに変身！';kr='큐티하니로 변신！';old=jp.encode('shift_jis');new=enc(kr);pad=len(old)-len(new);assert pad>=0 and pad%2==0;new+=bytes.fromhex('81 40')*(pad//2)
+          hits=[];p=0
+          while True:
+              q=L.find(old,p)
+              if q<0:break
+              hits.append(q);L[q:q+len(old)]=new;p=q+len(old)
+          assert len(hits)==2,hits;progress.append((jp,kr,2,';'.join(f'LOGICAL 0x{x:X}' for x in hits)))
+          # Original boot, safe hook slack and ROMFONT JAL redirects.
+          def pay(n):return t2[base+n*2352+16:base+n*2352+2064]
+          boot0=b''.join(pay(n) for n in range(2,242));hoff=0x6C800-load;assert all(x==0 for x in boot0[hoff:hoff+len(hook)]);L[first*2048+hoff:first*2048+hoff+len(hook)]=hook
+          def jal(pc,t):d=(t-pc)&0x03FFFFFF;return struct.pack('<HH',0xAC00|((d>>16)&0x3FF),d&0xFFFF)
+          for pc,oldj in [(0x34944,bytes.fromhex('EC AF C8 B6')),(0x34B46,bytes.fromhex('EC AF C6 B4'))]:bo=pc-load;assert boot0[bo:bo+4]==oldj;L[first*2048+bo:first*2048+bo+4]=jal(pc,0x6C800)
+          ed=[0]*256;ef=[0]*256;eb=[0]*256
+          for i in range(256):
+              e=i;j=i<<1
+              if j&0x100:j^=0x11D
+              ef[i]=j;eb[i^j]=i
+              for _ in range(8):e=(e>>1)^(0xD8018001 if e&1 else 0)
+              ed[i]=e&0xffffffff
+          def E(src):
+              e=0
+              for b in src:e=(e>>8)^ed[(e^b)&255]
+              return e&0xffffffff
+          def C(src,ma,mi,mul,inc):
+              size=ma*mi;o=bytearray(ma*2)
+              for M in range(ma):
+                  idx=(M>>1)*mul+(M&1);a=b=0
+                  for _ in range(mi):x=src[idx];idx=(idx+inc)%size;a^=x;b^=x;a=ef[a]
+                  a=eb[ef[a]^b];o[M]=a;o[M+ma]=a^b
+              return o
+          def fix(s):s[0x810:0x814]=struct.pack('<I',E(s[:0x810]));s[0x814:0x81c]=b'\0'*8;s[0x81c:0x8c8]=C(s[0x0c:0x81c],86,24,2,86);s[0x8c8:0x930]=C(s[0x0c:0x8c8],52,43,86,88);return s
+          sectors=(len(t2)-base)//2352;rec=[];patched=bytearray(t2)
+          for s in range(sectors):
+              ro=base+s*2352;n=L[s*2048:(s+1)*2048]
+              if n!=t2[ro+16:ro+2064]:sec=bytearray(t2[ro:ro+2352]);assert sec[15]==1;sec[16:2064]=n;sec=fix(sec);patched[ro:ro+2352]=sec;rec.append((ro,bytes(sec)))
+          blob=bytearray(b'KR10')+struct.pack('<I',len(rec))
+          for ro,s in rec:blob+=struct.pack('<Q',ro)+s
+          Path('/tmp/pkg/records.bin').write_bytes(blob)
+          info={'version':'KR ALPHA v0.10','parent_track2_sha1':hashlib.sha1(t2).hexdigest(),'output_track2_sha256':hashlib.sha256(patched).hexdigest(),'hook_addr':'0x6C800','hook_size':len(hook),'changed_raw_sectors':len(rec),'story_transform_occurrences':len(hits),'translations':progress}
+          Path('/tmp/pkg/BUILD_INFO.json').write_text(json.dumps(info,ensure_ascii=False,indent=2),encoding='utf-8')
+          with open('/tmp/pkg/TRANSLATION_PROGRESS.csv','w',encoding='utf-8-sig',newline='') as f:w=csv.writer(f);w.writerow(['jp','kr','occurrences','location']);w.writerows(progress)
+          Path('/tmp/pkg/STATIC_AUDIT.txt').write_text(f'Cutey Honey FX KR ALPHA v0.10\nParent CLEAN PASS\nPOC02 renderer hook retained\nChanged raw sectors: {len(rec)}\nStory transform hits: {len(hits)}\nEDC/ECC regenerated\nSTATUS: STATIC BUILD PASS / PRE-HW\n',encoding='utf-8')
+          print(json.dumps(info,ensure_ascii=False,indent=2))
+          PY
+      - name: Build Windows self-contained patcher
+        run: |
+          set -euxo pipefail
+          mkdir -p /tmp/go;cp /tmp/pkg/records.bin /tmp/go/records.bin
+          cat >/tmp/go/go.mod <<'EOF'
+          module cutey-alpha
+          go 1.20
+          EOF
+          cat >/tmp/go/main.go <<'EOF'
+          package main
+          import("bufio";"crypto/sha1";_ "embed";"encoding/binary";"encoding/hex";"fmt";"io";"os";"path/filepath";"strings")
+          //go:embed records.bin
+          var rec []byte
+          const t1n int64=9807840;const t2n int64=656549040;const h1="ffae85763f581d312abb6b5096f6f7d62e771aae";const h2="1dd574364e40cb90dd0ff25940fe8df9e6793edf"
+          func pause(){fmt.Print("\nPress Enter to close...");bufio.NewReader(os.Stdin).ReadString('\n')};func hs(p string)string{f,e:=os.Open(p);if e!=nil{return ""};defer f.Close();h:=sha1.New();io.Copy(h,f);return hex.EncodeToString(h.Sum(nil))};func pick(d string,n int64,skip string)[]string{es,_:=os.ReadDir(d);r:=[]string{};for _,x:=range es{if x.IsDir()||!strings.EqualFold(filepath.Ext(x.Name()),".bin"){continue};p:=filepath.Join(d,x.Name());if skip!=""&&strings.EqualFold(p,skip){continue};q,_:=x.Info();if q!=nil&&q.Size()==n{r=append(r,p)}};return r}
+          func main(){fmt.Println("Cutey Honey FX KR ALPHA v0.10");fmt.Println("================================");ex,_:=os.Executable();d:=filepath.Dir(ex);a:=pick(d,t2n,"");if len(a)!=1{fmt.Println("[ERROR] Put only CLEAN Track 1/2 BINs and this EXE in a new folder.");pause();return};t2:=a[0];fmt.Println("[1/5] Track 2 SHA-1...");if hs(t2)!=h2{fmt.Println("[ERROR] CLEAN Track 2 mismatch");pause();return};fmt.Println("[PASS]");a=pick(d,t1n,t2);if len(a)!=1{fmt.Println("[ERROR] Track 1 not uniquely found");pause();return};t1:=a[0];fmt.Println("[2/5] Track 1 SHA-1...");if hs(t1)!=h1{fmt.Println("[ERROR] CLEAN Track 1 mismatch");pause();return};fmt.Println("[PASS]");dst:=filepath.Join(d,"Cutey Honey FX (Japan) (Track 2) [KR ALPHA v0.10].bin");i,_:=os.Open(t2);o,e:=os.Create(dst);if e!=nil{fmt.Println(e);pause();return};fmt.Println("[3/5] Copying Track 2...");io.Copy(o,i);i.Close();if len(rec)<8||string(rec[:4])!="KR10"{o.Close();fmt.Println("[ERROR] Internal patch");pause();return};n:=binary.LittleEndian.Uint32(rec[4:8]);p:=8;fmt.Printf("[4/5] Applying %d MODE1 sectors...\n",n);for z:=uint32(0);z<n;z++{off:=binary.LittleEndian.Uint64(rec[p:p+8]);p+=8;o.Seek(int64(off),0);o.Write(rec[p:p+2352]);p+=2352};o.Close();cue:=fmt.Sprintf("FILE \"%s\" BINARY\r\n  TRACK 01 AUDIO\r\n    INDEX 01 00:00:00\r\nFILE \"%s\" BINARY\r\n  TRACK 02 MODE1/2352\r\n    INDEX 00 00:00:00\r\n    INDEX 01 00:03:00\r\n",filepath.Base(t1),filepath.Base(dst));cp:=filepath.Join(d,"Cutey Honey FX (Japan) [KR ALPHA v0.10].cue");os.WriteFile(cp,[]byte(cue),0644);fmt.Println("[5/5] [PASS] Created:",cp);fmt.Println("Korean targets: 선택으로 / 타이틀 화면으로 / 종료 / 저장하기 / 불러오기 / 큐티하니로 변신!");fmt.Println("ALPHA v0.10 = PRE-HW until tested.");pause()}
+          EOF
+          cd /tmp/go;GOOS=windows GOARCH=amd64 CGO_ENABLED=0 go build -trimpath -ldflags='-s -w' -o /tmp/pkg/CuteyHoneyFX_KR_ALPHA_v0.10_Patcher.exe .
+          cat >/tmp/pkg/README_KO.txt <<'EOF'
+          큐티하니 FX KR ALPHA v0.10
+          ===========================
+          부모롬: Redump 일본판 분리 Track 1 + Track 2
+
+          반영 항목:
+          選択に戻る -> 선택으로
+          タイトル画面に戻る -> 타이틀 화면으로
+          ＥＸＩＴ -> 종료
+          セーブする -> 저장하기
+          ロードする -> 불러오기
+          キューティーハニーに変身！ -> 큐티하니로 변신！ (2개 원본 위치)
+
+          CLEAN Track 1/2와 EXE만 새 폴더에 두고 EXE를 실행한 뒤 생성된 KR ALPHA v0.10 CUE로 실행하세요.
+          TEXT_INVENTORY.csv = Track 2 전체 Shift-JIS 후보 전수 추출 목록.
+          POC01 / POC02 = HW PASS LOCK. 이 ALPHA = STATIC BUILD PASS / PRE-HW.
+          EOF
+          (cd /tmp/pkg && sha256sum * > SHA256SUMS.txt && zip -9 -r /tmp/CuteyHoneyFX_KR_ALPHA_v0.10.zip . >/dev/null)
+      - name: Upload package
+        uses: actions/upload-artifact@v4
+        with:
+          name: CuteyHoneyFX_KR_ALPHA_v0.10
+          path: /tmp/CuteyHoneyFX_KR_ALPHA_v0.10.zip
+          compression-level: 0
+      - name: Commit compact analysis
+        run: |
+          cp /tmp/pkg/TEXT_EXTRACTION_SUMMARY.json analysis/cutey_full/TEXT_EXTRACTION_SUMMARY_v010.json;cp /tmp/pkg/BUILD_INFO.json analysis/cutey_full/BUILD_INFO_v010.json
+          git config user.name 'Cutey Full KR Builder';git config user.email 'actions@users.noreply.github.com';git add analysis/cutey_full;git diff --cached --quiet || git commit -m 'analysis: Cutey full KR alpha v0.10 [skip ci]';git push origin HEAD:tmp-cutey-poc01
