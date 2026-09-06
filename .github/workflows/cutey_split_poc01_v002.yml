@@ -1,0 +1,304 @@
+name: Build Cutey Honey FX Split Track POC01 v0.02 Mirror Fix
+permissions:
+  contents: write
+on:
+  push:
+    branches: [tmp-cutey-poc01]
+    paths:
+      - '.github/workflows/cutey_split_poc01_v002.yml'
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: tmp-cutey-poc01
+
+      - name: Install host tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq unzip zip curl git make gcc fonts-nanum python3-pil golang-go
+
+      - name: Install V810 PC-FX toolchain
+        shell: bash
+        run: |
+          set -euxo pipefail
+          curl -L --retry 3 --fail -o /tmp/v810.zip https://github.com/jbrandwood/v810-gcc/releases/download/latest/v810-gcc-Linux-x86_64.zip
+          mkdir -p /tmp/v810
+          unzip -q /tmp/v810.zip -d /tmp/v810
+          GCCBIN=$(find /tmp/v810 -type f -name v810-gcc | head -1)
+          test -n "$GCCBIN"
+          V810GCC=$(dirname "$(dirname "$GCCBIN")")
+          echo "V810GCC=$V810GCC" >> "$GITHUB_ENV"
+          echo "$V810GCC/bin" >> "$GITHUB_PATH"
+          export V810GCC PATH="$V810GCC/bin:$PATH"
+          git clone -q https://github.com/jbrandwood/pcfxtools.git /tmp/pcfxtools
+          make -C /tmp/pcfxtools -j2
+          cp /tmp/pcfxtools/pcfx-cdlink /tmp/pcfxtools/bincat "$V810GCC/bin/"
+          git clone -q https://github.com/jbrandwood/liberis.git /tmp/liberis
+          make -C /tmp/liberis -j2
+          make -C /tmp/liberis install
+
+      - name: Generate mirror-compensated bitmap
+        shell: bash
+        run: |
+          set -euxo pipefail
+          python3 - <<'PY'
+          from PIL import Image, ImageDraw, ImageFont
+          import os
+          W,H=256,96
+          normal=Image.new('1',(W,H),0)
+          d=ImageDraw.Draw(normal)
+          fonts=[
+            '/usr/share/fonts/truetype/nanum/NanumGothicBold.ttf',
+            '/usr/share/fonts/truetype/nanum/NanumGothic.ttf',
+            '/usr/share/fonts/truetype/nanum/NanumBarunGothic.ttf']
+          fp=next(p for p in fonts if os.path.exists(p))
+          def put(text,y,size):
+            f=ImageFont.truetype(fp,size)
+            b=d.textbbox((0,0),text,font=f)
+            d.text(((W-(b[2]-b[0]))//2,y),text,font=f,fill=1)
+          put('한글 출력 성공',6,26)
+          put('CUTIE HONEY FX',44,16)
+          put('KR POC01 v0.02',66,16)
+          normal.resize((512,192)).save('/tmp/poc_preview_expected.png')
+
+          # HW/emu result from v0.01 proved the full 256px BG is mirrored horizontally.
+          # Pre-mirror the source so the displayed result becomes normal.
+          packed=normal.transpose(Image.Transpose.FLIP_LEFT_RIGHT)
+          words=[]
+          for y in range(H):
+            for bx in range(32):
+              v=0
+              for x in range(8):
+                if packed.getpixel((bx*8+x,y)):
+                  v |= 1 << (x*2)
+              words.append(v)
+          out=[
+            '#include <eris/types.h>',
+            '#include <eris/king.h>',
+            '#include <eris/tetsu.h>',
+            'static const u16 screen_words[%d] = {'%len(words)]
+          for i in range(0,len(words),16):
+            out.append(','.join('0x%04X'%v for v in words[i:i+16])+',')
+          out.append('};')
+          out.append(r'''
+          int main(int argc, char **argv) {
+            int i,y,x;
+            u16 microprog[16];
+            eris_king_init();
+            eris_tetsu_init();
+            eris_tetsu_set_priorities(0,0,1,0,0,0,0);
+            eris_tetsu_set_king_palette(0,0,0,0);
+            eris_tetsu_set_rainbow_palette(0);
+            eris_king_set_bg_prio(KING_BGPRIO_3,KING_BGPRIO_HIDE,KING_BGPRIO_HIDE,KING_BGPRIO_HIDE,0);
+            eris_king_set_bg_mode(KING_BGMODE_4_PAL,0,0,0);
+            eris_king_set_kram_pages(0,0,0,0);
+            for(i=0;i<16;i++) microprog[i]=KING_CODE_NOP;
+            microprog[0]=KING_CODE_BG0_CG_0;
+            eris_king_disable_microprogram();
+            eris_king_write_microprogram(microprog,0,16);
+            eris_king_enable_microprogram();
+            eris_tetsu_set_palette(0,0x0000);
+            eris_tetsu_set_palette(1,0xE0F0);
+            eris_tetsu_set_palette(2,0xE088);
+            eris_tetsu_set_palette(3,0xFFFF);
+            eris_tetsu_set_video_mode(TETSU_LINES_262,0,TETSU_DOTCLOCK_5MHz,TETSU_COLORS_16,TETSU_COLORS_16,0,0,1,0,0,0,0);
+            eris_king_set_bat_cg_addr(KING_BG0,0,0);
+            eris_king_set_bat_cg_addr(KING_BG0SUB,0,0);
+            eris_king_set_scroll(KING_BG0,0,0);
+            eris_king_set_bg_size(KING_BG0,KING_BGSIZE_256,KING_BGSIZE_256,KING_BGSIZE_256,KING_BGSIZE_256);
+            eris_king_set_kram_write(0,1);
+            for(i=0;i<0x2000;i++) eris_king_kram_write(0);
+            for(y=0;y<96;y++) {
+              eris_king_set_kram_write((64+y)<<5,1);
+              for(x=0;x<32;x++) eris_king_kram_write(screen_words[y*32+x]);
+            }
+            for(;;) { }
+            return 0;
+          }
+          ''')
+          open('/tmp/liberis/examples/hello/hello.c','w',encoding='utf-8').write('\n'.join(out))
+          print('FONT',fp,'WORDS',len(words),'MIRROR_COMPENSATION=ON')
+          PY
+          cat >/tmp/liberis/examples/hello/cdlink.txt <<'EOF'
+          binary ./out.bin
+          name Cutey Honey FX KR POC01 v002
+          maker KR POC by Kedori
+          makerid KRP
+          date 20260907
+          country 1
+          version 258
+          EOF
+
+      - name: Compile V810 boot program
+        shell: bash
+        run: |
+          set -euxo pipefail
+          export PATH="$V810GCC/bin:$PATH"
+          make -C /tmp/liberis/examples/hello clean
+          make -C /tmp/liberis/examples/hello -j2 all
+          make -C /tmp/liberis/examples/hello cd
+          test -s /tmp/liberis/examples/hello/hello_cd.bin
+          sha256sum /tmp/liberis/examples/hello/hello.bin /tmp/liberis/examples/hello/hello_cd.bin
+
+      - name: Rebuild six raw MODE1 sectors
+        shell: bash
+        run: |
+          set -euxo pipefail
+          rm -rf /tmp/base /tmp/pkg /tmp/go-patcher
+          mkdir -p /tmp/base /tmp/pkg /tmp/go-patcher artifacts
+          unzip -q artifacts/CuteyHoneyFX_KR_POC01_v0.01.zip -d /tmp/base
+          python3 - <<'PY'
+          import pathlib,struct,hashlib
+          old=pathlib.Path('/tmp/base/poc01_raw_sectors.bin').read_bytes()
+          hb=pathlib.Path('/tmp/liberis/examples/hello/hello_cd.bin').read_bytes()
+          assert len(old)==6*2352
+          sect_off,sect_count,load,entry=struct.unpack_from('<IIII',hb,0x820)
+          used=sect_off+sect_count
+          assert sect_off==2 and used==6 and load==0x8000 and entry==0x8000
+          assert len(hb)>=used*2048
+
+          edc_lut=[0]*256; ef=[0]*256; eb=[0]*256
+          for i in range(256):
+            edc=i; j=i<<1
+            if j&0x100: j^=0x11D
+            ef[i]=j; eb[i^j]=i
+            for _ in range(8): edc=(edc>>1) ^ (0xD8018001 if edc&1 else 0)
+            edc_lut[i]=edc&0xffffffff
+          def edc_compute(src):
+            edc=0
+            for b in src: edc=(edc>>8)^edc_lut[(edc^b)&255]
+            return edc&0xffffffff
+          def ecc_compute(src,major_count,minor_count,major_mult,minor_inc):
+            size=major_count*minor_count
+            out=bytearray(major_count*2)
+            for major in range(major_count):
+              idx=(major>>1)*major_mult+(major&1); a=b=0
+              for _ in range(minor_count):
+                temp=src[idx]; idx+=minor_inc
+                if idx>=size: idx-=size
+                a^=temp; b^=temp; a=ef[a]
+              a=eb[ef[a]^b]
+              out[major]=a; out[major+major_count]=a^b
+            return out
+          def fix_mode1(sec):
+            assert len(sec)==2352 and sec[15]==1
+            sec[0x810:0x814]=struct.pack('<I',edc_compute(sec[:0x810]))
+            sec[0x814:0x81c]=b'\0'*8
+            sec[0x81c:0x8c8]=ecc_compute(sec[0x0c:0x0c+2064],86,24,2,86)
+            sec[0x8c8:0x930]=ecc_compute(sec[0x0c:0x0c+2236],52,43,86,88)
+            return sec
+          new=bytearray()
+          for k in range(used):
+            sec=bytearray(old[k*2352:(k+1)*2352])
+            sec[16:2064]=hb[k*2048:(k+1)*2048]
+            new += fix_mode1(sec)
+          p=pathlib.Path('/tmp/pkg/poc01_v002_raw_sectors.bin')
+          p.write_bytes(new)
+          print('RAW_PATCH_SHA256',hashlib.sha256(new).hexdigest())
+          print('PATCH_BYTES',len(new),'BOOT_SECTORS',used)
+          PY
+
+      - name: Build self-contained split-track Windows patcher
+        shell: bash
+        run: |
+          set -euxo pipefail
+          cp /tmp/pkg/poc01_v002_raw_sectors.bin /tmp/go-patcher/
+          cat >/tmp/go-patcher/go.mod <<'EOF'
+          module cutey-split-poc01-v002
+          go 1.20
+          EOF
+          cat >/tmp/go-patcher/main.go <<'EOF'
+          package main
+          import (
+            "bufio"
+            "bytes"
+            "crypto/sha1"
+            _ "embed"
+            "encoding/hex"
+            "fmt"
+            "io"
+            "os"
+            "path/filepath"
+            "strings"
+          )
+          //go:embed poc01_v002_raw_sectors.bin
+          var patch []byte
+          const track1Size int64 = 9807840
+          const track2Size int64 = 656549040
+          const track1SHA1 = "ffae85763f581d312abb6b5096f6f7d62e771aae"
+          const track2SHA1 = "1dd574364e40cb90dd0ff25940fe8df9e6793edf"
+          const patchOffset int64 = 0x00081330
+          const payloadOffset int64 = 0x00081340
+          const magic = "PC-FX:Hu_CD-ROM"
+          func pause(){ fmt.Print("\nPress Enter to close..."); _,_=bufio.NewReader(os.Stdin).ReadString('\n') }
+          func hashSHA1(path string)(string,error){ f,e:=os.Open(path); if e!=nil{return "",e}; defer f.Close(); h:=sha1.New(); _,e=io.Copy(h,f); if e!=nil{return "",e}; return hex.EncodeToString(h.Sum(nil)),nil }
+          func findBySize(dir string,want int64,skip string)([]string,error){ ents,e:=os.ReadDir(dir); if e!=nil{return nil,e}; var out []string; for _,x:=range ents { if x.IsDir(){continue}; p:=filepath.Join(dir,x.Name()); if skip!=""&&strings.EqualFold(p,skip){continue}; if !strings.EqualFold(filepath.Ext(x.Name()),".bin"){continue}; st,e:=x.Info(); if e==nil&&st.Size()==want{out=append(out,p)} }; return out,nil }
+          func main(){
+            fmt.Println("Cutey Honey FX KR POC01 v0.02 - split-track MIRROR FIX")
+            fmt.Println("===========================================================")
+            exe,_:=os.Executable(); exeDir:=filepath.Dir(exe); var t2 string
+            if len(os.Args)>=2 { t2=strings.Trim(os.Args[1],"\""); if st,e:=os.Stat(t2); e==nil&&st.IsDir(){ c,_:=findBySize(t2,track2Size,""); if len(c)==1{t2=c[0]} } } else { c,_:=findBySize(exeDir,track2Size,""); if len(c)==1{t2=c[0]} }
+            if t2=="" { fmt.Println("[ERROR] Track 2 BIN not uniquely found."); pause(); return }
+            t2,_=filepath.Abs(t2); st,e:=os.Stat(t2); if e!=nil||st.Size()!=track2Size { fmt.Println("[ERROR] Track 2 size mismatch."); pause(); return }
+            fmt.Println("[1/6] Verifying Track 2 CLEAN SHA-1..."); s2,e:=hashSHA1(t2); if e!=nil||s2!=track2SHA1 { fmt.Println("[ERROR] Track 2 CLEAN mismatch"); fmt.Println("Found:",s2); fmt.Println("Expected:",track2SHA1); pause(); return }; fmt.Println("[PASS] Track 2 CLEAN")
+            f,e:=os.Open(t2); if e!=nil{fmt.Println("[ERROR]",e);pause();return}; f.Seek(payloadOffset,io.SeekStart); mb:=make([]byte,len(magic)); _,e=io.ReadFull(f,mb); f.Close(); if e!=nil||string(mb)!=magic { fmt.Println("[ERROR] PC-FX boot magic mismatch"); pause(); return }; fmt.Println("[2/6] PC-FX boot header verified")
+            dir:=filepath.Dir(t2); c,_:=findBySize(dir,track1Size,t2); if len(c)!=1 { fmt.Println("[ERROR] Track 1 BIN not uniquely found."); pause(); return }; t1:=c[0]
+            fmt.Println("[3/6] Verifying Track 1 CLEAN SHA-1..."); s1,e:=hashSHA1(t1); if e!=nil||s1!=track1SHA1 { fmt.Println("[ERROR] Track 1 CLEAN mismatch"); fmt.Println("Found:",s1); fmt.Println("Expected:",track1SHA1); pause(); return }; fmt.Println("[PASS] Track 1 CLEAN")
+            outName:="Cutey Honey FX (Japan) (Track 2) [KR POC01 v0.02].bin"; dst:=filepath.Join(dir,outName)
+            fmt.Println("[4/6] Copying Track 2..."); in,e:=os.Open(t2); if e!=nil{fmt.Println("[ERROR]",e);pause();return}; out,e:=os.Create(dst); if e!=nil{in.Close();fmt.Println("[ERROR]",e);pause();return}; _,e=io.Copy(out,in); in.Close(); if e!=nil{out.Close();fmt.Println("[ERROR]",e);pause();return}
+            fmt.Printf("[5/6] Writing mirror-fixed %d bytes at 0x%X...\n",len(patch),patchOffset); _,e=out.Seek(patchOffset,io.SeekStart); if e==nil{_,e=out.Write(patch)}; out.Close(); if e!=nil{fmt.Println("[ERROR]",e);pause();return}
+            vf,e:=os.Open(dst); if e!=nil{fmt.Println("[ERROR]",e);pause();return}; vf.Seek(patchOffset,io.SeekStart); chk:=make([]byte,len(patch)); _,e=io.ReadFull(vf,chk); vf.Close(); if e!=nil||!bytes.Equal(chk,patch){fmt.Println("[ERROR] Patch readback failed");pause();return}
+            cueName:="Cutey Honey FX (Japan) [KR POC01 v0.02].cue"; cuePath:=filepath.Join(dir,cueName); cue:=fmt.Sprintf("FILE \"%s\" BINARY\r\n  TRACK 01 AUDIO\r\n    INDEX 01 00:00:00\r\nFILE \"%s\" BINARY\r\n  TRACK 02 MODE1/2352\r\n    INDEX 00 00:00:00\r\n    INDEX 01 00:03:00\r\n",filepath.Base(t1),outName); e=os.WriteFile(cuePath,[]byte(cue),0644); if e!=nil{fmt.Println("[ERROR]",e);pause();return}
+            fmt.Println("[6/6] Readback verified")
+            fmt.Println("\n[PASS] POC01 v0.02 MIRROR FIX created.")
+            fmt.Println("Boot this CUE:",cuePath)
+            pause()
+          }
+          EOF
+          cd /tmp/go-patcher
+          GOOS=windows GOARCH=amd64 CGO_ENABLED=0 go build -trimpath -ldflags='-s -w' -o /tmp/pkg/POC01_v002_MirrorFix_Patcher.exe .
+          test -s /tmp/pkg/POC01_v002_MirrorFix_Patcher.exe
+          cp /tmp/poc_preview_expected.png /tmp/pkg/POC01_v002_EXPECTED_NORMAL.png
+          cat >/tmp/pkg/README_KO.txt <<'EOF'
+          큐티하니 FX PC-FX POC01 v0.02 - 좌우반전 수정판
+          =================================================
+          v0.01 실기/에뮬 검수 결과: 커스텀 V810/KING/KRAM 출력은 성공했으나 전체 화면이 좌우 반전됨.
+          v0.02 수정: 256x96 소스 비트맵을 KRAM 삽입 전에 미리 좌우반전하여 실제 표시 결과를 정상 방향으로 보정.
+
+          부모롬 CLEAN 고정:
+          Track 1 SHA-1 ffae85763f581d312abb6b5096f6f7d62e771aae
+          Track 2 SHA-1 1dd574364e40cb90dd0ff25940fe8df9e6793edf
+
+          사용법:
+          1) 원본 Track 1 + Track 2와 POC01_v002_MirrorFix_Patcher.exe를 같은 폴더에 둡니다.
+          2) EXE를 더블클릭합니다.
+          3) 생성된 `Cutey Honey FX (Japan) [KR POC01 v0.02].cue`를 실행합니다.
+
+          정상 목표:
+          한글 출력 성공
+          CUTIE HONEY FX
+          KR POC01 v0.02
+          EOF
+          (cd /tmp/pkg && sha256sum * > SHA256SUMS.txt)
+          rm -f "$GITHUB_WORKSPACE/artifacts/CuteyHoneyFX_KR_POC01_SPLIT_v0.02_MIRRORFIX.zip"
+          (cd /tmp/pkg && zip -9 -r "$GITHUB_WORKSPACE/artifacts/CuteyHoneyFX_KR_POC01_SPLIT_v0.02_MIRRORFIX.zip" .)
+          sha256sum "$GITHUB_WORKSPACE/artifacts/CuteyHoneyFX_KR_POC01_SPLIT_v0.02_MIRRORFIX.zip"
+
+      - name: Upload package
+        uses: actions/upload-artifact@v4
+        with:
+          name: CuteyHoneyFX_KR_POC01_SPLIT_v0.02_MIRRORFIX
+          path: artifacts/CuteyHoneyFX_KR_POC01_SPLIT_v0.02_MIRRORFIX.zip
+          retention-days: 7
+
+      - name: Commit package to temporary branch
+        run: |
+          git config user.name 'Cutey POC Builder'
+          git config user.email 'actions@users.noreply.github.com'
+          git add artifacts/CuteyHoneyFX_KR_POC01_SPLIT_v0.02_MIRRORFIX.zip
+          git commit -m 'artifact: Cutey split POC01 v0.02 mirror fix [skip ci]'
+          git push origin HEAD:tmp-cutey-poc01
