@@ -1,0 +1,129 @@
+Cutey Honey FX POC02 ROMFONT TRACE
+===================================
+canonical_liberis_sequence: mov 0xC,r10 ; movhi 0xFFF0,r10,r10 ; jmp [r10]
+signature=4c414abdf0ff0a18
+exact_signature_hits=0
+
+disasm_fff0_hits=8
+
+--- FFF0 CONTEXT ---
+   1ffe6:	38 5f       	sar	24, r25
+   1ffe8:	5f 54       	shr	31, fp
+   1ffea:	52 43       	mov	-14, r26
+   1ffec:	5f 53       	shl	31, r26
+   1ffee:	00 45       	add	0, r8
+   1fff0:	35 31       	or	r21, r9
+   1fff2:	5f 4d       	cmp	-1, r10
+   1fff4:	30 39       	xor	r16, r9
+   1fff6:	5f 5f       	sar	31, r26
+   1fff8:	54 52       	shl	20, r18
+   1fffa:	43 5f       	sar	3, r26
+   1fffc:	53 00       	mov	r19, fp
+   1fffe:	45 35       	and	tp, r10
+
+--- FFF0 CONTEXT ---
+   2ffe6:	5f 53       	shl	31, r26
+   2ffe8:	00 53       	shl	0, r24
+   2ffea:	49 56       	shr	9, r18
+   2ffec:	52 5f       	sar	18, r26
+   2ffee:	52 4d       	cmp	-14, r10
+   2fff0:	45 4e       	cmp	5, r18
+   2fff2:	5f 32       	or	lp, r18
+   2fff4:	41 5f       	sar	1, r26
+   2fff6:	4d 4f       	cmp	13, r26
+   2fff8:	56 09       	sub	r22, r10
+   2fffa:	00 20       	mul	r0, r0
+   2fffc:	56 35       	and	r22, r10
+   2fffe:	32 31       	or	r18, r9
+
+--- FFF0 CONTEXT ---
+   34936:	fd af d2 36 	jal	0x8008
+   3493a:	a8 02       	mov	r8, r21
+   3493c:	86 02       	mov	r6, r20
+   3493e:	f5 00       	mov	r21, r7
+   34940:	c3 cc 2c 00 	ld.w	44[sp], r6
+   34944:	ec af c8 b6 	jal	0xfff0000c
+   34948:	aa 03       	mov	r10, r29
+   3494a:	34 03       	mov	r20, r25
+   3494c:	a5 4e       	cmp	5, r21
+   3494e:	3e 94       	bne	0x3498c
+   34950:	00 03       	mov	r0, r24
+   34952:	24 8a       	br	0x34976
+   34954:	9d c3 00 00 	ld.b	0[r29], r28
+
+--- FFF0 CONTEXT ---
+   34b36:	a3 df 04 00 	st.w	r29, 4[sp]
+   34b3a:	fd af ce 34 	jal	0x8008
+   34b3e:	e8 02       	mov	r8, r23
+   34b40:	f7 00       	mov	r23, r7
+   34b42:	c3 cc 24 00 	ld.w	36[sp], r6
+   34b46:	ec af c6 b4 	jal	0xfff0000c
+   34b4a:	aa 03       	mov	r10, r29
+   34b4c:	23 cf 20 00 	ld.w	32[sp], r25
+   34b50:	e5 4e       	cmp	5, r23
+   34b52:	3e 94       	bne	0x34b90
+   34b54:	00 03       	mov	r0, r24
+   34b56:	24 8a       	br	0x34b7a
+   34b58:	9d c3 00 00 	ld.b	0[r29], r28
+
+--- FFF0 CONTEXT ---
+   3ffe6:	49 00       	mov	r9, fp
+   3ffe8:	47 41       	mov	7, r10
+   3ffea:	4d 45       	add	13, r10
+   3ffec:	5f 4e       	cmp	-1, r18
+   3ffee:	41 4b       	setf	c/l, r26
+   3fff0:	41 5f       	sar	1, r26
+   3fff2:	30 34       	and	r16, r1
+   3fff4:	5f 56       	shr	31, r18
+   3fff6:	4f 49       	setf	gt, r10
+   3fff8:	00 47       	add	0, r24
+   3fffa:	41 4d       	cmp	1, r10
+   3fffc:	45 5f       	sar	5, r26
+   3fffe:	4e 41       	mov	14, r10
+
+--- FFF0 CONTEXT ---
+   4ffe6:	03 00       	mov	sp, r0
+   4ffe8:	0a 00       	mov	r10, r0
+   4ffea:	00 00       	mov	r0, r0
+   4ffec:	00 00       	mov	r0, r0
+   4ffee:	00 00       	mov	r0, r0
+   4fff0:	8f 13       	shl	r15, r28
+   4fff2:	02 00       	mov	fp, r0
+   4fff4:	eb 34       	and	r11, r7
+   4fff6:	03 00       	mov	sp, r0
+   4fff8:	0a 00       	mov	r10, r0
+   4fffa:	00 00       	mov	r0, r0
+   4fffc:	00 00       	mov	r0, r0
+   4fffe:	00 00       	mov	r0, r0
+
+--- FFF0 CONTEXT ---
+   5ffe6:	00 00       	mov	r0, r0
+   5ffe8:	40 2c       	divu	r0, fp
+   5ffea:	00 00       	mov	r0, r0
+   5ffec:	1d 28       	mulu	r29, r0
+   5ffee:	00 00       	mov	r0, r0
+   5fff0:	b0 64       	reti	
+   5fff2:	00 00       	mov	r0, r0
+   5fff4:	2a 28       	mulu	r10, r1
+   5fff6:	00 00       	mov	r0, r0
+   5fff8:	30 84       	be	0x60028
+   5fffa:	00 00       	mov	r0, r0
+   5fffc:	3b 28       	mulu	r27, r1
+   5fffe:	00 00       	mov	r0, r0
+
+--- FFF0 CONTEXT ---
+   62008:	40 3d       	not	r0, r10
+   6200a:	00 00       	mov	r0, r0
+   6200c:	c4 bc 00 00 	movhi	0, gp, r6
+   62010:	94 d2 00 00 	st.b	r20, 0[r20]
+   62014:	df bc 00 00 	movhi	0, lp, r6
+   62018:	ea ab 00 00 	jr	0xfff02018
+   6201c:	f5 bc 00 00 	movhi	0, r21, r7
+   62020:	00 31       	or	r0, r8
+   62022:	00 00       	mov	r0, r0
+   62024:	fc bc 00 00 	movhi	0, r28, r7
+   62028:	00 42       	mov	0, r16
+   6202a:	00 00       	mov	r0, r0
+   6202c:	05 bd 00 00 	movhi	0, tp, r8
+
+[CANDIDATES vector 0x0C + FFF0]
