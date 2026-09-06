@@ -1,0 +1,36 @@
+name: Cutey Honey FX Fast SJIS Corpus and Safe Proxy
+permissions:
+  contents: write
+on:
+  push:
+    branches: [tmp-cutey-poc01]
+    paths:
+      - '.github/workflows/cutey_sjis_corpus_fast.yml'
+      - 'scripts/cutey_fx/extract_sjis_corpus_fast.sh'
+  workflow_dispatch:
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: tmp-cutey-poc01
+      - name: Extract fast SJIS corpus and safe proxy pool
+        run: bash scripts/cutey_fx/extract_sjis_corpus_fast.sh
+      - name: Upload analysis
+        uses: actions/upload-artifact@v4
+        with:
+          name: CuteyHoneyFX_Fast_SJIS_Corpus
+          path: |
+            analysis/cutey_full/SJIS_FAST_*.csv
+            analysis/cutey_full/SJIS_FAST_SUMMARY.json
+            analysis/cutey_full/SAFE_PROXY_POOL.csv
+      - name: Commit analysis
+        run: |
+          git config user.name 'Cutey fast corpus extractor'
+          git config user.email 'actions@users.noreply.github.com'
+          git add analysis/cutey_full/SJIS_FAST_* analysis/cutey_full/SAFE_PROXY_POOL.csv
+          git diff --cached --quiet || git commit -m 'analysis: Cutey FX fast SJIS corpus and safe proxy pool [skip ci]'
+          git pull --rebase origin tmp-cutey-poc01 || true
+          git push origin HEAD:tmp-cutey-poc01 || true
