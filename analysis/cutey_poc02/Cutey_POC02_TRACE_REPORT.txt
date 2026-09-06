@@ -1,0 +1,28 @@
+Cutey Honey FX POC02 static V810 trace
+======================================
+TRACK1_SIZE=9807840 SHA1=ffae85763f581d312abb6b5096f6f7d62e771aae
+TRACK2_SIZE=656549040 SHA1=1dd574364e40cb90dd0ff25940fe8df9e6793edf
+DATA_RAW_BASE=0x81330
+BOOT_FIRST=2 BOOT_COUNT=240 LOAD=0x8000 ENTRY=0x8000
+BOOT_SHA256=0af43a869dfe2175e6a2b8dbe5f798ba7f9f6123d59a84435c87d5136cc0020a
+
+[SAVE] bytes=835a815b8375 hits=5
+  track2_raw=0x94DFC rel_data=0x13ACC sector=34 raw_in_sector=0x26C boot_off=0x1025C MEM=0x1825C ptr32_hits=0
+  track2_raw=0x1750FDEB rel_data=0x1748EABB sector=166094 raw_in_sector=0x61B
+  track2_raw=0x1750FEB9 rel_data=0x1748EB89 sector=166094 raw_in_sector=0x6E9
+  track2_raw=0x17510E6D rel_data=0x1748FB3D sector=166096 raw_in_sector=0x43D
+  track2_raw=0x17510E95 rel_data=0x1748FB65 sector=166096 raw_in_sector=0x465
+
+[LOAD] bytes=838d815b8368 hits=1
+  track2_raw=0x94E0D rel_data=0x13ADD sector=34 raw_in_sector=0x27D boot_off=0x1026D MEM=0x1826D ptr32_hits=0
+
+[HONEY] bytes=94408c8e836e836a815b hits=3
+  track2_raw=0xCC0B5 rel_data=0x4AD85 sector=130 raw_in_sector=0x325 boot_off=0x40315 MEM=0x48315 ptr32_hits=0
+  track2_raw=0x175230F9 rel_data=0x174A1DC9 sector=166128 raw_in_sector=0xC9
+  track2_raw=0x2280C95D rel_data=0x2278B62D sector=245891 raw_in_sector=0x29D
+
+[TRANSFORM] bytes=834c8385815b83658342815b836e836a815b82c995cf90678149 hits=2
+  track2_raw=0x175230D8 rel_data=0x174A1DA8 sector=166128 raw_in_sector=0xA8
+  track2_raw=0x2280C93C rel_data=0x2278B60C sector=245891 raw_in_sector=0x27C
+
+[POINTER GRAPH]
