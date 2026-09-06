@@ -1,0 +1,24 @@
+{
+  "parent_track2_sha1": "1dd574364e40cb90dd0ff25940fe8df9e6793edf",
+  "output_track2_sha256": "5d4e6300560e5d538eb4a474164c35018c7b78da202c44b23f7a4be1123f428f",
+  "boot_original_sha256": "0af43a869dfe2175e6a2b8dbe5f798ba7f9f6123d59a84435c87d5136cc0020a",
+  "boot_patched_sha256": "d7796624accae604c86424e157965aa9da967ba8f375e28ca99e92ec96211d24",
+  "hook_addr": "0x6C800",
+  "hook_size": 616,
+  "romfont_calls_patched": [
+    "0x34944",
+    "0x34B46"
+  ],
+  "save_string_mem": "0x1825C",
+  "load_string_mem": "0x1826D",
+  "changed_boot_chunks": [
+    32,
+    89,
+    201
+  ],
+  "changed_raw_sectors": 3,
+  "goal": [
+    "저장하기",
+    "불러오기"
+  ]
+}

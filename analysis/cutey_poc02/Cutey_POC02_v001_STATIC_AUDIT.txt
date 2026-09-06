@@ -1,0 +1,12 @@
+Cutey Honey FX POC02 v0.01 STATIC AUDIT
+========================================
+Parent: exact Redump split Track 1/2
+Changed boot 2048-byte chunks: [32, 89, 201]
+Changed raw MODE1 sectors: 3
+Hook: 0x6C800, 616 bytes, original region all-zero verified
+ROMFONT direct calls 0x34944 / 0x34B46 redirected to hook
+All non-reserved SJIS codes tail-call original BIOS vector 0xFFF0000C
+Original 10-byte strings verified before replacement
+Control bytes following strings are unchanged
+MODE1 EDC/ECC regenerated per changed raw sector
+STATUS: STATIC BUILD PASS; HW PASS requires user test.
