@@ -1,0 +1,161 @@
+name: Cutey Honey FX POC01 Analysis
+
+on:
+  push:
+    branches:
+      - tmp-cutey-poc01
+  workflow_dispatch:
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq p7zip-full
+          python -m pip install --quiet requests beautifulsoup4
+
+      - name: Download Redump reference and analyze PC-FX structures
+        shell: bash
+        run: |
+          set -euxo pipefail
+          cat > /tmp/analyze_cutey.py <<'PY'
+          import hashlib, os, re, struct, sys, urllib.parse
+          import requests
+          from bs4 import BeautifulSoup
+
+          PAGE='https://data.spludlow.co.uk/redump/redump/NEC%20-%20PC-FX%20%26%20PC-FXGA/Cutey%20Honey%20FX%20%28Japan%29'
+          print('FETCH', PAGE)
+          r=requests.get(PAGE, timeout=60)
+          r.raise_for_status()
+          print('PAGE_BYTES', len(r.content))
+          soup=BeautifulSoup(r.text,'html.parser')
+          links=[]
+          for a in soup.find_all('a', href=True):
+              href=urllib.parse.urljoin(PAGE,a['href'])
+              text=a.get_text(' ',strip=True)
+              if '.7z' in href.lower() or 'archive.org' in href.lower() or '.bin' in href.lower():
+                  links.append((text,href))
+          print('CANDIDATE_LINKS')
+          for t,h in links:
+              print('LINK',repr(t),h)
+          seven=[h for t,h in links if '.7z' in h.lower()]
+          if not seven:
+              # fallback regex over raw html
+              seven=re.findall(r'https?://[^\"\'<> ]+?\.7z(?:\?[^\"\'<> ]*)?', r.text, re.I)
+          if not seven:
+              print('NO_7Z_LINK')
+              sys.exit(21)
+          url=seven[0]
+          print('SELECTED_7Z',url)
+          with requests.get(url,stream=True,timeout=60) as rr:
+              rr.raise_for_status()
+              total=0
+              with open('/tmp/cutey.7z','wb') as f:
+                  for chunk in rr.iter_content(1024*1024):
+                      if chunk:
+                          f.write(chunk); total+=len(chunk)
+                          if total%(64*1024*1024)<1024*1024:
+                              print('DOWNLOADED',total)
+          print('ARCHIVE_SIZE',os.path.getsize('/tmp/cutey.7z'))
+          PY
+          python /tmp/analyze_cutey.py
+          7z x -y /tmp/cutey.7z -o/tmp/cutey_extract
+          find /tmp/cutey_extract -maxdepth 2 -type f -printf '%p %s\n' | sort
+          cat > /tmp/inspect_disc.py <<'PY'
+          import hashlib, os, pathlib, struct
+          root=pathlib.Path('/tmp/cutey_extract')
+          bins=sorted(root.rglob('*.bin'))
+          print('BINS',[(str(p),p.stat().st_size) for p in bins])
+          t2=None
+          for p in bins:
+              if 'Track 2' in p.name or p.stat().st_size==656549040:
+                  t2=p; break
+          if t2 is None:
+              raise SystemExit('TRACK2_NOT_FOUND')
+          h1=hashlib.sha1(); h256=hashlib.sha256(); crc=0
+          import zlib
+          with open(t2,'rb') as f:
+              while True:
+                  b=f.read(8*1024*1024)
+                  if not b: break
+                  h1.update(b);h256.update(b);crc=zlib.crc32(b,crc)
+          print('TRACK2_PATH',t2)
+          print('TRACK2_SIZE',t2.stat().st_size)
+          print('TRACK2_CRC32',f'{crc&0xffffffff:08x}')
+          print('TRACK2_SHA1',h1.hexdigest())
+          print('TRACK2_SHA256',h256.hexdigest())
+          def payload(sec):
+              with open(t2,'rb') as f:
+                  f.seek(sec*2352+16)
+                  return f.read(2048)
+          s0=payload(0); s1=payload(1)
+          print('SECTOR0_ASCII',repr(s0[:64]))
+          print('SECTOR0_HEX',s0[:64].hex())
+          print('SECTOR1_HEX',s1[:128].hex())
+          print('SECTOR1_ASCII',repr(s1[:128]))
+          boot_start=struct.unpack_from('<I',s1,32)[0]
+          boot_count=struct.unpack_from('<I',s1,36)[0]
+          print('BOOT_START_SECTOR',boot_start)
+          print('BOOT_SECTOR_COUNT',boot_count)
+          boot=bytearray()
+          with open(t2,'rb') as f:
+              for sec in range(boot_start,boot_start+boot_count):
+                  f.seek(sec*2352+16); boot += f.read(2048)
+          open('/tmp/boot.bin','wb').write(boot)
+          print('BOOT_BYTES',len(boot))
+          print('BOOT_SHA256',hashlib.sha256(boot).hexdigest())
+          # crude ASCII and CP932 string extraction from boot code
+          def ascii_runs(data,minlen=5):
+              out=[]; st=None
+              for i,b in enumerate(data+b'\x00'):
+                  if 0x20<=b<=0x7e:
+                      if st is None: st=i
+                  else:
+                      if st is not None and i-st>=minlen: out.append((st,data[st:i].decode('ascii','replace')))
+                      st=None
+              return out
+          print('BOOT_ASCII_RUNS')
+          for o,s in ascii_runs(bytes(boot))[:200]: print(f'ASCII {o:08x} {s}')
+          terms=['キューティー','ハニー','セーブ','ロード','スタート','はい','いいえ','名前','私','あなた','美紅','みずえ','サラ']
+          termb=[(t,t.encode('cp932')) for t in terms]
+          print('TERM_HITS_RAW_TRACK2')
+          with open(t2,'rb') as f:
+              data=f.read()
+          for t,b in termb:
+              pos=0;n=0
+              while True:
+                  i=data.find(b,pos)
+                  if i<0: break
+                  print('TERM',t,'RAW_OFFSET',hex(i),'SECTOR',i//2352,'IN_SECTOR',i%2352)
+                  n+=1; pos=i+1
+                  if n>=20: break
+              print('TERM_COUNT_CAPPED',t,n)
+          # search byte-frequency candidate areas near text hits and dump local hex/CP932
+          hits=[]
+          for t,b in termb:
+              pos=0
+              while len(hits)<80:
+                  i=data.find(b,pos)
+                  if i<0: break
+                  hits.append((i,t)); pos=i+1
+          for i,t in sorted(hits)[:80]:
+              a=max(0,i-96); z=min(len(data),i+256); chunk=data[a:z]
+              print('CONTEXT',t,hex(i),chunk.hex())
+              try: print('CONTEXT_CP932',chunk.decode('cp932','replace'))
+              except: pass
+          PY
+          python /tmp/inspect_disc.py | tee analysis.txt
+
+      - name: Upload analysis
+        uses: actions/upload-artifact@v4
+        with:
+          name: cutey-poc01-analysis
+          path: |
+            analysis.txt
+            /tmp/boot.bin
+          retention-days: 1
