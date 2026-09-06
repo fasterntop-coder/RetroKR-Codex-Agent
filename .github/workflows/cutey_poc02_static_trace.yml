@@ -1,0 +1,176 @@
+name: Cutey Honey FX POC02 Static V810 Trace
+permissions:
+  contents: write
+on:
+  push:
+    branches: [tmp-cutey-poc01]
+    paths:
+      - '.github/workflows/cutey_poc02_static_trace.yml'
+  workflow_dispatch:
+jobs:
+  trace:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: tmp-cutey-poc01
+      - name: Install tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq p7zip-full unzip curl python3
+          curl -L --retry 3 --fail -o /tmp/v810.zip https://github.com/jbrandwood/v810-gcc/releases/download/latest/v810-gcc-Linux-x86_64.zip
+          mkdir -p /tmp/v810
+          unzip -q /tmp/v810.zip -d /tmp/v810
+          OBJDUMP=$(find /tmp/v810 -type f -name v810-objdump | head -1)
+          test -n "$OBJDUMP"
+          echo "OBJDUMP=$OBJDUMP" >> "$GITHUB_ENV"
+      - name: Download CLEAN Redump split tracks
+        run: |
+          curl -L --retry 3 --fail -o /tmp/cutey.7z 'https://archive.org/download/noaen-redump-nec-pc-fx-pc-fxga/Cutey%20Honey%20FX%20%28Japan%29.7z'
+          mkdir -p /tmp/cutey
+          7z x -y /tmp/cutey.7z -o/tmp/cutey >/dev/null
+          find /tmp/cutey -maxdepth 1 -type f -printf '%f %s\n' | sort
+      - name: Extract boot program and map strings
+        shell: bash
+        run: |
+          set -euxo pipefail
+          mkdir -p /tmp/out artifacts
+          python3 - <<'PY'
+          from pathlib import Path
+          import struct, hashlib, json
+          root=Path('/tmp/cutey')
+          bins=list(root.glob('*.bin'))
+          t1=next(p for p in bins if 'Track 1' in p.name)
+          t2=next(p for p in bins if 'Track 2' in p.name)
+          raw=t2.read_bytes()
+          magic=b'PC-FX:Hu_CD-ROM'
+          m=raw.find(magic)
+          assert m>=16
+          base=m-16
+          assert base==0x81330, hex(base)
+          def payload_sector(n):
+              a=base+n*2352
+              s=raw[a:a+2352]
+              assert len(s)==2352 and s[15]==1
+              return s[16:2064]
+          vh=payload_sector(1)
+          boot_first,boot_count,load,entry=struct.unpack_from('<IIII',vh,32)
+          assert (boot_first,boot_count,load,entry)==(2,240,0x8000,0x8000)
+          boot=b''.join(payload_sector(n) for n in range(boot_first,boot_first+boot_count))
+          Path('/tmp/out/bootprog.bin').write_bytes(boot)
+          targets={
+              'SAVE': 'セーブ'.encode('shift_jis'),
+              'LOAD': 'ロード'.encode('shift_jis'),
+              'HONEY': '如月ハニー'.encode('shift_jis'),
+              'TRANSFORM': 'キューティーハニーに変身！'.encode('shift_jis'),
+          }
+          report=[]
+          report.append('Cutey Honey FX POC02 static V810 trace')
+          report.append('======================================')
+          report.append(f'TRACK1_SIZE={t1.stat().st_size} SHA1={hashlib.sha1(t1.read_bytes()).hexdigest()}')
+          report.append(f'TRACK2_SIZE={t2.stat().st_size} SHA1={hashlib.sha1(raw).hexdigest()}')
+          report.append(f'DATA_RAW_BASE=0x{base:X}')
+          report.append(f'BOOT_FIRST={boot_first} BOOT_COUNT={boot_count} LOAD=0x{load:X} ENTRY=0x{entry:X}')
+          report.append(f'BOOT_SHA256={hashlib.sha256(boot).hexdigest()}')
+          report.append('')
+          meta=[]
+          for name,pat in targets.items():
+              pos=0; hits=[]
+              while True:
+                  p=raw.find(pat,pos)
+                  if p<0: break
+                  hits.append(p); pos=p+1
+              report.append(f'[{name}] bytes={pat.hex()} hits={len(hits)}')
+              for p in hits:
+                  rr=p-base
+                  sec=rr//2352; w=rr%2352
+                  line=f'  track2_raw=0x{p:X} rel_data=0x{rr:X} sector={sec} raw_in_sector=0x{w:X}'
+                  addr=None
+                  if boot_first<=sec<boot_first+boot_count and 16<=w<2064:
+                      po=(sec-boot_first)*2048+(w-16)
+                      addr=load+po
+                      line+=f' boot_off=0x{po:X} MEM=0x{addr:X}'
+                      ptr=struct.pack('<I',addr)
+                      x=[]; q=0
+                      while True:
+                          q=boot.find(ptr,q)
+                          if q<0: break
+                          x.append(q); q+=1
+                      line+=f' ptr32_hits={len(x)}'
+                      if x:
+                          line+=' ['+', '.join(f'0x{load+z:X}' for z in x[:16])+']'
+                      meta.append({'name':name,'track2_raw':p,'boot_off':po,'mem':addr,'ptr32_offsets':x})
+                  report.append(line)
+              report.append('')
+          # recursively find pointers to pointer-table cells
+          report.append('[POINTER GRAPH]')
+          for rec in meta:
+              if not rec['ptr32_offsets']: continue
+              report.append(f"{rec['name']} string MEM=0x{rec['mem']:X}")
+              for celloff in rec['ptr32_offsets']:
+                  cell=load+celloff
+                  p2=struct.pack('<I',cell)
+                  hs=[]; q=0
+                  while True:
+                      q=boot.find(p2,q)
+                      if q<0: break
+                      hs.append(q); q+=1
+                  report.append(f'  pointer-cell MEM=0x{cell:X} second_level={len(hs)} '+(' '.join(f'0x{load+z:X}' for z in hs[:16])))
+          Path('/tmp/out/TRACE_REPORT.txt').write_text('\n'.join(report),encoding='utf-8')
+          Path('/tmp/out/trace_meta.json').write_text(json.dumps(meta,ensure_ascii=False,indent=2),encoding='utf-8')
+          print('\n'.join(report))
+          PY
+          "$OBJDUMP" -D -b binary -m v810 --adjust-vma=0x8000 /tmp/out/bootprog.bin > /tmp/out/bootprog_v810_disasm.txt || true
+      - name: Build focused disassembly contexts
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import json,re
+          meta=json.loads(Path('/tmp/out/trace_meta.json').read_text())
+          lines=Path('/tmp/out/bootprog_v810_disasm.txt').read_text(errors='replace').splitlines()
+          # map disassembly address to line index
+          amap={}
+          for i,l in enumerate(lines):
+              m=re.match(r'\s*([0-9a-fA-F]+):',l)
+              if m: amap[int(m.group(1),16)]=i
+          out=[]
+          for r in meta:
+              if not r['ptr32_offsets']: continue
+              out.append('='*72)
+              out.append(f"{r['name']} STRING_MEM=0x{r['mem']:X}")
+              for off in r['ptr32_offsets']:
+                  a=0x8000+off
+                  out.append(f'-- pointer cell 0x{a:X} --')
+                  # nearest instruction address at/before cell
+                  ks=[k for k in amap if abs(k-a)<=0x80]
+                  if ks:
+                      k=min(ks,key=lambda x:abs(x-a)); idx=amap[k]
+                      out.extend(lines[max(0,idx-20):min(len(lines),idx+21)])
+          Path('/tmp/out/FOCUSED_CONTEXTS.txt').write_text('\n'.join(out),encoding='utf-8')
+          PY
+          cp /tmp/out/TRACE_REPORT.txt artifacts/Cutey_POC02_TRACE_REPORT.txt
+          cp /tmp/out/FOCUSED_CONTEXTS.txt artifacts/Cutey_POC02_FOCUSED_CONTEXTS.txt
+          cp /tmp/out/trace_meta.json artifacts/Cutey_POC02_trace_meta.json
+          cp /tmp/out/bootprog_v810_disasm.txt artifacts/Cutey_POC02_bootprog_v810_disasm.txt
+      - name: Upload trace artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: CuteyHoneyFX_POC02_STATIC_TRACE
+          path: |
+            artifacts/Cutey_POC02_TRACE_REPORT.txt
+            artifacts/Cutey_POC02_FOCUSED_CONTEXTS.txt
+            artifacts/Cutey_POC02_trace_meta.json
+            artifacts/Cutey_POC02_bootprog_v810_disasm.txt
+          retention-days: 7
+      - name: Commit compact reports
+        run: |
+          mkdir -p analysis/cutey_poc02
+          cp artifacts/Cutey_POC02_TRACE_REPORT.txt analysis/cutey_poc02/
+          cp artifacts/Cutey_POC02_FOCUSED_CONTEXTS.txt analysis/cutey_poc02/
+          cp artifacts/Cutey_POC02_trace_meta.json analysis/cutey_poc02/
+          git config user.name 'Cutey POC Builder'
+          git config user.email 'actions@users.noreply.github.com'
+          git add analysis/cutey_poc02
+          git commit -m 'analysis: Cutey POC02 string xrefs [skip ci]' || true
+          git push origin HEAD:tmp-cutey-poc01
