@@ -1,0 +1,204 @@
+name: Cutey Honey FX POC02 emucap Dynamic Trace
+permissions:
+  contents: write
+on:
+  push:
+    branches: [tmp-cutey-poc01]
+    paths: ['.github/workflows/cutey_poc02_emucap_dynamic.yml']
+  workflow_dispatch:
+jobs:
+  trace:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with: {ref: tmp-cutey-poc01}
+      - name: Install build/runtime dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq build-essential pkg-config libsdl2-dev libflac-dev libsndfile1-dev liblzo2-dev libmpcdec-dev libzstd-dev zlib1g-dev gettext p7zip-full curl python3 git
+      - name: Build pinned emucap core and Mednafen adapter
+        shell: bash
+        run: |
+          set -euxo pipefail
+          git clone -q https://github.com/mcpads/emucap.git /tmp/emucap
+          cd /tmp/emucap
+          git checkout -q 3887f9e9de7525087c30ca4434d9cb8c3ff15103
+          rustc --version
+          cargo build --release --bin emucap-mcp
+          adapters/mednafen/build.sh
+          test -x target/release/emucap-mcp
+          test -x adapters/mednafen/work/mednafen/src/mednafen
+          git rev-parse HEAD > /tmp/emucap_commit.txt
+      - name: Prepare CLEAN game and BIOS
+        shell: bash
+        run: |
+          set -euxo pipefail
+          curl -L --retry 3 --fail -o /tmp/cutey.7z 'https://archive.org/download/noaen-redump-nec-pc-fx-pc-fxga/Cutey%20Honey%20FX%20%28Japan%29.7z'
+          mkdir -p /tmp/game
+          7z x -y /tmp/cutey.7z -o/tmp/game >/dev/null
+          T1=$(find /tmp/game -maxdepth 1 -type f -name '*Track 1*.bin' | head -1)
+          T2=$(find /tmp/game -maxdepth 1 -type f -name '*Track 2*.bin' | head -1)
+          test "$(stat -c%s "$T1")" = 9807840
+          test "$(stat -c%s "$T2")" = 656549040
+          echo 'ffae85763f581d312abb6b5096f6f7d62e771aae  '"$T1" | sha1sum -c -
+          echo '1dd574364e40cb90dd0ff25940fe8df9e6793edf  '"$T2" | sha1sum -c -
+          B1=$(basename "$T1"); B2=$(basename "$T2")
+          cat >/tmp/game/Cutey_Honey_FX_Redump.cue <<EOF
+          FILE "$B1" BINARY
+            TRACK 01 AUDIO
+              INDEX 01 00:00:00
+          FILE "$B2" BINARY
+            TRACK 02 MODE1/2352
+              INDEX 00 00:00:00
+              INDEX 01 00:03:00
+          EOF
+          # Analysis-only firmware input. Never copied to artifacts/repository.
+          curl -L --retry 3 --fail -o /tmp/pcfx.rom https://raw.githubusercontent.com/Abdess/retrobios/master/bios/NEC/PC-FX/pcfx.rom
+          echo '4b44ccf5d84cc83daa2e6a2bee00fdafa14eb58bdf5859e96d8861a891675417  /tmp/pcfx.rom' | sha256sum -c -
+      - name: Drive emucap and trace original renderer
+        shell: bash
+        env:
+          EMUCAP_PORT: '47800'
+          EMUCAP_PCFX_BIOS: /tmp/pcfx.rom
+          EMUCAP_HEADLESS: '1'
+        run: |
+          set -euxo pipefail
+          mkdir -p analysis/cutey_poc02 /tmp/dyn
+          cat >/tmp/dyn/drive.py <<'PY'
+          import subprocess,os,json,time,threading,sys
+          MCP='/tmp/emucap/target/release/emucap-mcp'
+          CUE='/tmp/game/Cutey_Honey_FX_Redump.cue'
+          log=open('/tmp/dyn/mcp_stderr.log','w',encoding='utf-8')
+          p=subprocess.Popen([MCP],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=log,text=True,bufsize=1,env=os.environ.copy())
+          rid=0
+          transcript=[]
+          def send(obj):
+              p.stdin.write(json.dumps(obj,separators=(',',':'))+'\n'); p.stdin.flush()
+          def req(method,params=None,timeout=180):
+              global rid
+              rid+=1; my=rid; send({'jsonrpc':'2.0','id':my,'method':method,'params':params or {}})
+              deadline=time.time()+timeout
+              while time.time()<deadline:
+                  line=p.stdout.readline()
+                  if not line: raise RuntimeError('MCP EOF')
+                  o=json.loads(line); transcript.append({'wire':o})
+                  if o.get('id')==my:
+                      if 'error' in o: raise RuntimeError(f'{method}: {o["error"]}')
+                      return o['result']
+              raise TimeoutError(method)
+          def tool(name,args=None,timeout=240):
+              r=req('tools/call',{'name':name,'arguments':args or {}},timeout)
+              texts=[x.get('text','') for x in r.get('content',[]) if x.get('type')=='text']
+              text='\n'.join(texts)
+              try: val=json.loads(text)
+              except Exception: val=text
+              transcript.append({'tool':name,'args':args or {},'result':val,'isError':r.get('isError',False)})
+              return val,r
+          try:
+              init=req('initialize',{'protocolVersion':'2025-06-18','capabilities':{},'clientInfo':{'name':'cutey-ci','version':'1'}})
+              send({'jsonrpc':'2.0','method':'notifications/initialized','params':{}})
+              transcript.append({'initialize':init})
+              tools=req('tools/list',{})
+              transcript.append({'tools':[x['name'] for x in tools.get('tools',[])]})
+              boot,_=tool('bootstrap',{})
+              plan1,_=tool('launch_plan',{'content_path':CUE,'system':'pcfx'})
+              plan=plan1
+              if isinstance(plan1,dict) and plan1.get('review_input') is not None:
+                  plan,_=tool('launch_plan',{'content_path':CUE,'system':'pcfx','indirect_media_approval':plan1['review_input']})
+              if not isinstance(plan,dict): raise RuntimeError('launch_plan not JSON')
+              args=dict(plan.get('preferred_launcher',{}).get('args',{}))
+              if not args:
+                  args={'content_path':CUE,'system':'pcfx'}
+                  if plan.get('review_input') is not None: args['indirect_media_approval']=plan['review_input']
+              args['start_frozen']=True; args['display']=False; args['sound']=False
+              tool('status',{})
+              launch,_=tool('launch',args,timeout=240)
+              status,_=tool('status',{})
+              # Record available surface before assumptions.
+              # Confirm original boot strings in live RAM.
+              save_mem,_=tool('read_memory',{'memory_type':'ram','address':'0x18240','length':'0x50'})
+              # Primary data read breakpoints: exact SAVE and LOAD strings.
+              bps=[]
+              for a,b in [(0x1825C,0x18265),(0x1826D,0x18276)]:
+                  v,_=tool('set_breakpoint',{'kind':'read','memory_type':'ram','start':hex(a),'end':hex(b),'pause_on_hit':True})
+                  bps.append(v)
+              tool('set_trace',{'enabled':True})
+              # Step chunks. Tap RUN between chunks to skip logos/intro if accepted.
+              hit=False
+              for cycle in range(8):
+                  try: step,_=tool('step',{'count':600,'unit':'frames'},timeout=180)
+                  except Exception as e:
+                      transcript.append({'step_exception':str(e),'cycle':cycle}); step=None
+                  ev,_=tool('poll_events',{})
+                  st,_=tool('status',{})
+                  transcript.append({'cycle':cycle,'events_snapshot':ev,'status_snapshot':st})
+                  if isinstance(ev,(list,dict)) and 'breakpoint' in json.dumps(ev).lower():
+                      hit=True; break
+                  try: tool('tap',{'buttons':['run'],'press_frames':2,'after_frames':30},timeout=120)
+                  except Exception as e: transcript.append({'tap_exception':str(e),'cycle':cycle})
+              # Always capture debugger state/trace after primary travel.
+              try: cpu,_=tool('get_state',{'groups':['cpu']})
+              except Exception as e: cpu={'error':str(e)}
+              try: tr,_=tool('get_trace',{'count':256})
+              except Exception as e: tr={'error':str(e)}
+              try: cs,_=tool('call_stack',{})
+              except Exception as e: cs={'error':str(e)}
+              try: ev2,_=tool('poll_events',{})
+              except Exception as e: ev2={'error':str(e)}
+              # If SAVE/LOAD read did not fire, fall back to ROMFONT exec calls and catch arguments.
+              if not hit:
+                  try: tool('clear_all_breakpoints',{})
+                  except Exception: pass
+                  for a in (0x34944,0x34B46):
+                      tool('set_breakpoint',{'kind':'exec','memory_type':'cpu','start':hex(a),'end':hex(a),'pause_on_hit':True})
+                  try: tool('step',{'count':1200,'unit':'frames'},timeout=180)
+                  except Exception as e: transcript.append({'romfont_step_exception':str(e)})
+                  try: transcript.append({'romfont_events':tool('poll_events',{})[0]})
+                  except Exception as e: transcript.append({'romfont_events_error':str(e)})
+                  try: transcript.append({'romfont_cpu':tool('get_state',{'groups':['cpu']})[0]})
+                  except Exception as e: transcript.append({'romfont_cpu_error':str(e)})
+                  try: transcript.append({'romfont_trace':tool('get_trace',{'count':256})[0]})
+                  except Exception as e: transcript.append({'romfont_trace_error':str(e)})
+              # Screenshot is useful for path position, but only report metadata/path; no game image committed.
+              try: tool('screenshot',{'save_path':'/tmp/dyn/runtime.png'})
+              except Exception as e: transcript.append({'screenshot_error':str(e)})
+          except Exception as e:
+              transcript.append({'fatal':repr(e)})
+          finally:
+              try: p.stdin.close()
+              except Exception: pass
+              try: p.terminate(); p.wait(timeout=5)
+              except Exception:
+                  try:p.kill()
+                  except Exception:pass
+              log.close()
+              open('/tmp/dyn/transcript.json','w',encoding='utf-8').write(json.dumps(transcript,ensure_ascii=False,indent=2))
+          # Make a compact text summary from relevant entries.
+          out=[]
+          for x in transcript:
+              if 'tool' in x and x['tool'] in ('status','read_memory','poll_events','get_state','get_trace','call_stack','set_breakpoint','launch'):
+                  out.append('\n=== '+x['tool']+' ===\n'+json.dumps(x['result'],ensure_ascii=False,indent=2)[:30000])
+              for k in ('fatal','romfont_events','romfont_cpu','romfont_trace','step_exception','romfont_step_exception'):
+                  if k in x: out.append('\n=== '+k+' ===\n'+json.dumps(x[k],ensure_ascii=False,indent=2)[:30000])
+          open('/tmp/dyn/DYNAMIC_TRACE_SUMMARY.txt','w',encoding='utf-8').write('\n'.join(out))
+          if any('fatal' in x for x in transcript):
+              print(open('/tmp/dyn/DYNAMIC_TRACE_SUMMARY.txt',encoding='utf-8').read()[-12000:])
+              raise SystemExit(1)
+          PY
+          cd /tmp/emucap
+          python3 /tmp/dyn/drive.py
+          cp /tmp/dyn/DYNAMIC_TRACE_SUMMARY.txt "$GITHUB_WORKSPACE/analysis/cutey_poc02/Cutey_POC02_EMUCAP_DYNAMIC.txt"
+          cp /tmp/dyn/transcript.json "$GITHUB_WORKSPACE/analysis/cutey_poc02/Cutey_POC02_EMUCAP_TRANSCRIPT.json"
+          cp /tmp/emucap_commit.txt "$GITHUB_WORKSPACE/analysis/cutey_poc02/EMUCAP_COMMIT.txt"
+          # Explicitly prove no firmware/game bytes are staged.
+          find "$GITHUB_WORKSPACE/analysis/cutey_poc02" -type f -maxdepth 1 -printf '%f %s\n'
+      - name: Commit reports only
+        if: always()
+        run: |
+          if [ -f analysis/cutey_poc02/Cutey_POC02_EMUCAP_DYNAMIC.txt ]; then
+            git config user.name 'Cutey POC Builder'; git config user.email 'actions@users.noreply.github.com'
+            git add analysis/cutey_poc02/Cutey_POC02_EMUCAP_DYNAMIC.txt analysis/cutey_poc02/Cutey_POC02_EMUCAP_TRANSCRIPT.json analysis/cutey_poc02/EMUCAP_COMMIT.txt
+            git commit -m 'analysis: Cutey POC02 emucap dynamic trace [skip ci]' || true
+            git push origin HEAD:tmp-cutey-poc01
+          fi
