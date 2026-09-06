@@ -1,0 +1,214 @@
+name: Build Cutey Honey FX KR POC01 v0.03
+permissions:
+  contents: write
+on:
+  push:
+    branches: [tmp-cutey-poc01]
+    paths:
+      - '.github/workflows/cutey_poc01_v003.yml'
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: tmp-cutey-poc01
+      - name: Install tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq unzip zip golang-go
+      - name: Build tolerant Windows patcher
+        shell: bash
+        run: |
+          set -euxo pipefail
+          rm -rf /tmp/v1 /tmp/go-patcher /tmp/pkg
+          mkdir -p /tmp/v1 /tmp/go-patcher /tmp/pkg artifacts
+          unzip -q artifacts/CuteyHoneyFX_KR_POC01_v0.01.zip -d /tmp/v1
+          cp /tmp/v1/poc01_raw_sectors.bin /tmp/go-patcher/
+          cat >/tmp/go-patcher/go.mod <<'EOF'
+          module cutey-poc01-patcher
+          go 1.20
+          EOF
+          cat >/tmp/go-patcher/main.go <<'EOF'
+          package main
+
+          import (
+            "bufio"
+            "bytes"
+            "crypto/sha256"
+            _ "embed"
+            "encoding/hex"
+            "fmt"
+            "io"
+            "os"
+            "path/filepath"
+            "strings"
+          )
+
+          //go:embed poc01_raw_sectors.bin
+          var patch []byte
+
+          const expectedSize int64 = 666356880
+          const redumpSHA = "a19b406a85576f7e5e928f3f308307aae6b95a0de87b5be60acb4c68f1c08267"
+          const userSHA = "2b93b92a63ff6fc3e5580212ff091fe44cb6189826095f2af5e17ad6d5665dcb"
+          const patchOffset int64 = 0x009DBB10
+          const payloadOffset int64 = patchOffset + 16
+
+          func pause() {
+            fmt.Print("\nPress Enter to close...")
+            _, _ = bufio.NewReader(os.Stdin).ReadString('\n')
+          }
+
+          func fileSHA(path string) (string, error) {
+            f, err := os.Open(path)
+            if err != nil { return "", err }
+            defer f.Close()
+            h := sha256.New()
+            if _, err = io.Copy(h, f); err != nil { return "", err }
+            return hex.EncodeToString(h.Sum(nil)), nil
+          }
+
+          func readAt(path string, off int64, n int) ([]byte, error) {
+            f, err := os.Open(path)
+            if err != nil { return nil, err }
+            defer f.Close()
+            b := make([]byte, n)
+            _, err = f.ReadAt(b, off)
+            return b, err
+          }
+
+          func main() {
+            fmt.Println("Cutey Honey FX KR POC01 v0.03 - structure-verified patcher")
+            fmt.Println("------------------------------------------------------------")
+
+            exe, _ := os.Executable()
+            exeDir := filepath.Dir(exe)
+            var src string
+            if len(os.Args) >= 2 {
+              src = strings.Trim(os.Args[1], "\"")
+            } else {
+              src = filepath.Join(exeDir, "Cutey_Honey_FX_JAP.bin")
+            }
+            src, _ = filepath.Abs(src)
+
+            st, err := os.Stat(src)
+            if err != nil {
+              fmt.Println("[ERROR] Original BIN not found:", src)
+              fmt.Println("Put Cutey_Honey_FX_JAP.bin next to this EXE and double-click it.")
+              pause(); return
+            }
+            if st.Size() != expectedSize {
+              fmt.Printf("[ERROR] Wrong file size: %d (expected %d)\n", st.Size(), expectedSize)
+              pause(); return
+            }
+
+            fmt.Println("[1/5] Calculating source SHA-256...")
+            sh, err := fileSHA(src)
+            if err != nil { fmt.Println("[ERROR]", err); pause(); return }
+            fmt.Println("Source SHA-256:", sh)
+            if sh == redumpSHA {
+              fmt.Println("[PASS] Known Redump single-BIN source")
+            } else if sh == userSHA {
+              fmt.Println("[PASS] User-uploaded single-BIN source recognized")
+            } else {
+              fmt.Println("[INFO] Unknown hash; continuing only after structural checks")
+            }
+
+            fmt.Println("[2/5] Verifying PC-FX raw-sector geometry...")
+            hdr, err := readAt(src, patchOffset, 32)
+            if err != nil { fmt.Println("[ERROR] Cannot read boot sector:", err); pause(); return }
+            if hdr[15] != 0x01 {
+              fmt.Printf("[ERROR] Expected MODE1 sector byte 0x01 at 0x%X, found 0x%02X\n", patchOffset+15, hdr[15])
+              pause(); return
+            }
+            if !bytes.Equal(hdr[16:32], []byte("PC-FX:Hu_CD-ROM")) {
+              fmt.Printf("[ERROR] PC-FX boot magic not found at 0x%X\n", payloadOffset)
+              fmt.Printf("Found bytes: % X\n", hdr[16:32])
+              pause(); return
+            }
+            fmt.Println("[PASS] MODE1 + PC-FX:Hu_CD-ROM verified")
+
+            dst := filepath.Join(filepath.Dir(src), "Cutey_Honey_FX_JAP_KR_POC01.bin")
+            fmt.Println("[3/5] Copying original BIN...")
+            in, err := os.Open(src)
+            if err != nil { fmt.Println("[ERROR]", err); pause(); return }
+            out, err := os.Create(dst)
+            if err != nil { in.Close(); fmt.Println("[ERROR]", err); pause(); return }
+            _, err = io.Copy(out, in)
+            in.Close()
+            if err != nil { out.Close(); fmt.Println("[ERROR]", err); pause(); return }
+
+            fmt.Printf("[4/5] Writing %d raw-sector patch bytes at 0x%08X...\n", len(patch), patchOffset)
+            if _, err = out.Seek(patchOffset, io.SeekStart); err != nil { out.Close(); fmt.Println("[ERROR]", err); pause(); return }
+            if _, err = out.Write(patch); err != nil { out.Close(); fmt.Println("[ERROR]", err); pause(); return }
+            if err = out.Close(); err != nil { fmt.Println("[ERROR]", err); pause(); return }
+
+            fmt.Println("[5/5] Verifying written patch and output...")
+            written, err := readAt(dst, patchOffset, len(patch))
+            if err != nil { fmt.Println("[ERROR]", err); pause(); return }
+            if !bytes.Equal(written, patch) {
+              fmt.Println("[ERROR] Patch read-back mismatch")
+              pause(); return
+            }
+            ost, err := os.Stat(dst)
+            if err != nil || ost.Size() != expectedSize {
+              fmt.Println("[ERROR] Output size mismatch")
+              pause(); return
+            }
+            osh, err := fileSHA(dst)
+            if err != nil { fmt.Println("[ERROR]", err); pause(); return }
+
+            fmt.Println("\n[PASS] POC01 patch completed successfully.")
+            fmt.Println("Output:", dst)
+            fmt.Println("Output SHA-256:", osh)
+            fmt.Println("Use Cutey_Honey_FX_JAP_KR_POC01.cue to boot it.")
+            pause()
+          }
+          EOF
+          cd /tmp/go-patcher
+          GOOS=windows GOARCH=amd64 CGO_ENABLED=0 go build -trimpath -ldflags='-s -w' -o /tmp/pkg/POC01_Patcher_v003.exe .
+          test -s /tmp/pkg/POC01_Patcher_v003.exe
+          cp /tmp/v1/Cutey_Honey_FX_JAP_KR_POC01.cue /tmp/pkg/
+          cp /tmp/v1/POC01_EXPECTED_PREVIEW.png /tmp/pkg/
+          cp /tmp/v1/BUILD_INFO.txt /tmp/pkg/
+          cat >/tmp/pkg/README_KO.txt <<'EOF'
+          큐티하니 FX PC-FX 한글 출력 POC01 v0.03
+          =========================================
+          사용자 원본 SHA-256 2b93b92a63ff6fc3e5580212ff091fe44cb6189826095f2af5e17ad6d5665dcb 대응판.
+          v0.02의 Redump SHA 단일 강제검사를 제거하고 실제 PC-FX 구조를 검사합니다.
+
+          적용법
+          1. 원본 Cutey_Honey_FX_JAP.bin 과 POC01_Patcher_v003.exe를 같은 폴더에 둡니다.
+          2. POC01_Patcher_v003.exe를 더블클릭합니다.
+          3. 패처가 파일 크기, MODE1 바이트, PC-FX:Hu_CD-ROM 부트 매직을 검사합니다.
+          4. 모두 PASS하면 Cutey_Honey_FX_JAP_KR_POC01.bin 을 만듭니다.
+          5. 동봉 CUE와 생성 BIN을 같은 폴더에 두고 CUE로 부팅합니다.
+
+          정상 화면
+          한글 출력 성공
+          CUTIE HONEY FX
+          KR POC01
+
+          참고: 원본 전체 SHA가 Redump와 달라도 디스크 구조 검증을 통과하면 패치를 진행합니다.
+          패치 후에는 삽입한 14,112바이트를 다시 읽어 완전 일치 여부를 검증합니다.
+          EOF
+          (cd /tmp/pkg && sha256sum * > SHA256SUMS.txt)
+          rm -f "$GITHUB_WORKSPACE/artifacts/CuteyHoneyFX_KR_POC01_v0.03.zip"
+          (cd /tmp/pkg && zip -9 -r "$GITHUB_WORKSPACE/artifacts/CuteyHoneyFX_KR_POC01_v0.03.zip" .)
+          sha256sum "$GITHUB_WORKSPACE/artifacts/CuteyHoneyFX_KR_POC01_v0.03.zip"
+          ls -lh /tmp/pkg/POC01_Patcher_v003.exe "$GITHUB_WORKSPACE/artifacts/CuteyHoneyFX_KR_POC01_v0.03.zip"
+      - name: Upload package
+        uses: actions/upload-artifact@v4
+        with:
+          name: CuteyHoneyFX_KR_POC01_v0.03
+          path: artifacts/CuteyHoneyFX_KR_POC01_v0.03.zip
+          retention-days: 7
+      - name: Commit package to temporary branch
+        run: |
+          git config user.name 'Cutey POC Builder'
+          git config user.email 'actions@users.noreply.github.com'
+          git add artifacts/CuteyHoneyFX_KR_POC01_v0.03.zip
+          git commit -m 'artifact: Cutey Honey FX KR POC01 v0.03 [skip ci]'
+          git push origin HEAD:tmp-cutey-poc01
