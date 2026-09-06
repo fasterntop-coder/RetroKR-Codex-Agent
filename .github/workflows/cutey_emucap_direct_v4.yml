@@ -1,0 +1,154 @@
+name: Cutey Honey FX emucap Staged Input Runtime Trace v4
+permissions:
+  contents: write
+on:
+  push:
+    branches: [tmp-cutey-poc01]
+    paths: ['.github/workflows/cutey_emucap_direct_v4.yml']
+  workflow_dispatch:
+jobs:
+  trace:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: tmp-cutey-poc01
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq build-essential autoconf automake pkg-config libsdl2-dev libflac-dev libsndfile1-dev liblzo2-dev libmpcdec-dev libzstd-dev zlib1g-dev gettext p7zip-full curl python3 git
+      - name: Build pinned emucap Mednafen PC-FX adapter
+        run: |
+          set -euxo pipefail
+          git clone -q https://github.com/mcpads/emucap.git /tmp/emucap
+          cd /tmp/emucap
+          git checkout -q 3887f9e9de7525087c30ca4434d9cb8c3ff15103
+          adapters/mednafen/build.sh
+          test -x adapters/mednafen/work/mednafen/src/mednafen
+          git rev-parse HEAD > /tmp/emucap_commit.txt
+      - name: Prepare exact CLEAN game and PC-FX BIOS
+        run: |
+          set -euxo pipefail
+          curl -L --retry 3 --fail -o /tmp/cutey.7z 'https://archive.org/download/noaen-redump-nec-pc-fx-pc-fxga/Cutey%20Honey%20FX%20%28Japan%29.7z'
+          mkdir -p /tmp/game /tmp/dyn analysis/cutey_full
+          7z x -y /tmp/cutey.7z -o/tmp/game >/dev/null
+          T1=$(find /tmp/game -maxdepth 1 -type f -name '*Track 1*.bin' | head -1)
+          T2=$(find /tmp/game -maxdepth 1 -type f -name '*Track 2*.bin' | head -1)
+          echo 'ffae85763f581d312abb6b5096f6f7d62e771aae  '"$T1" | sha1sum -c -
+          echo '1dd574364e40cb90dd0ff25940fe8df9e6793edf  '"$T2" | sha1sum -c -
+          B1=$(basename "$T1"); B2=$(basename "$T2")
+          cat >/tmp/game/game.cue <<EOF
+          FILE "$B1" BINARY
+            TRACK 01 AUDIO
+              INDEX 01 00:00:00
+          FILE "$B2" BINARY
+            TRACK 02 MODE1/2352
+              INDEX 00 00:00:00
+              INDEX 01 00:03:00
+          EOF
+          curl -L --retry 3 --fail -o /tmp/pcfx.rom https://raw.githubusercontent.com/Abdess/retrobios/master/bios/NEC/PC-FX/pcfx.rom
+          echo '4b44ccf5d84cc83daa2e6a2bee00fdafa14eb58bdf5859e96d8861a891675417  /tmp/pcfx.rom' | sha256sum -c -
+      - name: Run staged PC-FX input/debugger trace
+        run: |
+          set -euxo pipefail
+          cat >/tmp/dyn/drive.py <<'PY'
+          import socket,subprocess,os,json,traceback
+          port=47800; cue='/tmp/game/game.cue'; root='/tmp/emucap'; out=[]
+          srv=socket.socket(); srv.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEADDR,1); srv.bind(('127.0.0.1',port)); srv.listen(1); srv.settimeout(120)
+          env=os.environ.copy(); env.update({'EMUCAP_PCFX_BIOS':'/tmp/pcfx.rom','MEDNAFEN_FORCE_MODULE':'pcfx','EMUCAP_HEADLESS':'1','EMUCAP_START_FROZEN':'1','SDL_VIDEODRIVER':'dummy','SDL_AUDIODRIVER':'dummy'})
+          log=open('/tmp/dyn/mednafen.log','w'); p=subprocess.Popen([root+'/adapters/mednafen/launch.sh',cue,str(port)],cwd=root+'/adapters/mednafen',env=env,stdout=log,stderr=subprocess.STDOUT)
+          conn=None
+          try:
+            conn,_=srv.accept(); conn.settimeout(60); f=conn.makefile('rwb',buffering=0); rid=[0]
+            def req(method,params=None):
+              rid[0]+=1; i=rid[0]; q={'v':1,'id':i,'method':method,'params':params or {}}
+              f.write((json.dumps(q,separators=(',',':'))+'\n').encode())
+              while True:
+                line=f.readline()
+                if not line: raise RuntimeError('adapter EOF')
+                v=json.loads(line); out.append({'request':q,'response':v})
+                if v.get('id')==i:
+                  if not v.get('ok',False): raise RuntimeError(method+': '+json.dumps(v))
+                  return v.get('result')
+            hello=req('hello',{}); methods=hello.get('methods',[])
+            out.append({'hello_summary':{'system':hello.get('system'),'methods':methods,'memory_types':hello.get('memory_types'),'breakpoint_kinds':hello.get('breakpoint_kinds')}})
+            def snap(label):
+              row={'label':label,'status':req('status',{})}
+              if 'read_memory' in methods:
+                for a,n in [(0x1821c,'menu_ram'),(0x34920,'renderer_a'),(0x34b20,'renderer_b')]:
+                  try: row[n]=req('read_memory',{'memory_type':'ram','address':a,'length':0x90})
+                  except Exception as e: row[n+'_error']=repr(e)
+              if 'get_state' in methods:
+                try: row['cpu']=req('get_state',{'groups':['cpu']})
+                except Exception as e: row['cpu_error']=repr(e)
+              out.append({'snapshot':row})
+            snap('pre_first_instruction')
+            # Deterministic bounded boot and title traversal. set_input schema is the adapter's verified port/buttons contract.
+            for frames,label in [(360,'boot_360'),(360,'boot_720')]:
+              req('step',{'frames':frames}); snap(label)
+            req('set_input',{'port':0,'buttons':['RUN']}); req('step',{'frames':3}); req('set_input',{'port':0,'buttons':[]}); req('step',{'frames':1}); snap('after_RUN_1')
+            req('step',{'frames':240}); snap('post_RUN_240')
+            req('set_input',{'port':0,'buttons':['RUN']}); req('step',{'frames':3}); req('set_input',{'port':0,'buttons':[]}); req('step',{'frames':1}); req('step',{'frames':180}); snap('after_RUN_2')
+            req('set_input',{'port':0,'buttons':['I']}); req('step',{'frames':3}); req('set_input',{'port':0,'buttons':[]}); req('step',{'frames':1}); req('step',{'frames':180}); snap('after_I_1')
+            # Only after controlled traversal, arm the two statically proven ROMFONT call sites.
+            if 'set_breakpoint' in methods:
+              for a in (0x34944,0x34b46):
+                out.append({'breakpoint':{'address':hex(a),'result':req('set_breakpoint',{'kind':'exec','memory_type':'cpu','start':a,'end':a,'pause_on_hit':True})}})
+            if 'set_trace' in methods: req('set_trace',{'enabled':True})
+            # Short bounded continuation. A breakpoint interruption is evidence, not failure.
+            for label,frames in [('armed_120',120),('armed_240',120),('armed_360',120)]:
+              try: out.append({'bounded_step':label,'result':req('step',{'frames':frames})})
+              except Exception as e: out.append({'bounded_step_error':label,'error':repr(e)}); break
+              st=req('status',{}); out.append({'bounded_status':label,'status':st})
+              if isinstance(st,dict) and st.get('state') in ('frozen','paused','breakpoint'):
+                if 'poll_events' in methods:
+                  try: out.append({'events':req('poll_events',{})})
+                  except Exception as e: out.append({'events_error':repr(e)})
+                if 'get_trace' in methods:
+                  try: out.append({'trace_at_stop':req('get_trace',{'count':192})})
+                  except Exception as e: out.append({'trace_error':repr(e)})
+                if 'call_stack' in methods:
+                  try: out.append({'call_stack':req('call_stack',{})})
+                  except Exception as e: out.append({'call_stack_error':repr(e)})
+                snap('breakpoint_or_stop'); break
+          except Exception as e:
+            out.append({'fatal':repr(e),'traceback':traceback.format_exc()}); raise
+          finally:
+            open('/tmp/dyn/trace.json','w',encoding='utf-8').write(json.dumps(out,ensure_ascii=False,indent=2))
+            try:
+              if conn: conn.close()
+              srv.close()
+            except: pass
+            try: p.terminate(); p.wait(timeout=5)
+            except:
+              try: p.kill()
+              except: pass
+            log.close()
+          PY
+          python3 /tmp/dyn/drive.py
+      - name: Save trace evidence
+        if: always()
+        run: |
+          mkdir -p analysis/cutey_full
+          test -f /tmp/dyn/trace.json && cp /tmp/dyn/trace.json analysis/cutey_full/EMUCAP_DIRECT_TRACE_v4.json || true
+          test -f /tmp/emucap_commit.txt && cp /tmp/emucap_commit.txt analysis/cutey_full/EMUCAP_COMMIT_v4.txt || true
+          test -f /tmp/dyn/mednafen.log && tail -500 /tmp/dyn/mednafen.log > analysis/cutey_full/EMUCAP_MEDNAFEN_LOG_v4.txt || true
+      - name: Upload trace evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: CuteyHoneyFX_emucap_trace_v4
+          path: analysis/cutey_full/EMUCAP_*_v4.*
+          if-no-files-found: warn
+      - name: Commit trace evidence
+        if: always()
+        run: |
+          if ls analysis/cutey_full/EMUCAP_*_v4.* >/dev/null 2>&1; then
+            git config user.name 'Cutey emucap tracer'
+            git config user.email 'actions@users.noreply.github.com'
+            git add analysis/cutey_full/EMUCAP_*_v4.*
+            git diff --cached --quiet || git commit -m 'analysis: Cutey emucap staged input trace v4 [skip ci]'
+            git pull --rebase origin tmp-cutey-poc01 || true
+            git push origin HEAD:tmp-cutey-poc01 || true
+          fi
