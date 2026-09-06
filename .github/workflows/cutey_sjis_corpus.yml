@@ -1,0 +1,36 @@
+name: Cutey Honey FX Whole-Disc SJIS Corpus
+permissions:
+  contents: write
+on:
+  push:
+    branches: [tmp-cutey-poc01]
+    paths:
+      - '.github/workflows/cutey_sjis_corpus.yml'
+      - 'scripts/cutey_fx/extract_sjis_corpus.sh'
+  workflow_dispatch:
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: tmp-cutey-poc01
+      - name: Extract SJIS corpus
+        run: bash scripts/cutey_fx/extract_sjis_corpus.sh
+      - name: Upload corpus
+        uses: actions/upload-artifact@v4
+        with:
+          name: CuteyHoneyFX_SJIS_Corpus
+          path: |
+            analysis/cutey_full/SJIS_NULL_CORPUS.csv
+            analysis/cutey_full/SJIS_NULL_UNIQUE.csv
+            analysis/cutey_full/SJIS_TRANSLATION_QUEUE.csv
+            analysis/cutey_full/SJIS_CORPUS_SUMMARY.json
+      - name: Commit corpus
+        run: |
+          git config user.name 'Cutey corpus extractor'
+          git config user.email 'actions@users.noreply.github.com'
+          git add analysis/cutey_full/SJIS_*.csv analysis/cutey_full/SJIS_CORPUS_SUMMARY.json
+          git diff --cached --quiet || git commit -m 'analysis: Cutey FX whole-disc SJIS corpus [skip ci]'
+          git push origin HEAD:tmp-cutey-poc01
