@@ -6,7 +6,7 @@ src=Path('scripts/cutey_fx/build_alpha_v013.sh').read_text(encoding='utf-8')
 
 # 1) Expand Hangul proxy glyph set for every verified control-block translation.
 old="chars=list(dict.fromkeys('이전으로타이틀돌아가기종료저장불러오큐티하니변신키사라커맨드판지나트레슬안함'))"
-new="chars=list(dict.fromkeys('이전으로타이틀돌아가기종료저장불러오큐티하니변신키사라커맨드판지나트레슬안함섬을떠나라저는무사해요경고무시됐유리코…'))"
+new="chars=list(dict.fromkeys('이전으로타이틀돌아가기종료저장불러오큐티하니변신키사라커맨드판지나트레슬안함섬을떠나라저는무사해요경고무시됐다유리코…'))"
 if old not in src: raise SystemExit('proxy char-set pattern not found')
 src=src.replace(old,new,1)
 
