@@ -47,6 +47,9 @@ jobs:
         working-directory: emucap-src
         shell: pwsh
         run: |
+          # VS2026 promotes CRT getenv deprecation to an error because Mesen uses /WX.
+          # This define restores the warning behavior expected by the pinned MesenCE 2.2.1 source.
+          $env:CL = '/D_CRT_SECURE_NO_WARNINGS'
           .\adapters\mesen2\build.ps1
 
       - name: Assemble portable runtime bundle
