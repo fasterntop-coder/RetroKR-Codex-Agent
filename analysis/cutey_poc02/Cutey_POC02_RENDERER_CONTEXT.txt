@@ -1,0 +1,610 @@
+================================================================================
+ROMFONT CALL @ 0x34944
+   34810:	53 06       	add	r19, r18
+   34812:	d2 d5 00 00 	st.h	r14, 0[r18]
+   34816:	a1 47       	add	1, r29
+   34818:	a8 4f       	cmp	8, r29
+   3481a:	3e 8d       	blt	0x34758
+   3481c:	86 a7 10 00 	addi	16, r6, r28
+   34820:	63 a7 40 00 	addi	64, sp, r27
+   34824:	a0 03       	mov	r0, r29
+   34826:	c2 8a       	br	0x348e8
+   34828:	9b 01       	mov	r27, r12
+   3482a:	bd 01       	mov	r29, r13
+   3482c:	a1 51       	shl	1, r13
+   3482e:	8d 05       	add	r13, r12
+   34830:	cc c5 00 00 	ld.h	0[r12], r14
+   34834:	ce b5 ff ff 	andi	65535, r14, r14
+   34838:	6e 01       	mov	r14, r11
+   3483a:	c8 5d       	sar	8, r14
+   3483c:	fb 01       	mov	r27, r15
+   3483e:	0d a6 20 00 	addi	32, r13, r16
+   34842:	f0 05       	add	r16, r15
+   34844:	2f c6 00 00 	ld.h	0[r15], r17
+   34848:	31 b6 ff ff 	andi	65535, r17, r17
+   3484c:	31 b6 00 ff 	andi	65280, r17, r17
+   34850:	d1 31       	or	r17, r14
+   34852:	5c 02       	mov	r28, r18
+   34854:	4d 06       	add	r13, r18
+   34856:	d2 d5 00 00 	st.h	r14, 0[r18]
+   3485a:	6b b5 ff 00 	andi	255, r11, r11
+   3485e:	5b 01       	mov	r27, r10
+   34860:	8d a5 20 00 	addi	32, r13, r12
+   34864:	4c 05       	add	r12, r10
+   34866:	ca c5 00 00 	ld.h	0[r10], r14
+   3486a:	ce b5 ff ff 	andi	65535, r14, r14
+   3486e:	c8 51       	shl	8, r14
+   34870:	6e 31       	or	r14, r11
+   34872:	fc 01       	mov	r28, r15
+   34874:	0d a6 20 00 	addi	32, r13, r16
+   34878:	f0 05       	add	r16, r15
+   3487a:	6f d5 00 00 	st.h	r11, 0[r15]
+   3487e:	3b 02       	mov	r27, r17
+   34880:	4d a6 10 00 	addi	16, r13, r18
+   34884:	32 06       	add	r18, r17
+   34886:	71 c6 00 00 	ld.h	0[r17], r19
+   3488a:	73 b6 ff ff 	andi	65535, r19, r19
+   3488e:	68 5e       	sar	8, r19
+   34890:	5b 01       	mov	r27, r10
+   34892:	6d a5 30 00 	addi	48, r13, r11
+   34896:	4b 05       	add	r11, r10
+   34898:	8a c5 00 00 	ld.h	0[r10], r12
+   3489c:	8c b5 ff ff 	andi	65535, r12, r12
+   348a0:	8c b5 00 ff 	andi	65280, r12, r12
+   348a4:	6c 32       	or	r12, r19
+   348a6:	dc 01       	mov	r28, r14
+   348a8:	ed a5 40 00 	addi	64, r13, r15
+   348ac:	cf 05       	add	r15, r14
+   348ae:	6e d6 00 00 	st.h	r19, 0[r14]
+   348b2:	1b 02       	mov	r27, r16
+   348b4:	2d a6 10 00 	addi	16, r13, r17
+   348b8:	11 06       	add	r17, r16
+   348ba:	50 c6 00 00 	ld.h	0[r16], r18
+   348be:	52 b6 ff ff 	andi	65535, r18, r18
+   348c2:	52 b6 ff 00 	andi	255, r18, r18
+   348c6:	7b 02       	mov	r27, r19
+   348c8:	4d a5 30 00 	addi	48, r13, r10
+   348cc:	6a 06       	add	r10, r19
+   348ce:	73 c5 00 00 	ld.h	0[r19], r11
+   348d2:	6b b5 ff ff 	andi	65535, r11, r11
+   348d6:	68 51       	shl	8, r11
+   348d8:	4b 32       	or	r11, r18
+   348da:	9c 01       	mov	r28, r12
+   348dc:	ad a5 60 00 	addi	96, r13, r13
+   348e0:	8d 05       	add	r13, r12
+   348e2:	4c d6 00 00 	st.h	r18, 0[r12]
+   348e6:	a1 47       	add	1, r29
+   348e8:	a8 4f       	cmp	8, r29
+   348ea:	3e 8d       	blt	0x34828
+   348ec:	e3 cf 80 00 	ld.w	128[sp], lp
+   348f0:	63 cf 8c 00 	ld.w	140[sp], r27
+   348f4:	83 cf 88 00 	ld.w	136[sp], r28
+   348f8:	a3 cf 84 00 	ld.w	132[sp], r29
+   348fc:	63 a4 90 00 	addi	144, sp, sp
+   34900:	1f 18       	jmp	lp
+   34902:	63 a4 d0 ff 	addi	-48, sp, sp
+   34906:	e3 dc 2c 00 	st.w	r7, 44[sp]
+   3490a:	e3 df 00 00 	st.w	lp, 0[sp]
+   3490e:	83 de 28 00 	st.w	r20, 40[sp]
+   34912:	a3 de 24 00 	st.w	r21, 36[sp]
+   34916:	c3 de 20 00 	st.w	r22, 32[sp]
+   3491a:	e3 de 1c 00 	st.w	r23, 28[sp]
+   3491e:	03 df 18 00 	st.w	r24, 24[sp]
+   34922:	23 df 14 00 	st.w	r25, 20[sp]
+   34926:	43 df 10 00 	st.w	r26, 16[sp]
+   3492a:	63 df 0c 00 	st.w	r27, 12[sp]
+   3492e:	83 df 08 00 	st.w	r28, 8[sp]
+   34932:	a3 df 04 00 	st.w	r29, 4[sp]
+   34936:	fd af d2 36 	jal	0x8008
+   3493a:	a8 02       	mov	r8, r21
+   3493c:	86 02       	mov	r6, r20
+   3493e:	f5 00       	mov	r21, r7
+   34940:	c3 cc 2c 00 	ld.w	44[sp], r6
+   34944:	ec af c8 b6 	jal	0xfff0000c
+   34948:	aa 03       	mov	r10, r29
+   3494a:	34 03       	mov	r20, r25
+   3494c:	a5 4e       	cmp	5, r21
+   3494e:	3e 94       	bne	0x3498c
+   34950:	00 03       	mov	r0, r24
+   34952:	24 8a       	br	0x34976
+   34954:	9d c3 00 00 	ld.b	0[r29], r28
+   34958:	9c b7 ff 00 	andi	255, r28, r28
+   3495c:	b9 01       	mov	r25, r13
+   3495e:	d8 01       	mov	r24, r14
+   34960:	c1 51       	shl	1, r14
+   34962:	ae 05       	add	r14, r13
+   34964:	fc b5 ff ff 	andi	65535, r28, r15
+   34968:	e8 51       	shl	8, r15
+   3496a:	ef b5 ff ff 	andi	65535, r15, r15
+   3496e:	ed d5 00 00 	st.h	r15, 0[r13]
+   34972:	a1 47       	add	1, r29
+   34974:	01 47       	add	1, r24
+   34976:	0c 4f       	cmp	12, r24
+   34978:	dc 8d       	blt	0x34954
+   3497a:	19 d4 18 00 	st.h	r0, 24[r25]
+   3497e:	19 d4 1a 00 	st.h	r0, 26[r25]
+   34982:	19 d4 1c 00 	st.h	r0, 28[r25]
+   34986:	19 d4 1e 00 	st.h	r0, 30[r25]
+   3498a:	e4 8a       	br	0x34a6e
+   3498c:	a3 4e       	cmp	3, r21
+   3498e:	3e 94       	bne	0x349cc
+   34990:	00 03       	mov	r0, r24
+   34992:	24 8a       	br	0x349b6
+   34994:	9d c3 00 00 	ld.b	0[r29], r28
+   34998:	9c b7 ff 00 	andi	255, r28, r28
+   3499c:	59 02       	mov	r25, r18
+   3499e:	78 02       	mov	r24, r19
+   349a0:	61 52       	shl	1, r19
+   349a2:	53 06       	add	r19, r18
+   349a4:	5c b5 ff ff 	andi	65535, r28, r10
+   349a8:	48 51       	shl	8, r10
+   349aa:	4a b5 ff ff 	andi	65535, r10, r10
+   349ae:	52 d5 00 00 	st.h	r10, 0[r18]
+   349b2:	a1 47       	add	1, r29
+   349b4:	01 47       	add	1, r24
+   349b6:	0c 4f       	cmp	12, r24
+   349b8:	dc 8d       	blt	0x34994
+   349ba:	19 d4 18 00 	st.h	r0, 24[r25]
+   349be:	19 d4 1a 00 	st.h	r0, 26[r25]
+   349c2:	19 d4 1c 00 	st.h	r0, 28[r25]
+   349c6:	19 d4 1e 00 	st.h	r0, 30[r25]
+   349ca:	a4 8a       	br	0x34a6e
+   349cc:	a1 4e       	cmp	1, r21
+   349ce:	60 94       	bne	0x34a2e
+   349d0:	00 03       	mov	r0, r24
+   349d2:	46 8a       	br	0x34a18
+   349d4:	9d c3 00 00 	ld.b	0[r29], r28
+   349d8:	9c b7 ff 00 	andi	255, r28, r28
+   349dc:	7d c3 01 00 	ld.b	1[r29], r27
+   349e0:	7b b7 ff 00 	andi	255, r27, r27
+   349e4:	5d c3 02 00 	ld.b	2[r29], r26
+   349e8:	5a b7 ff 00 	andi	255, r26, r26
+   349ec:	fc b5 ff ff 	andi	65535, r28, r15
+   349f0:	e8 51       	shl	8, r15
+   349f2:	1b b6 ff ff 	andi	65535, r27, r16
+   349f6:	f0 31       	or	r16, r15
+   349f8:	ef b5 f0 ff 	andi	65520, r15, r15
+   349fc:	f9 d5 00 00 	st.h	r15, 0[r25]
+   34a00:	0c 52       	shl	12, r16
+   34a02:	7a b6 ff ff 	andi	65535, r26, r19
+   34a06:	64 52       	shl	4, r19
+   34a08:	13 32       	or	r19, r16
+   34a0a:	10 b6 f0 ff 	andi	65520, r16, r16
+   34a0e:	19 d6 02 00 	st.h	r16, 2[r25]
+   34a12:	a3 47       	add	3, r29
+   34a14:	24 47       	add	4, r25
+   34a16:	01 47       	add	1, r24
+   34a18:	06 4f       	cmp	6, r24
+   34a1a:	ba 8d       	blt	0x349d4
+   34a1c:	19 d4 00 00 	st.h	r0, 0[r25]
+   34a20:	19 d4 02 00 	st.h	r0, 2[r25]
+   34a24:	19 d4 04 00 	st.h	r0, 4[r25]
+   34a28:	19 d4 06 00 	st.h	r0, 6[r25]
+   34a2c:	42 8a       	br	0x34a6e
+   34a2e:	a0 4e       	cmp	0, r21
+   34a30:	3e 94       	bne	0x34a6e
+   34a32:	00 03       	mov	r0, r24
+   34a34:	32 8a       	br	0x34a66
+   34a36:	9d c3 00 00 	ld.b	0[r29], r28
+   34a3a:	9c b7 ff 00 	andi	255, r28, r28
+   34a3e:	7d c3 01 00 	ld.b	1[r29], r27
+   34a42:	7b b7 ff 00 	andi	255, r27, r27
+   34a46:	dc b5 ff ff 	andi	65535, r28, r14
+   34a4a:	c8 51       	shl	8, r14
+   34a4c:	fb b5 ff ff 	andi	65535, r27, r15
+   34a50:	cf 31       	or	r15, r14
+   34a52:	ce b5 ff ff 	andi	65535, r14, r14
+   34a56:	19 02       	mov	r25, r16
+   34a58:	38 02       	mov	r24, r17
+   34a5a:	21 52       	shl	1, r17
+   34a5c:	11 06       	add	r17, r16
+   34a5e:	d0 d5 00 00 	st.h	r14, 0[r16]
+   34a62:	a2 47       	add	2, r29
+   34a64:	01 47       	add	1, r24
+   34a66:	60 a2 10 00 	movea	16, r0, r19
+   34a6a:	13 0f       	cmp	r19, r24
+   34a6c:	ca 8d       	blt	0x34a36
+   34a6e:	c0 02       	mov	r0, r22
+   34a70:	00 03       	mov	r0, r24
+   34a72:	12 8a       	br	0x34a84
+   34a74:	94 01       	mov	r20, r12
+   34a76:	b8 01       	mov	r24, r13
+   34a78:	a1 51       	shl	1, r13
+   34a7a:	8d 05       	add	r13, r12
+   34a7c:	cc c5 00 00 	ld.h	0[r12], r14
+   34a80:	ce 32       	or	r14, r22
+   34a82:	01 47       	add	1, r24
+   34a84:	00 a2 10 00 	movea	16, r0, r16
+   34a88:	10 0f       	cmp	r16, r24
+   34a8a:	ea 8d       	blt	0x34a74
+   34a8c:	36 b6 ff ff 	andi	65535, r22, r17
+   34a90:	20 4e       	cmp	0, r17
+   34a92:	06 94       	bne	0x34a98
+   34a94:	e0 02       	mov	r0, r23
+   34a96:	22 8a       	br	0x34ab8
+   34a98:	e0 02       	mov	r0, r23
+   34a9a:	00 bf 01 00 	movhi	1, r0, r24
+   34a9e:	18 a3 00 80 	movea	-32768, r24, r24
+   34aa2:	12 8a       	br	0x34ab4
+   34aa4:	56 b5 ff ff 	andi	65535, r22, r10
+   34aa8:	58 35       	and	r24, r10
+   34aaa:	0e 94       	bne	0x34ab8
+   34aac:	e1 46       	add	1, r23
+   34aae:	98 01       	mov	r24, r12
+   34ab0:	81 5d       	sar	1, r12
+   34ab2:	0c 03       	mov	r12, r24
+   34ab4:	00 4f       	cmp	0, r24
+   34ab6:	ee 95       	bne	0x34aa4
+   34ab8:	00 03       	mov	r0, r24
+   34aba:	1a 8a       	br	0x34ad4
+   34abc:	f4 01       	mov	r20, r15
+   34abe:	18 02       	mov	r24, r16
+   34ac0:	01 52       	shl	1, r16
+================================================================================
+ROMFONT CALL @ 0x34B46
+   34a20:	19 d4 02 00 	st.h	r0, 2[r25]
+   34a24:	19 d4 04 00 	st.h	r0, 4[r25]
+   34a28:	19 d4 06 00 	st.h	r0, 6[r25]
+   34a2c:	42 8a       	br	0x34a6e
+   34a2e:	a0 4e       	cmp	0, r21
+   34a30:	3e 94       	bne	0x34a6e
+   34a32:	00 03       	mov	r0, r24
+   34a34:	32 8a       	br	0x34a66
+   34a36:	9d c3 00 00 	ld.b	0[r29], r28
+   34a3a:	9c b7 ff 00 	andi	255, r28, r28
+   34a3e:	7d c3 01 00 	ld.b	1[r29], r27
+   34a42:	7b b7 ff 00 	andi	255, r27, r27
+   34a46:	dc b5 ff ff 	andi	65535, r28, r14
+   34a4a:	c8 51       	shl	8, r14
+   34a4c:	fb b5 ff ff 	andi	65535, r27, r15
+   34a50:	cf 31       	or	r15, r14
+   34a52:	ce b5 ff ff 	andi	65535, r14, r14
+   34a56:	19 02       	mov	r25, r16
+   34a58:	38 02       	mov	r24, r17
+   34a5a:	21 52       	shl	1, r17
+   34a5c:	11 06       	add	r17, r16
+   34a5e:	d0 d5 00 00 	st.h	r14, 0[r16]
+   34a62:	a2 47       	add	2, r29
+   34a64:	01 47       	add	1, r24
+   34a66:	60 a2 10 00 	movea	16, r0, r19
+   34a6a:	13 0f       	cmp	r19, r24
+   34a6c:	ca 8d       	blt	0x34a36
+   34a6e:	c0 02       	mov	r0, r22
+   34a70:	00 03       	mov	r0, r24
+   34a72:	12 8a       	br	0x34a84
+   34a74:	94 01       	mov	r20, r12
+   34a76:	b8 01       	mov	r24, r13
+   34a78:	a1 51       	shl	1, r13
+   34a7a:	8d 05       	add	r13, r12
+   34a7c:	cc c5 00 00 	ld.h	0[r12], r14
+   34a80:	ce 32       	or	r14, r22
+   34a82:	01 47       	add	1, r24
+   34a84:	00 a2 10 00 	movea	16, r0, r16
+   34a88:	10 0f       	cmp	r16, r24
+   34a8a:	ea 8d       	blt	0x34a74
+   34a8c:	36 b6 ff ff 	andi	65535, r22, r17
+   34a90:	20 4e       	cmp	0, r17
+   34a92:	06 94       	bne	0x34a98
+   34a94:	e0 02       	mov	r0, r23
+   34a96:	22 8a       	br	0x34ab8
+   34a98:	e0 02       	mov	r0, r23
+   34a9a:	00 bf 01 00 	movhi	1, r0, r24
+   34a9e:	18 a3 00 80 	movea	-32768, r24, r24
+   34aa2:	12 8a       	br	0x34ab4
+   34aa4:	56 b5 ff ff 	andi	65535, r22, r10
+   34aa8:	58 35       	and	r24, r10
+   34aaa:	0e 94       	bne	0x34ab8
+   34aac:	e1 46       	add	1, r23
+   34aae:	98 01       	mov	r24, r12
+   34ab0:	81 5d       	sar	1, r12
+   34ab2:	0c 03       	mov	r12, r24
+   34ab4:	00 4f       	cmp	0, r24
+   34ab6:	ee 95       	bne	0x34aa4
+   34ab8:	00 03       	mov	r0, r24
+   34aba:	1a 8a       	br	0x34ad4
+   34abc:	f4 01       	mov	r20, r15
+   34abe:	18 02       	mov	r24, r16
+   34ac0:	01 52       	shl	1, r16
+   34ac2:	f0 05       	add	r16, r15
+   34ac4:	2f c6 00 00 	ld.h	0[r15], r17
+   34ac8:	31 b6 ff ff 	andi	65535, r17, r17
+   34acc:	37 12       	shl	r23, r17
+   34ace:	2f d6 00 00 	st.h	r17, 0[r15]
+   34ad2:	01 47       	add	1, r24
+   34ad4:	40 a1 10 00 	movea	16, r0, r10
+   34ad8:	0a 0f       	cmp	r10, r24
+   34ada:	e2 8d       	blt	0x34abc
+   34adc:	e3 cf 00 00 	ld.w	0[sp], lp
+   34ae0:	83 ce 28 00 	ld.w	40[sp], r20
+   34ae4:	a3 ce 24 00 	ld.w	36[sp], r21
+   34ae8:	c3 ce 20 00 	ld.w	32[sp], r22
+   34aec:	e3 ce 1c 00 	ld.w	28[sp], r23
+   34af0:	03 cf 18 00 	ld.w	24[sp], r24
+   34af4:	23 cf 14 00 	ld.w	20[sp], r25
+   34af8:	43 cf 10 00 	ld.w	16[sp], r26
+   34afc:	63 cf 0c 00 	ld.w	12[sp], r27
+   34b00:	83 cf 08 00 	ld.w	8[sp], r28
+   34b04:	a3 cf 04 00 	ld.w	4[sp], r29
+   34b08:	63 a4 30 00 	addi	48, sp, sp
+   34b0c:	1f 18       	jmp	lp
+   34b0e:	63 a4 d8 ff 	addi	-40, sp, sp
+   34b12:	c3 dc 20 00 	st.w	r6, 32[sp]
+   34b16:	e3 dc 24 00 	st.w	r7, 36[sp]
+   34b1a:	e3 df 00 00 	st.w	lp, 0[sp]
+   34b1e:	e3 de 1c 00 	st.w	r23, 28[sp]
+   34b22:	03 df 18 00 	st.w	r24, 24[sp]
+   34b26:	23 df 14 00 	st.w	r25, 20[sp]
+   34b2a:	43 df 10 00 	st.w	r26, 16[sp]
+   34b2e:	63 df 0c 00 	st.w	r27, 12[sp]
+   34b32:	83 df 08 00 	st.w	r28, 8[sp]
+   34b36:	a3 df 04 00 	st.w	r29, 4[sp]
+   34b3a:	fd af ce 34 	jal	0x8008
+   34b3e:	e8 02       	mov	r8, r23
+   34b40:	f7 00       	mov	r23, r7
+   34b42:	c3 cc 24 00 	ld.w	36[sp], r6
+   34b46:	ec af c6 b4 	jal	0xfff0000c
+   34b4a:	aa 03       	mov	r10, r29
+   34b4c:	23 cf 20 00 	ld.w	32[sp], r25
+   34b50:	e5 4e       	cmp	5, r23
+   34b52:	3e 94       	bne	0x34b90
+   34b54:	00 03       	mov	r0, r24
+   34b56:	24 8a       	br	0x34b7a
+   34b58:	9d c3 00 00 	ld.b	0[r29], r28
+   34b5c:	9c b7 ff 00 	andi	255, r28, r28
+   34b60:	b9 01       	mov	r25, r13
+   34b62:	d8 01       	mov	r24, r14
+   34b64:	c1 51       	shl	1, r14
+   34b66:	ae 05       	add	r14, r13
+   34b68:	fc b5 ff ff 	andi	65535, r28, r15
+   34b6c:	e8 51       	shl	8, r15
+   34b6e:	ef b5 ff ff 	andi	65535, r15, r15
+   34b72:	ed d5 00 00 	st.h	r15, 0[r13]
+   34b76:	a1 47       	add	1, r29
+   34b78:	01 47       	add	1, r24
+   34b7a:	0c 4f       	cmp	12, r24
+   34b7c:	dc 8d       	blt	0x34b58
+   34b7e:	19 d4 18 00 	st.h	r0, 24[r25]
+   34b82:	19 d4 1a 00 	st.h	r0, 26[r25]
+   34b86:	19 d4 1c 00 	st.h	r0, 28[r25]
+   34b8a:	19 d4 1e 00 	st.h	r0, 30[r25]
+   34b8e:	e4 8a       	br	0x34c72
+   34b90:	e3 4e       	cmp	3, r23
+   34b92:	3e 94       	bne	0x34bd0
+   34b94:	00 03       	mov	r0, r24
+   34b96:	24 8a       	br	0x34bba
+   34b98:	9d c3 00 00 	ld.b	0[r29], r28
+   34b9c:	9c b7 ff 00 	andi	255, r28, r28
+   34ba0:	59 02       	mov	r25, r18
+   34ba2:	78 02       	mov	r24, r19
+   34ba4:	61 52       	shl	1, r19
+   34ba6:	53 06       	add	r19, r18
+   34ba8:	5c b5 ff ff 	andi	65535, r28, r10
+   34bac:	48 51       	shl	8, r10
+   34bae:	4a b5 ff ff 	andi	65535, r10, r10
+   34bb2:	52 d5 00 00 	st.h	r10, 0[r18]
+   34bb6:	a1 47       	add	1, r29
+   34bb8:	01 47       	add	1, r24
+   34bba:	0c 4f       	cmp	12, r24
+   34bbc:	dc 8d       	blt	0x34b98
+   34bbe:	19 d4 18 00 	st.h	r0, 24[r25]
+   34bc2:	19 d4 1a 00 	st.h	r0, 26[r25]
+   34bc6:	19 d4 1c 00 	st.h	r0, 28[r25]
+   34bca:	19 d4 1e 00 	st.h	r0, 30[r25]
+   34bce:	a4 8a       	br	0x34c72
+   34bd0:	e1 4e       	cmp	1, r23
+   34bd2:	60 94       	bne	0x34c32
+   34bd4:	00 03       	mov	r0, r24
+   34bd6:	46 8a       	br	0x34c1c
+   34bd8:	9d c3 00 00 	ld.b	0[r29], r28
+   34bdc:	9c b7 ff 00 	andi	255, r28, r28
+   34be0:	7d c3 01 00 	ld.b	1[r29], r27
+   34be4:	7b b7 ff 00 	andi	255, r27, r27
+   34be8:	5d c3 02 00 	ld.b	2[r29], r26
+   34bec:	5a b7 ff 00 	andi	255, r26, r26
+   34bf0:	fc b5 ff ff 	andi	65535, r28, r15
+   34bf4:	e8 51       	shl	8, r15
+   34bf6:	1b b6 ff ff 	andi	65535, r27, r16
+   34bfa:	f0 31       	or	r16, r15
+   34bfc:	ef b5 f0 ff 	andi	65520, r15, r15
+   34c00:	f9 d5 00 00 	st.h	r15, 0[r25]
+   34c04:	0c 52       	shl	12, r16
+   34c06:	7a b6 ff ff 	andi	65535, r26, r19
+   34c0a:	64 52       	shl	4, r19
+   34c0c:	13 32       	or	r19, r16
+   34c0e:	10 b6 f0 ff 	andi	65520, r16, r16
+   34c12:	19 d6 02 00 	st.h	r16, 2[r25]
+   34c16:	a3 47       	add	3, r29
+   34c18:	24 47       	add	4, r25
+   34c1a:	01 47       	add	1, r24
+   34c1c:	06 4f       	cmp	6, r24
+   34c1e:	ba 8d       	blt	0x34bd8
+   34c20:	19 d4 00 00 	st.h	r0, 0[r25]
+   34c24:	19 d4 02 00 	st.h	r0, 2[r25]
+   34c28:	19 d4 04 00 	st.h	r0, 4[r25]
+   34c2c:	19 d4 06 00 	st.h	r0, 6[r25]
+   34c30:	42 8a       	br	0x34c72
+   34c32:	e0 4e       	cmp	0, r23
+   34c34:	3e 94       	bne	0x34c72
+   34c36:	00 03       	mov	r0, r24
+   34c38:	32 8a       	br	0x34c6a
+   34c3a:	9d c3 00 00 	ld.b	0[r29], r28
+   34c3e:	9c b7 ff 00 	andi	255, r28, r28
+   34c42:	7d c3 01 00 	ld.b	1[r29], r27
+   34c46:	7b b7 ff 00 	andi	255, r27, r27
+   34c4a:	dc b5 ff ff 	andi	65535, r28, r14
+   34c4e:	c8 51       	shl	8, r14
+   34c50:	fb b5 ff ff 	andi	65535, r27, r15
+   34c54:	cf 31       	or	r15, r14
+   34c56:	ce b5 ff ff 	andi	65535, r14, r14
+   34c5a:	19 02       	mov	r25, r16
+   34c5c:	38 02       	mov	r24, r17
+   34c5e:	21 52       	shl	1, r17
+   34c60:	11 06       	add	r17, r16
+   34c62:	d0 d5 00 00 	st.h	r14, 0[r16]
+   34c66:	a2 47       	add	2, r29
+   34c68:	01 47       	add	1, r24
+   34c6a:	60 a2 10 00 	movea	16, r0, r19
+   34c6e:	13 0f       	cmp	r19, r24
+   34c70:	ca 8d       	blt	0x34c3a
+   34c72:	e3 cf 00 00 	ld.w	0[sp], lp
+   34c76:	e3 ce 1c 00 	ld.w	28[sp], r23
+   34c7a:	03 cf 18 00 	ld.w	24[sp], r24
+   34c7e:	23 cf 14 00 	ld.w	20[sp], r25
+   34c82:	43 cf 10 00 	ld.w	16[sp], r26
+   34c86:	63 cf 0c 00 	ld.w	12[sp], r27
+   34c8a:	83 cf 08 00 	ld.w	8[sp], r28
+   34c8e:	a3 cf 04 00 	ld.w	4[sp], r29
+   34c92:	63 a4 28 00 	addi	40, sp, sp
+   34c96:	1f 18       	jmp	lp
+   34c98:	63 a4 d4 ff 	addi	-44, sp, sp
+   34c9c:	e3 df 20 00 	st.w	lp, 32[sp]
+   34ca0:	43 df 28 00 	st.w	r26, 40[sp]
+   34ca4:	a3 df 24 00 	st.w	r29, 36[sp]
+   34ca8:	fd af 60 33 	jal	0x8008
+   34cac:	a0 03       	mov	r0, r29
+   34cae:	18 8a       	br	0x34cc6
+   34cb0:	63 01       	mov	sp, r11
+   34cb2:	9d 01       	mov	r29, r12
+   34cb4:	81 51       	shl	1, r12
+   34cb6:	6c 05       	add	r12, r11
+   34cb8:	a6 01       	mov	r6, r13
+   34cba:	ac 05       	add	r12, r13
+   34cbc:	cd c5 00 00 	ld.h	0[r13], r14
+   34cc0:	cb d5 00 00 	st.h	r14, 0[r11]
+   34cc4:	a1 47       	add	1, r29
+   34cc6:	00 a2 10 00 	movea	16, r0, r16
+   34cca:	b0 0f       	cmp	r16, r29
+   34ccc:	e4 8d       	blt	0x34cb0
+   34cce:	46 03       	mov	r6, r26
+   34cd0:	a0 03       	mov	r0, r29
+   34cd2:	1e 8a       	br	0x34cf0
+   34cd4:	5a 02       	mov	r26, r18
+   34cd6:	7d 02       	mov	r29, r19
+   34cd8:	61 52       	shl	1, r19
+   34cda:	53 06       	add	r19, r18
+
+================================================================================
+DIRECT JAL XREFS INTO 0x34800-0x34CFF
+   33e90:	00 ac 7e 0c 	jal	0x34b0e
+   33e9e:	00 ac 70 0c 	jal	0x34b0e
+   33ebc:	00 ac 46 0a 	jal	0x34902
+   33ec8:	00 ac 3a 0a 	jal	0x34902
+   34234:	00 ac da 08 	jal	0x34b0e
+   34242:	00 ac cc 08 	jal	0x34b0e
+   34264:	00 ac 9e 06 	jal	0x34902
+   34270:	00 ac 92 06 	jal	0x34902
+
+================================================================================
+NEARBY RETURNS / SP ADJUSTMENTS
+   3454a:	e3 cf 00 00 	ld.w	0[sp], lp
+   3454e:	23 cf 14 00 	ld.w	20[sp], r25
+   34552:	43 cf 10 00 	ld.w	16[sp], r26
+   34556:	63 cf 0c 00 	ld.w	12[sp], r27
+   3455a:	83 cf 08 00 	ld.w	8[sp], r28
+   3455e:	a3 cf 04 00 	ld.w	4[sp], r29
+   34562:	63 a4 18 00 	addi	24, sp, sp
+   34568:	63 a4 c8 ff 	addi	-56, sp, sp
+   3456c:	e3 df 20 00 	st.w	lp, 32[sp]
+   34570:	23 df 34 00 	st.w	r25, 52[sp]
+   34574:	43 df 30 00 	st.w	r26, 48[sp]
+   34578:	63 df 2c 00 	st.w	r27, 44[sp]
+   3457c:	83 df 28 00 	st.w	r28, 40[sp]
+   34580:	a3 df 24 00 	st.w	r29, 36[sp]
+   3458e:	83 03       	mov	sp, r28
+   345ac:	83 03       	mov	sp, r28
+   345d2:	83 03       	mov	sp, r28
+   34600:	83 03       	mov	sp, r28
+   34654:	83 03       	mov	sp, r28
+   3468c:	83 03       	mov	sp, r28
+   346c4:	83 03       	mov	sp, r28
+   346fc:	e3 cf 20 00 	ld.w	32[sp], lp
+   34700:	23 cf 34 00 	ld.w	52[sp], r25
+   34704:	43 cf 30 00 	ld.w	48[sp], r26
+   34708:	63 cf 2c 00 	ld.w	44[sp], r27
+   3470c:	83 cf 28 00 	ld.w	40[sp], r28
+   34710:	a3 cf 24 00 	ld.w	36[sp], r29
+   34714:	63 a4 38 00 	addi	56, sp, sp
+   3471a:	63 a4 70 ff 	addi	-144, sp, sp
+   3471e:	e3 df 80 00 	st.w	lp, 128[sp]
+   34722:	63 df 8c 00 	st.w	r27, 140[sp]
+   34726:	83 df 88 00 	st.w	r28, 136[sp]
+   3472a:	a3 df 84 00 	st.w	r29, 132[sp]
+   34732:	63 03       	mov	sp, r27
+   34752:	63 03       	mov	sp, r27
+   34820:	63 a7 40 00 	addi	64, sp, r27
+   348ec:	e3 cf 80 00 	ld.w	128[sp], lp
+   348f0:	63 cf 8c 00 	ld.w	140[sp], r27
+   348f4:	83 cf 88 00 	ld.w	136[sp], r28
+   348f8:	a3 cf 84 00 	ld.w	132[sp], r29
+   348fc:	63 a4 90 00 	addi	144, sp, sp
+   34902:	63 a4 d0 ff 	addi	-48, sp, sp
+   34906:	e3 dc 2c 00 	st.w	r7, 44[sp]
+   3490a:	e3 df 00 00 	st.w	lp, 0[sp]
+   3490e:	83 de 28 00 	st.w	r20, 40[sp]
+   34912:	a3 de 24 00 	st.w	r21, 36[sp]
+   34916:	c3 de 20 00 	st.w	r22, 32[sp]
+   3491a:	e3 de 1c 00 	st.w	r23, 28[sp]
+   3491e:	03 df 18 00 	st.w	r24, 24[sp]
+   34922:	23 df 14 00 	st.w	r25, 20[sp]
+   34926:	43 df 10 00 	st.w	r26, 16[sp]
+   3492a:	63 df 0c 00 	st.w	r27, 12[sp]
+   3492e:	83 df 08 00 	st.w	r28, 8[sp]
+   34932:	a3 df 04 00 	st.w	r29, 4[sp]
+   34940:	c3 cc 2c 00 	ld.w	44[sp], r6
+   34adc:	e3 cf 00 00 	ld.w	0[sp], lp
+   34ae0:	83 ce 28 00 	ld.w	40[sp], r20
+   34ae4:	a3 ce 24 00 	ld.w	36[sp], r21
+   34ae8:	c3 ce 20 00 	ld.w	32[sp], r22
+   34aec:	e3 ce 1c 00 	ld.w	28[sp], r23
+   34af0:	03 cf 18 00 	ld.w	24[sp], r24
+   34af4:	23 cf 14 00 	ld.w	20[sp], r25
+   34af8:	43 cf 10 00 	ld.w	16[sp], r26
+   34afc:	63 cf 0c 00 	ld.w	12[sp], r27
+   34b00:	83 cf 08 00 	ld.w	8[sp], r28
+   34b04:	a3 cf 04 00 	ld.w	4[sp], r29
+   34b08:	63 a4 30 00 	addi	48, sp, sp
+   34b0e:	63 a4 d8 ff 	addi	-40, sp, sp
+   34b12:	c3 dc 20 00 	st.w	r6, 32[sp]
+   34b16:	e3 dc 24 00 	st.w	r7, 36[sp]
+   34b1a:	e3 df 00 00 	st.w	lp, 0[sp]
+   34b1e:	e3 de 1c 00 	st.w	r23, 28[sp]
+   34b22:	03 df 18 00 	st.w	r24, 24[sp]
+   34b26:	23 df 14 00 	st.w	r25, 20[sp]
+   34b2a:	43 df 10 00 	st.w	r26, 16[sp]
+   34b2e:	63 df 0c 00 	st.w	r27, 12[sp]
+   34b32:	83 df 08 00 	st.w	r28, 8[sp]
+   34b36:	a3 df 04 00 	st.w	r29, 4[sp]
+   34b42:	c3 cc 24 00 	ld.w	36[sp], r6
+   34b4c:	23 cf 20 00 	ld.w	32[sp], r25
+   34c72:	e3 cf 00 00 	ld.w	0[sp], lp
+   34c76:	e3 ce 1c 00 	ld.w	28[sp], r23
+   34c7a:	03 cf 18 00 	ld.w	24[sp], r24
+   34c7e:	23 cf 14 00 	ld.w	20[sp], r25
+   34c82:	43 cf 10 00 	ld.w	16[sp], r26
+   34c86:	63 cf 0c 00 	ld.w	12[sp], r27
+   34c8a:	83 cf 08 00 	ld.w	8[sp], r28
+   34c8e:	a3 cf 04 00 	ld.w	4[sp], r29
+   34c92:	63 a4 28 00 	addi	40, sp, sp
+   34c98:	63 a4 d4 ff 	addi	-44, sp, sp
+   34c9c:	e3 df 20 00 	st.w	lp, 32[sp]
+   34ca0:	43 df 28 00 	st.w	r26, 40[sp]
+   34ca4:	a3 df 24 00 	st.w	r29, 36[sp]
+   34cb0:	63 01       	mov	sp, r11
+   34cdc:	43 01       	mov	sp, r10
+   34cfc:	03 02       	mov	sp, r16
+   34d3e:	03 02       	mov	sp, r16
+   34d6c:	c3 01       	mov	sp, r14
+   34da4:	c3 01       	mov	sp, r14
+   34dd6:	e3 cf 20 00 	ld.w	32[sp], lp
+   34dda:	43 cf 28 00 	ld.w	40[sp], r26
+   34dde:	a3 cf 24 00 	ld.w	36[sp], r29
+   34de2:	63 a4 2c 00 	addi	44, sp, sp
+   34de8:	63 a4 68 ff 	addi	-152, sp, sp
+   34dec:	e3 df 80 00 	st.w	lp, 128[sp]
+   34df0:	23 df 94 00 	st.w	r25, 148[sp]
+   34df4:	43 df 90 00 	st.w	r26, 144[sp]
+   34df8:	63 df 8c 00 	st.w	r27, 140[sp]
+   34dfc:	83 df 88 00 	st.w	r28, 136[sp]
+   34e00:	a3 df 84 00 	st.w	r29, 132[sp]
+   34e0c:	63 01       	mov	sp, r11
+   34e2c:	63 03       	mov	sp, r27
