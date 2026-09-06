@@ -1,0 +1,4200 @@
+[
+  {
+    "request": {
+      "v": 1,
+      "id": 1,
+      "method": "hello",
+      "params": {}
+    },
+    "response": {
+      "id": 1,
+      "ok": true,
+      "result": {
+        "protocol_version": 1,
+        "system": "pcfx",
+        "adapter": "mednafen",
+        "build": "3887f9e@mednafen-1.32.1",
+        "debugger": true,
+        "host_features": [
+          "controlled_start"
+        ],
+        "methods": [
+          "hello",
+          "status",
+          "save_state",
+          "load_state",
+          "run_frames",
+          "set_input",
+          "press_buttons",
+          "screenshot",
+          "pause",
+          "resume",
+          "step",
+          "reset",
+          "get_state",
+          "read_memory",
+          "find_pattern",
+          "dump_memory",
+          "write_memory",
+          "probe",
+          "set_breakpoint",
+          "clear_breakpoint",
+          "clear_all_breakpoints",
+          "list_breakpoints",
+          "poll_events",
+          "disassemble",
+          "step_instructions",
+          "watch_register",
+          "set_trace",
+          "get_trace",
+          "call_stack",
+          "set_layer_enable",
+          "get_rom_info"
+        ],
+        "memory_types": [
+          "cpu",
+          "ram",
+          "backup",
+          "exbackup",
+          "bios",
+          "kram0",
+          "kram1",
+          "vdcvram0",
+          "vdcvram1",
+          "vce",
+          "track0-2-4395"
+        ],
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "breakpoint_kinds": [
+          {
+            "kind": "exec",
+            "range_unit": "address",
+            "range_mode": "inclusive",
+            "memory_type_used": true,
+            "snapshot": true,
+            "snapshot_timing": "backend_stop"
+          },
+          {
+            "kind": "read",
+            "range_unit": "address",
+            "range_mode": "inclusive",
+            "memory_type_used": true,
+            "snapshot": true,
+            "snapshot_timing": "backend_stop"
+          },
+          {
+            "kind": "write",
+            "range_unit": "address",
+            "range_mode": "inclusive",
+            "memory_type_used": true,
+            "snapshot": true,
+            "snapshot_timing": "backend_stop"
+          }
+        ],
+        "contracts": {
+          "catalog": "emucap-feature-contracts/v3",
+          "active_exceptions": [
+            "mednafen.input-hold.port-zero-only",
+            "mednafen.input-pulse.port-zero-only",
+            "mednafen.call-stack.best-effort",
+            "mednafen.pcfx.protected-write-spaces"
+          ]
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "content": "/tmp/game/game.cue"
+      }
+    }
+  },
+  {
+    "hello_summary": {
+      "system": "pcfx",
+      "methods": [
+        "hello",
+        "status",
+        "save_state",
+        "load_state",
+        "run_frames",
+        "set_input",
+        "press_buttons",
+        "screenshot",
+        "pause",
+        "resume",
+        "step",
+        "reset",
+        "get_state",
+        "read_memory",
+        "find_pattern",
+        "dump_memory",
+        "write_memory",
+        "probe",
+        "set_breakpoint",
+        "clear_breakpoint",
+        "clear_all_breakpoints",
+        "list_breakpoints",
+        "poll_events",
+        "disassemble",
+        "step_instructions",
+        "watch_register",
+        "set_trace",
+        "get_trace",
+        "call_stack",
+        "set_layer_enable",
+        "get_rom_info"
+      ],
+      "memory_types": [
+        "cpu",
+        "ram",
+        "backup",
+        "exbackup",
+        "bios",
+        "kram0",
+        "kram1",
+        "vdcvram0",
+        "vdcvram1",
+        "vce",
+        "track0-2-4395"
+      ],
+      "breakpoint_kinds": [
+        {
+          "kind": "exec",
+          "range_unit": "address",
+          "range_mode": "inclusive",
+          "memory_type_used": true,
+          "snapshot": true,
+          "snapshot_timing": "backend_stop"
+        },
+        {
+          "kind": "read",
+          "range_unit": "address",
+          "range_mode": "inclusive",
+          "memory_type_used": true,
+          "snapshot": true,
+          "snapshot_timing": "backend_stop"
+        },
+        {
+          "kind": "write",
+          "range_unit": "address",
+          "range_mode": "inclusive",
+          "memory_type_used": true,
+          "snapshot": true,
+          "snapshot_timing": "backend_stop"
+        }
+      ]
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 2,
+      "method": "status",
+      "params": {}
+    },
+    "response": {
+      "id": 2,
+      "ok": true,
+      "result": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 0,
+        "state": "frozen",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 3,
+      "method": "read_memory",
+      "params": {
+        "memory_type": "ram",
+        "address": 98844,
+        "length": 144
+      }
+    },
+    "response": {
+      "id": 3,
+      "ok": true,
+      "result": {
+        "hex": "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 4,
+      "method": "read_memory",
+      "params": {
+        "memory_type": "ram",
+        "address": 215328,
+        "length": 144
+      }
+    },
+    "response": {
+      "id": 4,
+      "ok": true,
+      "result": {
+        "hex": "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 5,
+      "method": "read_memory",
+      "params": {
+        "memory_type": "ram",
+        "address": 215840,
+        "length": 144
+      }
+    },
+    "response": {
+      "id": 5,
+      "ok": true,
+      "result": {
+        "hex": "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 6,
+      "method": "get_state",
+      "params": {
+        "groups": [
+          "cpu"
+        ]
+      }
+    },
+    "response": {
+      "id": 6,
+      "ok": false,
+      "error": {
+        "kind": "bad_params",
+        "message": "unknown state group 'cpu'; available: [\"g0\",\"g1\",\"g2\",\"g3\",\"g4\",\"SndBox\"]"
+      }
+    }
+  },
+  {
+    "snapshot": {
+      "label": "pre_first_instruction",
+      "status": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 0,
+        "state": "frozen",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      },
+      "menu_ram": {
+        "hex": "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+      },
+      "renderer_a": {
+        "hex": "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+      },
+      "renderer_b": {
+        "hex": "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+      },
+      "cpu_error": "RuntimeError('get_state: {\"id\": 6, \"ok\": false, \"error\": {\"kind\": \"bad_params\", \"message\": \"unknown state group \\'cpu\\'; available: [\\\\\"g0\\\\\",\\\\\"g1\\\\\",\\\\\"g2\\\\\",\\\\\"g3\\\\\",\\\\\"g4\\\\\",\\\\\"SndBox\\\\\"]\"}}')"
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 7,
+      "method": "step",
+      "params": {
+        "frames": 360
+      }
+    },
+    "response": {
+      "id": 7,
+      "ok": true,
+      "result": {
+        "status": "working"
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 8,
+      "method": "status",
+      "params": {}
+    },
+    "response": {
+      "id": 7,
+      "ok": true,
+      "result": {
+        "status": "working"
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 8,
+      "method": "status",
+      "params": {}
+    },
+    "response": {
+      "id": 7,
+      "ok": true,
+      "result": {
+        "status": "working"
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 8,
+      "method": "status",
+      "params": {}
+    },
+    "response": {
+      "id": 7,
+      "ok": true,
+      "result": {
+        "status": "working"
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 8,
+      "method": "status",
+      "params": {}
+    },
+    "response": {
+      "id": 7,
+      "ok": true,
+      "result": {
+        "status": "working"
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 8,
+      "method": "status",
+      "params": {}
+    },
+    "response": {
+      "id": 7,
+      "ok": true,
+      "result": {
+        "status": "completed",
+        "frame": 360
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 8,
+      "method": "status",
+      "params": {}
+    },
+    "response": {
+      "id": 8,
+      "ok": true,
+      "result": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 361,
+        "state": "frozen",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 9,
+      "method": "read_memory",
+      "params": {
+        "memory_type": "ram",
+        "address": 98844,
+        "length": 144
+      }
+    },
+    "response": {
+      "id": 9,
+      "ok": true,
+      "result": {
+        "hex": "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 10,
+      "method": "read_memory",
+      "params": {
+        "memory_type": "ram",
+        "address": 215328,
+        "length": 144
+      }
+    },
+    "response": {
+      "id": 10,
+      "ok": true,
+      "result": {
+        "hex": "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 11,
+      "method": "read_memory",
+      "params": {
+        "memory_type": "ram",
+        "address": 215840,
+        "length": 144
+      }
+    },
+    "response": {
+      "id": 11,
+      "ok": true,
+      "result": {
+        "hex": "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 12,
+      "method": "get_state",
+      "params": {
+        "groups": [
+          "cpu"
+        ]
+      }
+    },
+    "response": {
+      "id": 12,
+      "ok": false,
+      "error": {
+        "kind": "bad_params",
+        "message": "unknown state group 'cpu'; available: [\"g0\",\"g1\",\"g2\",\"g3\",\"g4\",\"SndBox\"]"
+      }
+    }
+  },
+  {
+    "snapshot": {
+      "label": "boot_360",
+      "status": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 361,
+        "state": "frozen",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      },
+      "menu_ram": {
+        "hex": "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+      },
+      "renderer_a": {
+        "hex": "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+      },
+      "renderer_b": {
+        "hex": "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+      },
+      "cpu_error": "RuntimeError('get_state: {\"id\": 12, \"ok\": false, \"error\": {\"kind\": \"bad_params\", \"message\": \"unknown state group \\'cpu\\'; available: [\\\\\"g0\\\\\",\\\\\"g1\\\\\",\\\\\"g2\\\\\",\\\\\"g3\\\\\",\\\\\"g4\\\\\",\\\\\"SndBox\\\\\"]\"}}')"
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 13,
+      "method": "step",
+      "params": {
+        "frames": 360
+      }
+    },
+    "response": {
+      "id": 13,
+      "ok": true,
+      "result": {
+        "status": "working"
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 14,
+      "method": "status",
+      "params": {}
+    },
+    "response": {
+      "id": 13,
+      "ok": true,
+      "result": {
+        "status": "working"
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 14,
+      "method": "status",
+      "params": {}
+    },
+    "response": {
+      "id": 13,
+      "ok": true,
+      "result": {
+        "status": "working"
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 14,
+      "method": "status",
+      "params": {}
+    },
+    "response": {
+      "id": 13,
+      "ok": true,
+      "result": {
+        "status": "working"
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 14,
+      "method": "status",
+      "params": {}
+    },
+    "response": {
+      "id": 13,
+      "ok": true,
+      "result": {
+        "status": "working"
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 14,
+      "method": "status",
+      "params": {}
+    },
+    "response": {
+      "id": 13,
+      "ok": true,
+      "result": {
+        "status": "completed",
+        "frame": 721
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 14,
+      "method": "status",
+      "params": {}
+    },
+    "response": {
+      "id": 14,
+      "ok": true,
+      "result": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 722,
+        "state": "frozen",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 15,
+      "method": "read_memory",
+      "params": {
+        "memory_type": "ram",
+        "address": 98844,
+        "length": 144
+      }
+    },
+    "response": {
+      "id": 15,
+      "ok": true,
+      "result": {
+        "hex": "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 16,
+      "method": "read_memory",
+      "params": {
+        "memory_type": "ram",
+        "address": 215328,
+        "length": 144
+      }
+    },
+    "response": {
+      "id": 16,
+      "ok": true,
+      "result": {
+        "hex": "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 17,
+      "method": "read_memory",
+      "params": {
+        "memory_type": "ram",
+        "address": 215840,
+        "length": 144
+      }
+    },
+    "response": {
+      "id": 17,
+      "ok": true,
+      "result": {
+        "hex": "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 18,
+      "method": "get_state",
+      "params": {
+        "groups": [
+          "cpu"
+        ]
+      }
+    },
+    "response": {
+      "id": 18,
+      "ok": false,
+      "error": {
+        "kind": "bad_params",
+        "message": "unknown state group 'cpu'; available: [\"g0\",\"g1\",\"g2\",\"g3\",\"g4\",\"SndBox\"]"
+      }
+    }
+  },
+  {
+    "snapshot": {
+      "label": "boot_720",
+      "status": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 722,
+        "state": "frozen",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      },
+      "menu_ram": {
+        "hex": "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+      },
+      "renderer_a": {
+        "hex": "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+      },
+      "renderer_b": {
+        "hex": "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+      },
+      "cpu_error": "RuntimeError('get_state: {\"id\": 18, \"ok\": false, \"error\": {\"kind\": \"bad_params\", \"message\": \"unknown state group \\'cpu\\'; available: [\\\\\"g0\\\\\",\\\\\"g1\\\\\",\\\\\"g2\\\\\",\\\\\"g3\\\\\",\\\\\"g4\\\\\",\\\\\"SndBox\\\\\"]\"}}')"
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 19,
+      "method": "set_input",
+      "params": {
+        "port": 0,
+        "buttons": [
+          "RUN"
+        ]
+      }
+    },
+    "response": {
+      "id": 19,
+      "ok": true,
+      "result": {
+        "status": "ok",
+        "applied_mask": "0x0080",
+        "applied_buttons": [
+          "run"
+        ]
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 20,
+      "method": "step",
+      "params": {
+        "frames": 3
+      }
+    },
+    "response": {
+      "id": 20,
+      "ok": true,
+      "result": {
+        "status": "completed",
+        "frame": 725
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 21,
+      "method": "set_input",
+      "params": {
+        "port": 0,
+        "buttons": []
+      }
+    },
+    "response": {
+      "id": 21,
+      "ok": true,
+      "result": {
+        "status": "ok",
+        "applied_mask": "0x0000",
+        "applied_buttons": []
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 22,
+      "method": "step",
+      "params": {
+        "frames": 1
+      }
+    },
+    "response": {
+      "id": 22,
+      "ok": true,
+      "result": {
+        "status": "completed",
+        "frame": 727
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 23,
+      "method": "status",
+      "params": {}
+    },
+    "response": {
+      "id": 23,
+      "ok": true,
+      "result": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 728,
+        "state": "frozen",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 24,
+      "method": "read_memory",
+      "params": {
+        "memory_type": "ram",
+        "address": 98844,
+        "length": 144
+      }
+    },
+    "response": {
+      "id": 24,
+      "ok": true,
+      "result": {
+        "hex": "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 25,
+      "method": "read_memory",
+      "params": {
+        "memory_type": "ram",
+        "address": 215328,
+        "length": 144
+      }
+    },
+    "response": {
+      "id": 25,
+      "ok": true,
+      "result": {
+        "hex": "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 26,
+      "method": "read_memory",
+      "params": {
+        "memory_type": "ram",
+        "address": 215840,
+        "length": 144
+      }
+    },
+    "response": {
+      "id": 26,
+      "ok": true,
+      "result": {
+        "hex": "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 27,
+      "method": "get_state",
+      "params": {
+        "groups": [
+          "cpu"
+        ]
+      }
+    },
+    "response": {
+      "id": 27,
+      "ok": false,
+      "error": {
+        "kind": "bad_params",
+        "message": "unknown state group 'cpu'; available: [\"g0\",\"g1\",\"g2\",\"g3\",\"g4\",\"SndBox\"]"
+      }
+    }
+  },
+  {
+    "snapshot": {
+      "label": "after_RUN_1",
+      "status": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 728,
+        "state": "frozen",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      },
+      "menu_ram": {
+        "hex": "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+      },
+      "renderer_a": {
+        "hex": "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+      },
+      "renderer_b": {
+        "hex": "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+      },
+      "cpu_error": "RuntimeError('get_state: {\"id\": 27, \"ok\": false, \"error\": {\"kind\": \"bad_params\", \"message\": \"unknown state group \\'cpu\\'; available: [\\\\\"g0\\\\\",\\\\\"g1\\\\\",\\\\\"g2\\\\\",\\\\\"g3\\\\\",\\\\\"g4\\\\\",\\\\\"SndBox\\\\\"]\"}}')"
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 28,
+      "method": "step",
+      "params": {
+        "frames": 240
+      }
+    },
+    "response": {
+      "id": 28,
+      "ok": true,
+      "result": {
+        "status": "working"
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 29,
+      "method": "status",
+      "params": {}
+    },
+    "response": {
+      "id": 28,
+      "ok": true,
+      "result": {
+        "status": "working"
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 29,
+      "method": "status",
+      "params": {}
+    },
+    "response": {
+      "id": 28,
+      "ok": true,
+      "result": {
+        "status": "working"
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 29,
+      "method": "status",
+      "params": {}
+    },
+    "response": {
+      "id": 28,
+      "ok": true,
+      "result": {
+        "status": "completed",
+        "frame": 968
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 29,
+      "method": "status",
+      "params": {}
+    },
+    "response": {
+      "id": 29,
+      "ok": true,
+      "result": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 969,
+        "state": "frozen",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 30,
+      "method": "read_memory",
+      "params": {
+        "memory_type": "ram",
+        "address": 98844,
+        "length": 144
+      }
+    },
+    "response": {
+      "id": 30,
+      "ok": true,
+      "result": {
+        "hex": "1b3c81451b3e92bc914f82c996df82e90a1b3c81451b3e835e83438367838b89e696ca82c996df82e900001b3c81451b3e82648277826882730a1b3c81451b3e835a815b837582b782e90a1b3c81451b3e838d815b836882b782e900000000007844c3dc0400e3df0000feaf82fde3cc0400c0bc0600c6a0ac7700ac0835ca0000aca403e3cf000068441f187044c3dc"
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 31,
+      "method": "read_memory",
+      "params": {
+        "memory_type": "ram",
+        "address": 215328,
+        "length": 144
+      }
+    },
+    "response": {
+      "id": 31,
+      "ok": true,
+      "result": {
+        "hex": "180023df140043df100063df0c0083df0800a3df0400fdafd236a8028602f500c3cc2c00ecafc8b6aa033403a54e3e940003248a9dc300009cb7ff00b901d801c151ae05fcb5ffffe851efb5ffffedd50000a14701470c4fdc8d19d4180019d41a0019d41c0019d41e00e48aa34e3e940003248a9dc300009cb7ff0059027802615253065cb5ffff48514ab5ffff52d5"
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 32,
+      "method": "read_memory",
+      "params": {
+        "memory_type": "ram",
+        "address": 215840,
+        "length": 144
+      }
+    },
+    "response": {
+      "id": 32,
+      "ok": true,
+      "result": {
+        "hex": "1c0003df180023df140043df100063df0c0083df0800a3df0400fdafce34e802f700c3cc2400ecafc6b4aa0323cf2000e54e3e940003248a9dc300009cb7ff00b901d801c151ae05fcb5ffffe851efb5ffffedd50000a14701470c4fdc8d19d4180019d41a0019d41c0019d41e00e48ae34e3e940003248a9dc300009cb7ff0059027802615253065cb5ffff48514ab5"
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 33,
+      "method": "get_state",
+      "params": {
+        "groups": [
+          "cpu"
+        ]
+      }
+    },
+    "response": {
+      "id": 33,
+      "ok": false,
+      "error": {
+        "kind": "bad_params",
+        "message": "unknown state group 'cpu'; available: [\"g0\",\"g1\",\"g2\",\"g3\",\"g4\",\"SndBox\"]"
+      }
+    }
+  },
+  {
+    "snapshot": {
+      "label": "post_RUN_240",
+      "status": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 969,
+        "state": "frozen",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      },
+      "menu_ram": {
+        "hex": "1b3c81451b3e92bc914f82c996df82e90a1b3c81451b3e835e83438367838b89e696ca82c996df82e900001b3c81451b3e82648277826882730a1b3c81451b3e835a815b837582b782e90a1b3c81451b3e838d815b836882b782e900000000007844c3dc0400e3df0000feaf82fde3cc0400c0bc0600c6a0ac7700ac0835ca0000aca403e3cf000068441f187044c3dc"
+      },
+      "renderer_a": {
+        "hex": "180023df140043df100063df0c0083df0800a3df0400fdafd236a8028602f500c3cc2c00ecafc8b6aa033403a54e3e940003248a9dc300009cb7ff00b901d801c151ae05fcb5ffffe851efb5ffffedd50000a14701470c4fdc8d19d4180019d41a0019d41c0019d41e00e48aa34e3e940003248a9dc300009cb7ff0059027802615253065cb5ffff48514ab5ffff52d5"
+      },
+      "renderer_b": {
+        "hex": "1c0003df180023df140043df100063df0c0083df0800a3df0400fdafce34e802f700c3cc2400ecafc6b4aa0323cf2000e54e3e940003248a9dc300009cb7ff00b901d801c151ae05fcb5ffffe851efb5ffffedd50000a14701470c4fdc8d19d4180019d41a0019d41c0019d41e00e48ae34e3e940003248a9dc300009cb7ff0059027802615253065cb5ffff48514ab5"
+      },
+      "cpu_error": "RuntimeError('get_state: {\"id\": 33, \"ok\": false, \"error\": {\"kind\": \"bad_params\", \"message\": \"unknown state group \\'cpu\\'; available: [\\\\\"g0\\\\\",\\\\\"g1\\\\\",\\\\\"g2\\\\\",\\\\\"g3\\\\\",\\\\\"g4\\\\\",\\\\\"SndBox\\\\\"]\"}}')"
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 34,
+      "method": "set_input",
+      "params": {
+        "port": 0,
+        "buttons": [
+          "RUN"
+        ]
+      }
+    },
+    "response": {
+      "id": 34,
+      "ok": true,
+      "result": {
+        "status": "ok",
+        "applied_mask": "0x0080",
+        "applied_buttons": [
+          "run"
+        ]
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 35,
+      "method": "step",
+      "params": {
+        "frames": 3
+      }
+    },
+    "response": {
+      "id": 35,
+      "ok": true,
+      "result": {
+        "status": "completed",
+        "frame": 972
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 36,
+      "method": "set_input",
+      "params": {
+        "port": 0,
+        "buttons": []
+      }
+    },
+    "response": {
+      "id": 36,
+      "ok": true,
+      "result": {
+        "status": "ok",
+        "applied_mask": "0x0000",
+        "applied_buttons": []
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 37,
+      "method": "step",
+      "params": {
+        "frames": 1
+      }
+    },
+    "response": {
+      "id": 37,
+      "ok": true,
+      "result": {
+        "status": "completed",
+        "frame": 974
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 38,
+      "method": "step",
+      "params": {
+        "frames": 180
+      }
+    },
+    "response": {
+      "id": 38,
+      "ok": true,
+      "result": {
+        "status": "working"
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 39,
+      "method": "status",
+      "params": {}
+    },
+    "response": {
+      "id": 38,
+      "ok": true,
+      "result": {
+        "status": "working"
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 39,
+      "method": "status",
+      "params": {}
+    },
+    "response": {
+      "id": 38,
+      "ok": true,
+      "result": {
+        "status": "completed",
+        "frame": 1155
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 39,
+      "method": "status",
+      "params": {}
+    },
+    "response": {
+      "id": 39,
+      "ok": true,
+      "result": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 1156,
+        "state": "frozen",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 40,
+      "method": "read_memory",
+      "params": {
+        "memory_type": "ram",
+        "address": 98844,
+        "length": 144
+      }
+    },
+    "response": {
+      "id": 40,
+      "ok": true,
+      "result": {
+        "hex": "1b3c81451b3e92bc914f82c996df82e90a1b3c81451b3e835e83438367838b89e696ca82c996df82e900001b3c81451b3e82648277826882730a1b3c81451b3e835a815b837582b782e90a1b3c81451b3e838d815b836882b782e900000000007844c3dc0400e3df0000feaf82fde3cc0400c0bc0600c6a0ac7700ac0835ca0000aca403e3cf000068441f187044c3dc"
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 41,
+      "method": "read_memory",
+      "params": {
+        "memory_type": "ram",
+        "address": 215328,
+        "length": 144
+      }
+    },
+    "response": {
+      "id": 41,
+      "ok": true,
+      "result": {
+        "hex": "180023df140043df100063df0c0083df0800a3df0400fdafd236a8028602f500c3cc2c00ecafc8b6aa033403a54e3e940003248a9dc300009cb7ff00b901d801c151ae05fcb5ffffe851efb5ffffedd50000a14701470c4fdc8d19d4180019d41a0019d41c0019d41e00e48aa34e3e940003248a9dc300009cb7ff0059027802615253065cb5ffff48514ab5ffff52d5"
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 42,
+      "method": "read_memory",
+      "params": {
+        "memory_type": "ram",
+        "address": 215840,
+        "length": 144
+      }
+    },
+    "response": {
+      "id": 42,
+      "ok": true,
+      "result": {
+        "hex": "1c0003df180023df140043df100063df0c0083df0800a3df0400fdafce34e802f700c3cc2400ecafc6b4aa0323cf2000e54e3e940003248a9dc300009cb7ff00b901d801c151ae05fcb5ffffe851efb5ffffedd50000a14701470c4fdc8d19d4180019d41a0019d41c0019d41e00e48ae34e3e940003248a9dc300009cb7ff0059027802615253065cb5ffff48514ab5"
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 43,
+      "method": "get_state",
+      "params": {
+        "groups": [
+          "cpu"
+        ]
+      }
+    },
+    "response": {
+      "id": 43,
+      "ok": false,
+      "error": {
+        "kind": "bad_params",
+        "message": "unknown state group 'cpu'; available: [\"g0\",\"g1\",\"g2\",\"g3\",\"g4\",\"SndBox\"]"
+      }
+    }
+  },
+  {
+    "snapshot": {
+      "label": "after_RUN_2",
+      "status": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 1156,
+        "state": "frozen",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      },
+      "menu_ram": {
+        "hex": "1b3c81451b3e92bc914f82c996df82e90a1b3c81451b3e835e83438367838b89e696ca82c996df82e900001b3c81451b3e82648277826882730a1b3c81451b3e835a815b837582b782e90a1b3c81451b3e838d815b836882b782e900000000007844c3dc0400e3df0000feaf82fde3cc0400c0bc0600c6a0ac7700ac0835ca0000aca403e3cf000068441f187044c3dc"
+      },
+      "renderer_a": {
+        "hex": "180023df140043df100063df0c0083df0800a3df0400fdafd236a8028602f500c3cc2c00ecafc8b6aa033403a54e3e940003248a9dc300009cb7ff00b901d801c151ae05fcb5ffffe851efb5ffffedd50000a14701470c4fdc8d19d4180019d41a0019d41c0019d41e00e48aa34e3e940003248a9dc300009cb7ff0059027802615253065cb5ffff48514ab5ffff52d5"
+      },
+      "renderer_b": {
+        "hex": "1c0003df180023df140043df100063df0c0083df0800a3df0400fdafce34e802f700c3cc2400ecafc6b4aa0323cf2000e54e3e940003248a9dc300009cb7ff00b901d801c151ae05fcb5ffffe851efb5ffffedd50000a14701470c4fdc8d19d4180019d41a0019d41c0019d41e00e48ae34e3e940003248a9dc300009cb7ff0059027802615253065cb5ffff48514ab5"
+      },
+      "cpu_error": "RuntimeError('get_state: {\"id\": 43, \"ok\": false, \"error\": {\"kind\": \"bad_params\", \"message\": \"unknown state group \\'cpu\\'; available: [\\\\\"g0\\\\\",\\\\\"g1\\\\\",\\\\\"g2\\\\\",\\\\\"g3\\\\\",\\\\\"g4\\\\\",\\\\\"SndBox\\\\\"]\"}}')"
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 44,
+      "method": "set_input",
+      "params": {
+        "port": 0,
+        "buttons": [
+          "I"
+        ]
+      }
+    },
+    "response": {
+      "id": 44,
+      "ok": true,
+      "result": {
+        "status": "ok",
+        "applied_mask": "0x0001",
+        "applied_buttons": [
+          "i"
+        ]
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 45,
+      "method": "step",
+      "params": {
+        "frames": 3
+      }
+    },
+    "response": {
+      "id": 45,
+      "ok": true,
+      "result": {
+        "status": "completed",
+        "frame": 1159
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 46,
+      "method": "set_input",
+      "params": {
+        "port": 0,
+        "buttons": []
+      }
+    },
+    "response": {
+      "id": 46,
+      "ok": true,
+      "result": {
+        "status": "ok",
+        "applied_mask": "0x0000",
+        "applied_buttons": []
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 47,
+      "method": "step",
+      "params": {
+        "frames": 1
+      }
+    },
+    "response": {
+      "id": 47,
+      "ok": true,
+      "result": {
+        "status": "completed",
+        "frame": 1161
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 48,
+      "method": "step",
+      "params": {
+        "frames": 180
+      }
+    },
+    "response": {
+      "id": 48,
+      "ok": true,
+      "result": {
+        "status": "working"
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 49,
+      "method": "status",
+      "params": {}
+    },
+    "response": {
+      "id": 48,
+      "ok": true,
+      "result": {
+        "status": "working"
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 49,
+      "method": "status",
+      "params": {}
+    },
+    "response": {
+      "id": 48,
+      "ok": true,
+      "result": {
+        "status": "completed",
+        "frame": 1342
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 49,
+      "method": "status",
+      "params": {}
+    },
+    "response": {
+      "id": 49,
+      "ok": true,
+      "result": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 1343,
+        "state": "frozen",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 50,
+      "method": "read_memory",
+      "params": {
+        "memory_type": "ram",
+        "address": 98844,
+        "length": 144
+      }
+    },
+    "response": {
+      "id": 50,
+      "ok": true,
+      "result": {
+        "hex": "1b3c81451b3e92bc914f82c996df82e90a1b3c81451b3e835e83438367838b89e696ca82c996df82e900001b3c81451b3e82648277826882730a1b3c81451b3e835a815b837582b782e90a1b3c81451b3e838d815b836882b782e900000000007844c3dc0400e3df0000feaf82fde3cc0400c0bc0600c6a0ac7700ac0835ca0000aca403e3cf000068441f187044c3dc"
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 51,
+      "method": "read_memory",
+      "params": {
+        "memory_type": "ram",
+        "address": 215328,
+        "length": 144
+      }
+    },
+    "response": {
+      "id": 51,
+      "ok": true,
+      "result": {
+        "hex": "180023df140043df100063df0c0083df0800a3df0400fdafd236a8028602f500c3cc2c00ecafc8b6aa033403a54e3e940003248a9dc300009cb7ff00b901d801c151ae05fcb5ffffe851efb5ffffedd50000a14701470c4fdc8d19d4180019d41a0019d41c0019d41e00e48aa34e3e940003248a9dc300009cb7ff0059027802615253065cb5ffff48514ab5ffff52d5"
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 52,
+      "method": "read_memory",
+      "params": {
+        "memory_type": "ram",
+        "address": 215840,
+        "length": 144
+      }
+    },
+    "response": {
+      "id": 52,
+      "ok": true,
+      "result": {
+        "hex": "1c0003df180023df140043df100063df0c0083df0800a3df0400fdafce34e802f700c3cc2400ecafc6b4aa0323cf2000e54e3e940003248a9dc300009cb7ff00b901d801c151ae05fcb5ffffe851efb5ffffedd50000a14701470c4fdc8d19d4180019d41a0019d41c0019d41e00e48ae34e3e940003248a9dc300009cb7ff0059027802615253065cb5ffff48514ab5"
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 53,
+      "method": "get_state",
+      "params": {
+        "groups": [
+          "cpu"
+        ]
+      }
+    },
+    "response": {
+      "id": 53,
+      "ok": false,
+      "error": {
+        "kind": "bad_params",
+        "message": "unknown state group 'cpu'; available: [\"g0\",\"g1\",\"g2\",\"g3\",\"g4\",\"SndBox\"]"
+      }
+    }
+  },
+  {
+    "snapshot": {
+      "label": "after_I_1",
+      "status": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 1343,
+        "state": "frozen",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      },
+      "menu_ram": {
+        "hex": "1b3c81451b3e92bc914f82c996df82e90a1b3c81451b3e835e83438367838b89e696ca82c996df82e900001b3c81451b3e82648277826882730a1b3c81451b3e835a815b837582b782e90a1b3c81451b3e838d815b836882b782e900000000007844c3dc0400e3df0000feaf82fde3cc0400c0bc0600c6a0ac7700ac0835ca0000aca403e3cf000068441f187044c3dc"
+      },
+      "renderer_a": {
+        "hex": "180023df140043df100063df0c0083df0800a3df0400fdafd236a8028602f500c3cc2c00ecafc8b6aa033403a54e3e940003248a9dc300009cb7ff00b901d801c151ae05fcb5ffffe851efb5ffffedd50000a14701470c4fdc8d19d4180019d41a0019d41c0019d41e00e48aa34e3e940003248a9dc300009cb7ff0059027802615253065cb5ffff48514ab5ffff52d5"
+      },
+      "renderer_b": {
+        "hex": "1c0003df180023df140043df100063df0c0083df0800a3df0400fdafce34e802f700c3cc2400ecafc6b4aa0323cf2000e54e3e940003248a9dc300009cb7ff00b901d801c151ae05fcb5ffffe851efb5ffffedd50000a14701470c4fdc8d19d4180019d41a0019d41c0019d41e00e48ae34e3e940003248a9dc300009cb7ff0059027802615253065cb5ffff48514ab5"
+      },
+      "cpu_error": "RuntimeError('get_state: {\"id\": 53, \"ok\": false, \"error\": {\"kind\": \"bad_params\", \"message\": \"unknown state group \\'cpu\\'; available: [\\\\\"g0\\\\\",\\\\\"g1\\\\\",\\\\\"g2\\\\\",\\\\\"g3\\\\\",\\\\\"g4\\\\\",\\\\\"SndBox\\\\\"]\"}}')"
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 54,
+      "method": "set_breakpoint",
+      "params": {
+        "kind": "exec",
+        "memory_type": "cpu",
+        "start": 215364,
+        "end": 215364,
+        "pause_on_hit": true
+      }
+    },
+    "response": {
+      "id": 54,
+      "ok": true,
+      "result": {
+        "id": 1,
+        "set": true
+      }
+    }
+  },
+  {
+    "breakpoint": {
+      "address": "0x34944",
+      "result": {
+        "id": 1,
+        "set": true
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 55,
+      "method": "set_breakpoint",
+      "params": {
+        "kind": "exec",
+        "memory_type": "cpu",
+        "start": 215878,
+        "end": 215878,
+        "pause_on_hit": true
+      }
+    },
+    "response": {
+      "id": 55,
+      "ok": true,
+      "result": {
+        "id": 2,
+        "set": true
+      }
+    }
+  },
+  {
+    "breakpoint": {
+      "address": "0x34b46",
+      "result": {
+        "id": 2,
+        "set": true
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 56,
+      "method": "set_trace",
+      "params": {
+        "enabled": true
+      }
+    },
+    "response": {
+      "id": 56,
+      "ok": true,
+      "result": {
+        "enabled": true
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 57,
+      "method": "step",
+      "params": {
+        "frames": 120
+      }
+    },
+    "response": {
+      "id": 57,
+      "ok": true,
+      "result": {
+        "status": "working"
+      }
+    }
+  },
+  {
+    "bounded_step": "armed_120",
+    "result": {
+      "status": "working"
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 58,
+      "method": "status",
+      "params": {}
+    },
+    "response": {
+      "id": 57,
+      "ok": true,
+      "result": {
+        "status": "working"
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 58,
+      "method": "status",
+      "params": {}
+    },
+    "response": {
+      "id": 57,
+      "ok": true,
+      "result": {
+        "status": "completed",
+        "frame": 1463
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 58,
+      "method": "status",
+      "params": {}
+    },
+    "response": {
+      "id": 58,
+      "ok": true,
+      "result": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 1464,
+        "state": "frozen",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    }
+  },
+  {
+    "bounded_status": "armed_120",
+    "status": {
+      "connected": true,
+      "system": "pcfx",
+      "debugger": true,
+      "frame": 1464,
+      "state": "frozen",
+      "last_game_input": "0x0000",
+      "last_game_buttons": [],
+      "input_override": {
+        "observable": true,
+        "engaged": false,
+        "mode": "native",
+        "pressed_mask": 0
+      },
+      "execution_limits": {
+        "max_sync_advance_count": 5000
+      },
+      "state_groups": [
+        "g0",
+        "g1",
+        "g2",
+        "g3",
+        "g4",
+        "SndBox"
+      ],
+      "cpu_targets": [
+        {
+          "id": "main",
+          "aliases": [
+            "v810"
+          ],
+          "default": true,
+          "disassembly_modes": [
+            "auto",
+            "v810"
+          ]
+        }
+      ],
+      "launch_start": {
+        "requested_frozen": true,
+        "controlled": true,
+        "boundary": "pre_first_instruction"
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 59,
+      "method": "poll_events",
+      "params": {}
+    },
+    "response": {
+      "id": 59,
+      "ok": true,
+      "result": {
+        "events": [],
+        "dropped": 0
+      }
+    }
+  },
+  {
+    "events": {
+      "events": [],
+      "dropped": 0
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 60,
+      "method": "get_trace",
+      "params": {
+        "count": 192
+      }
+    },
+    "response": {
+      "id": 60,
+      "ok": true,
+      "result": {
+        "trace": [
+          {
+            "pc": 69956,
+            "text": "st.w     r21, 0x0024[sp]"
+          },
+          {
+            "pc": 69960,
+            "text": "st.w     r22, 0x0020[sp]"
+          },
+          {
+            "pc": 69964,
+            "text": "st.w     r25, 0x001c[sp]"
+          },
+          {
+            "pc": 69968,
+            "text": "st.w     r26, 0x0018[sp]"
+          },
+          {
+            "pc": 69972,
+            "text": "st.w     r27, 0x0014[sp]"
+          },
+          {
+            "pc": 69976,
+            "text": "st.w     r28, 0x0010[sp]"
+          },
+          {
+            "pc": 69980,
+            "text": "st.w     r29, 0x000c[sp]"
+          },
+          {
+            "pc": 69984,
+            "text": "ld.w     0x4d90[r0], r29"
+          },
+          {
+            "pc": 69988,
+            "text": "mov      r0, r6"
+          },
+          {
+            "pc": 69990,
+            "text": "jal      00008b58"
+          },
+          {
+            "pc": 35672,
+            "text": "mov      r6, r30"
+          },
+          {
+            "pc": 35674,
+            "text": "shl      1, r30"
+          },
+          {
+            "pc": 35676,
+            "text": "ld.h     0x4128[r30], r10"
+          },
+          {
+            "pc": 35680,
+            "text": "shl      19, r10"
+          },
+          {
+            "pc": 35682,
+            "text": "shr      30, r10"
+          },
+          {
+            "pc": 35684,
+            "text": "jmp      [lp]"
+          },
+          {
+            "pc": 69994,
+            "text": "st.w     r10, [sp]"
+          },
+          {
+            "pc": 69998,
+            "text": "mov      1, r6"
+          },
+          {
+            "pc": 70000,
+            "text": "jal      00008b58"
+          },
+          {
+            "pc": 35672,
+            "text": "mov      r6, r30"
+          },
+          {
+            "pc": 35674,
+            "text": "shl      1, r30"
+          },
+          {
+            "pc": 35676,
+            "text": "ld.h     0x4128[r30], r10"
+          },
+          {
+            "pc": 35680,
+            "text": "shl      19, r10"
+          },
+          {
+            "pc": 35682,
+            "text": "shr      30, r10"
+          },
+          {
+            "pc": 35684,
+            "text": "jmp      [lp]"
+          },
+          {
+            "pc": 70004,
+            "text": "st.w     r10, 0x0004[sp]"
+          },
+          {
+            "pc": 70008,
+            "text": "cmp      0, r29"
+          },
+          {
+            "pc": 70010,
+            "text": "be       00011246"
+          },
+          {
+            "pc": 70214,
+            "text": "mov      r0, r7"
+          },
+          {
+            "pc": 70216,
+            "text": "ld.w     [sp], r6"
+          },
+          {
+            "pc": 70220,
+            "text": "jal      0000974c"
+          },
+          {
+            "pc": 38732,
+            "text": "mov      r6, r30"
+          },
+          {
+            "pc": 38734,
+            "text": "shl      11, r30"
+          },
+          {
+            "pc": 38736,
+            "text": "mov      r7, r1"
+          },
+          {
+            "pc": 38738,
+            "text": "shl      1, r1"
+          },
+          {
+            "pc": 38740,
+            "text": "ld.h     0x4128[r1], r10"
+          },
+          {
+            "pc": 38744,
+            "text": "andi     0xE7FF, r10, r10"
+          },
+          {
+            "pc": 38748,
+            "text": "or       r10, r30"
+          },
+          {
+            "pc": 38750,
+            "text": "st.h     r30, 0x4128[r1]"
+          },
+          {
+            "pc": 38754,
+            "text": "movea    0x400, r0, r10"
+          },
+          {
+            "pc": 38758,
+            "text": "cmp      r0, r7"
+          },
+          {
+            "pc": 38760,
+            "text": "be       0000976e"
+          },
+          {
+            "pc": 38766,
+            "text": "mov      5, r1"
+          },
+          {
+            "pc": 38768,
+            "text": "out.h    r1, [r10]"
+          },
+          {
+            "pc": 38772,
+            "text": "out.h    r30, 0x0004[r10]"
+          },
+          {
+            "pc": 38776,
+            "text": "jmp      [lp]"
+          },
+          {
+            "pc": 70224,
+            "text": "mov      1, r7"
+          },
+          {
+            "pc": 70226,
+            "text": "ld.w     0x0004[sp], r6"
+          },
+          {
+            "pc": 70230,
+            "text": "jal      0000974c"
+          },
+          {
+            "pc": 38732,
+            "text": "mov      r6, r30"
+          },
+          {
+            "pc": 38734,
+            "text": "shl      11, r30"
+          },
+          {
+            "pc": 38736,
+            "text": "mov      r7, r1"
+          },
+          {
+            "pc": 38738,
+            "text": "shl      1, r1"
+          },
+          {
+            "pc": 38740,
+            "text": "ld.h     0x4128[r1], r10"
+          },
+          {
+            "pc": 38744,
+            "text": "andi     0xE7FF, r10, r10"
+          },
+          {
+            "pc": 38748,
+            "text": "or       r10, r30"
+          },
+          {
+            "pc": 38750,
+            "text": "st.h     r30, 0x4128[r1]"
+          },
+          {
+            "pc": 38754,
+            "text": "movea    0x400, r0, r10"
+          },
+          {
+            "pc": 38758,
+            "text": "cmp      r0, r7"
+          },
+          {
+            "pc": 38760,
+            "text": "be       0000976e"
+          },
+          {
+            "pc": 38762,
+            "text": "movea    0x500, r0, r10"
+          },
+          {
+            "pc": 38766,
+            "text": "mov      5, r1"
+          },
+          {
+            "pc": 38768,
+            "text": "out.h    r1, [r10]"
+          },
+          {
+            "pc": 38772,
+            "text": "out.h    r30, 0x0004[r10]"
+          },
+          {
+            "pc": 38776,
+            "text": "jmp      [lp]"
+          },
+          {
+            "pc": 70234,
+            "text": "ld.w     0x0008[sp], lp"
+          },
+          {
+            "pc": 70238,
+            "text": "ld.w     0x0024[sp], r21"
+          },
+          {
+            "pc": 70242,
+            "text": "ld.w     0x0020[sp], r22"
+          },
+          {
+            "pc": 70246,
+            "text": "ld.w     0x001c[sp], r25"
+          },
+          {
+            "pc": 70250,
+            "text": "ld.w     0x0018[sp], r26"
+          },
+          {
+            "pc": 70254,
+            "text": "ld.w     0x0014[sp], r27"
+          },
+          {
+            "pc": 70258,
+            "text": "ld.w     0x0010[sp], r28"
+          },
+          {
+            "pc": 70262,
+            "text": "ld.w     0x000c[sp], r29"
+          },
+          {
+            "pc": 70266,
+            "text": "addi     0x28, sp, sp"
+          },
+          {
+            "pc": 70270,
+            "text": "jmp      [lp]"
+          },
+          {
+            "pc": 33824,
+            "text": "jal      00010234"
+          },
+          {
+            "pc": 66100,
+            "text": "add      -8, sp"
+          },
+          {
+            "pc": 66102,
+            "text": "st.w     r28, 0x0004[sp]"
+          },
+          {
+            "pc": 66106,
+            "text": "st.w     r29, [sp]"
+          },
+          {
+            "pc": 66110,
+            "text": "movea    0x4C90, r0, r29"
+          },
+          {
+            "pc": 66114,
+            "text": "movea    0x4CD0, r0, r28"
+          },
+          {
+            "pc": 66118,
+            "text": "movea    0x15, r0, r10"
+          },
+          {
+            "pc": 66122,
+            "text": "out.h    r10, 0x0600[r0]"
+          },
+          {
+            "pc": 66126,
+            "text": "out.h    r0, 0x0604[r0]"
+          },
+          {
+            "pc": 66130,
+            "text": "movea    0x10, r0, r12"
+          },
+          {
+            "pc": 66134,
+            "text": "out.h    r12, 0x0600[r0]"
+          },
+          {
+            "pc": 66138,
+            "text": "ld.h     [r29], r14"
+          },
+          {
+            "pc": 66142,
+            "text": "out.h    r14, 0x0604[r0]"
+          },
+          {
+            "pc": 66146,
+            "text": "movea    0x15, r0, r15"
+          },
+          {
+            "pc": 66150,
+            "text": "out.h    r15, 0x0600[r0]"
+          },
+          {
+            "pc": 66154,
+            "text": "out.h    r0, 0x0604[r0]"
+          },
+          {
+            "pc": 66158,
+            "text": "movea    0x13, r0, r17"
+          },
+          {
+            "pc": 66162,
+            "text": "out.h    r17, 0x0600[r0]"
+          },
+          {
+            "pc": 66166,
+            "text": "out.h    r0, 0x0604[r0]"
+          },
+          {
+            "pc": 66170,
+            "text": "movea    0x14, r0, r19"
+          },
+          {
+            "pc": 66174,
+            "text": "out.h    r19, 0x0600[r0]"
+          },
+          {
+            "pc": 66178,
+            "text": "ld.h     [r28], r11"
+          },
+          {
+            "pc": 66182,
+            "text": "out.h    r11, 0x0604[r0]"
+          },
+          {
+            "pc": 66186,
+            "text": "ld.h     0x0002[r28], r13"
+          },
+          {
+            "pc": 66190,
+            "text": "out.h    r13, 0x0604[r0]"
+          },
+          {
+            "pc": 66194,
+            "text": "ld.h     0x0004[r28], r15"
+          },
+          {
+            "pc": 66198,
+            "text": "out.h    r15, 0x0604[r0]"
+          },
+          {
+            "pc": 66202,
+            "text": "ld.h     0x0006[r28], r17"
+          },
+          {
+            "pc": 66206,
+            "text": "out.h    r17, 0x0604[r0]"
+          },
+          {
+            "pc": 66210,
+            "text": "ld.h     0x0008[r28], r19"
+          },
+          {
+            "pc": 66214,
+            "text": "out.h    r19, 0x0604[r0]"
+          },
+          {
+            "pc": 66218,
+            "text": "ld.h     0x000a[r28], r11"
+          },
+          {
+            "pc": 66222,
+            "text": "out.h    r11, 0x0604[r0]"
+          },
+          {
+            "pc": 66226,
+            "text": "ld.h     0x000c[r28], r13"
+          },
+          {
+            "pc": 66230,
+            "text": "out.h    r13, 0x0604[r0]"
+          },
+          {
+            "pc": 66234,
+            "text": "ld.h     0x000e[r28], r15"
+          },
+          {
+            "pc": 66238,
+            "text": "out.h    r15, 0x0604[r0]"
+          },
+          {
+            "pc": 66242,
+            "text": "ld.h     0x0010[r28], r17"
+          },
+          {
+            "pc": 66246,
+            "text": "out.h    r17, 0x0604[r0]"
+          },
+          {
+            "pc": 66250,
+            "text": "ld.h     0x0012[r28], r19"
+          },
+          {
+            "pc": 66254,
+            "text": "out.h    r19, 0x0604[r0]"
+          },
+          {
+            "pc": 66258,
+            "text": "ld.h     0x0014[r28], r11"
+          },
+          {
+            "pc": 66262,
+            "text": "out.h    r11, 0x0604[r0]"
+          },
+          {
+            "pc": 66266,
+            "text": "ld.h     0x0016[r28], r13"
+          },
+          {
+            "pc": 66270,
+            "text": "out.h    r13, 0x0604[r0]"
+          },
+          {
+            "pc": 66274,
+            "text": "ld.h     0x0018[r28], r15"
+          },
+          {
+            "pc": 66278,
+            "text": "out.h    r15, 0x0604[r0]"
+          },
+          {
+            "pc": 66282,
+            "text": "ld.h     0x001a[r28], r17"
+          },
+          {
+            "pc": 66286,
+            "text": "out.h    r17, 0x0604[r0]"
+          },
+          {
+            "pc": 66290,
+            "text": "ld.h     0x001c[r28], r19"
+          },
+          {
+            "pc": 66294,
+            "text": "out.h    r19, 0x0604[r0]"
+          },
+          {
+            "pc": 66298,
+            "text": "ld.h     0x001e[r28], r11"
+          },
+          {
+            "pc": 66302,
+            "text": "out.h    r11, 0x0604[r0]"
+          },
+          {
+            "pc": 66306,
+            "text": "movea    0x15, r0, r12"
+          },
+          {
+            "pc": 66310,
+            "text": "out.h    r12, 0x0600[r0]"
+          },
+          {
+            "pc": 66314,
+            "text": "ld.h     0x0004[r29], r14"
+          },
+          {
+            "pc": 66318,
+            "text": "out.h    r14, 0x0604[r0]"
+          },
+          {
+            "pc": 66322,
+            "text": "movea    0x12, r0, r15"
+          },
+          {
+            "pc": 66326,
+            "text": "out.h    r15, 0x0600[r0]"
+          },
+          {
+            "pc": 66330,
+            "text": "ld.h     0x0002[r29], r17"
+          },
+          {
+            "pc": 66334,
+            "text": "out.h    r17, 0x0604[r0]"
+          },
+          {
+            "pc": 66338,
+            "text": "movea    0x16, r0, r18"
+          },
+          {
+            "pc": 66342,
+            "text": "out.h    r18, 0x0600[r0]"
+          },
+          {
+            "pc": 66346,
+            "text": "ld.h     0x0006[r29], r10"
+          },
+          {
+            "pc": 66350,
+            "text": "out.h    r10, 0x0604[r0]"
+          },
+          {
+            "pc": 66354,
+            "text": "movea    0x20, r0, r11"
+          },
+          {
+            "pc": 66358,
+            "text": "out.h    r11, 0x0600[r0]"
+          },
+          {
+            "pc": 66362,
+            "text": "ld.h     0x0008[r29], r13"
+          },
+          {
+            "pc": 66366,
+            "text": "out.h    r13, 0x0604[r0]"
+          },
+          {
+            "pc": 66370,
+            "text": "movea    0x21, r0, r14"
+          },
+          {
+            "pc": 66374,
+            "text": "out.h    r14, 0x0600[r0]"
+          },
+          {
+            "pc": 66378,
+            "text": "ld.h     0x000a[r29], r16"
+          },
+          {
+            "pc": 66382,
+            "text": "out.h    r16, 0x0604[r0]"
+          },
+          {
+            "pc": 66386,
+            "text": "movea    0x22, r0, r17"
+          },
+          {
+            "pc": 66390,
+            "text": "out.h    r17, 0x0600[r0]"
+          },
+          {
+            "pc": 66394,
+            "text": "ld.h     0x000c[r29], r19"
+          },
+          {
+            "pc": 66398,
+            "text": "out.h    r19, 0x0604[r0]"
+          },
+          {
+            "pc": 66402,
+            "text": "movea    0x23, r0, r10"
+          },
+          {
+            "pc": 66406,
+            "text": "out.h    r10, 0x0600[r0]"
+          },
+          {
+            "pc": 66410,
+            "text": "ld.h     0x000e[r29], r12"
+          },
+          {
+            "pc": 66414,
+            "text": "out.h    r12, 0x0604[r0]"
+          },
+          {
+            "pc": 66418,
+            "text": "movea    0x24, r0, r13"
+          },
+          {
+            "pc": 66422,
+            "text": "out.h    r13, 0x0600[r0]"
+          },
+          {
+            "pc": 66426,
+            "text": "ld.h     0x0010[r29], r15"
+          },
+          {
+            "pc": 66430,
+            "text": "out.h    r15, 0x0604[r0]"
+          },
+          {
+            "pc": 66434,
+            "text": "movea    0x25, r0, r16"
+          },
+          {
+            "pc": 66438,
+            "text": "out.h    r16, 0x0600[r0]"
+          },
+          {
+            "pc": 66442,
+            "text": "ld.h     0x0012[r29], r18"
+          },
+          {
+            "pc": 66446,
+            "text": "out.h    r18, 0x0604[r0]"
+          },
+          {
+            "pc": 66450,
+            "text": "movea    0x28, r0, r19"
+          },
+          {
+            "pc": 66454,
+            "text": "out.h    r19, 0x0600[r0]"
+          },
+          {
+            "pc": 66458,
+            "text": "ld.h     0x0014[r29], r11"
+          },
+          {
+            "pc": 66462,
+            "text": "out.h    r11, 0x0604[r0]"
+          },
+          {
+            "pc": 66466,
+            "text": "movea    0x29, r0, r12"
+          },
+          {
+            "pc": 66470,
+            "text": "out.h    r12, 0x0600[r0]"
+          },
+          {
+            "pc": 66474,
+            "text": "ld.h     0x0016[r29], r14"
+          },
+          {
+            "pc": 66478,
+            "text": "out.h    r14, 0x0604[r0]"
+          },
+          {
+            "pc": 66482,
+            "text": "movea    0x2A, r0, r15"
+          },
+          {
+            "pc": 66486,
+            "text": "out.h    r15, 0x0600[r0]"
+          },
+          {
+            "pc": 66490,
+            "text": "ld.h     0x0018[r29], r17"
+          },
+          {
+            "pc": 66494,
+            "text": "out.h    r17, 0x0604[r0]"
+          },
+          {
+            "pc": 66498,
+            "text": "movea    0x2B, r0, r18"
+          },
+          {
+            "pc": 66502,
+            "text": "out.h    r18, 0x0600[r0]"
+          },
+          {
+            "pc": 66506,
+            "text": "ld.h     0x001a[r29], r10"
+          },
+          {
+            "pc": 66510,
+            "text": "out.h    r10, 0x0604[r0]"
+          },
+          {
+            "pc": 66514,
+            "text": "movea    0x2C, r0, r11"
+          },
+          {
+            "pc": 66518,
+            "text": "out.h    r11, 0x0600[r0]"
+          },
+          {
+            "pc": 66522,
+            "text": "ld.h     0x001c[r29], r13"
+          },
+          {
+            "pc": 66526,
+            "text": "out.h    r13, 0x0604[r0]"
+          },
+          {
+            "pc": 66530,
+            "text": "movea    0x2D, r0, r14"
+          },
+          {
+            "pc": 66534,
+            "text": "out.h    r14, 0x0600[r0]"
+          },
+          {
+            "pc": 66538,
+            "text": "ld.h     0x001e[r29], r16"
+          },
+          {
+            "pc": 66542,
+            "text": "out.h    r16, 0x0604[r0]"
+          },
+          {
+            "pc": 66546,
+            "text": "movea    0x2E, r0, r17"
+          },
+          {
+            "pc": 66550,
+            "text": "out.h    r17, 0x0600[r0]"
+          },
+          {
+            "pc": 66554,
+            "text": "ld.h     0x0020[r29], r19"
+          },
+          {
+            "pc": 66558,
+            "text": "out.h    r19, 0x0604[r0]"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "trace_at_stop": {
+      "trace": [
+        {
+          "pc": 69956,
+          "text": "st.w     r21, 0x0024[sp]"
+        },
+        {
+          "pc": 69960,
+          "text": "st.w     r22, 0x0020[sp]"
+        },
+        {
+          "pc": 69964,
+          "text": "st.w     r25, 0x001c[sp]"
+        },
+        {
+          "pc": 69968,
+          "text": "st.w     r26, 0x0018[sp]"
+        },
+        {
+          "pc": 69972,
+          "text": "st.w     r27, 0x0014[sp]"
+        },
+        {
+          "pc": 69976,
+          "text": "st.w     r28, 0x0010[sp]"
+        },
+        {
+          "pc": 69980,
+          "text": "st.w     r29, 0x000c[sp]"
+        },
+        {
+          "pc": 69984,
+          "text": "ld.w     0x4d90[r0], r29"
+        },
+        {
+          "pc": 69988,
+          "text": "mov      r0, r6"
+        },
+        {
+          "pc": 69990,
+          "text": "jal      00008b58"
+        },
+        {
+          "pc": 35672,
+          "text": "mov      r6, r30"
+        },
+        {
+          "pc": 35674,
+          "text": "shl      1, r30"
+        },
+        {
+          "pc": 35676,
+          "text": "ld.h     0x4128[r30], r10"
+        },
+        {
+          "pc": 35680,
+          "text": "shl      19, r10"
+        },
+        {
+          "pc": 35682,
+          "text": "shr      30, r10"
+        },
+        {
+          "pc": 35684,
+          "text": "jmp      [lp]"
+        },
+        {
+          "pc": 69994,
+          "text": "st.w     r10, [sp]"
+        },
+        {
+          "pc": 69998,
+          "text": "mov      1, r6"
+        },
+        {
+          "pc": 70000,
+          "text": "jal      00008b58"
+        },
+        {
+          "pc": 35672,
+          "text": "mov      r6, r30"
+        },
+        {
+          "pc": 35674,
+          "text": "shl      1, r30"
+        },
+        {
+          "pc": 35676,
+          "text": "ld.h     0x4128[r30], r10"
+        },
+        {
+          "pc": 35680,
+          "text": "shl      19, r10"
+        },
+        {
+          "pc": 35682,
+          "text": "shr      30, r10"
+        },
+        {
+          "pc": 35684,
+          "text": "jmp      [lp]"
+        },
+        {
+          "pc": 70004,
+          "text": "st.w     r10, 0x0004[sp]"
+        },
+        {
+          "pc": 70008,
+          "text": "cmp      0, r29"
+        },
+        {
+          "pc": 70010,
+          "text": "be       00011246"
+        },
+        {
+          "pc": 70214,
+          "text": "mov      r0, r7"
+        },
+        {
+          "pc": 70216,
+          "text": "ld.w     [sp], r6"
+        },
+        {
+          "pc": 70220,
+          "text": "jal      0000974c"
+        },
+        {
+          "pc": 38732,
+          "text": "mov      r6, r30"
+        },
+        {
+          "pc": 38734,
+          "text": "shl      11, r30"
+        },
+        {
+          "pc": 38736,
+          "text": "mov      r7, r1"
+        },
+        {
+          "pc": 38738,
+          "text": "shl      1, r1"
+        },
+        {
+          "pc": 38740,
+          "text": "ld.h     0x4128[r1], r10"
+        },
+        {
+          "pc": 38744,
+          "text": "andi     0xE7FF, r10, r10"
+        },
+        {
+          "pc": 38748,
+          "text": "or       r10, r30"
+        },
+        {
+          "pc": 38750,
+          "text": "st.h     r30, 0x4128[r1]"
+        },
+        {
+          "pc": 38754,
+          "text": "movea    0x400, r0, r10"
+        },
+        {
+          "pc": 38758,
+          "text": "cmp      r0, r7"
+        },
+        {
+          "pc": 38760,
+          "text": "be       0000976e"
+        },
+        {
+          "pc": 38766,
+          "text": "mov      5, r1"
+        },
+        {
+          "pc": 38768,
+          "text": "out.h    r1, [r10]"
+        },
+        {
+          "pc": 38772,
+          "text": "out.h    r30, 0x0004[r10]"
+        },
+        {
+          "pc": 38776,
+          "text": "jmp      [lp]"
+        },
+        {
+          "pc": 70224,
+          "text": "mov      1, r7"
+        },
+        {
+          "pc": 70226,
+          "text": "ld.w     0x0004[sp], r6"
+        },
+        {
+          "pc": 70230,
+          "text": "jal      0000974c"
+        },
+        {
+          "pc": 38732,
+          "text": "mov      r6, r30"
+        },
+        {
+          "pc": 38734,
+          "text": "shl      11, r30"
+        },
+        {
+          "pc": 38736,
+          "text": "mov      r7, r1"
+        },
+        {
+          "pc": 38738,
+          "text": "shl      1, r1"
+        },
+        {
+          "pc": 38740,
+          "text": "ld.h     0x4128[r1], r10"
+        },
+        {
+          "pc": 38744,
+          "text": "andi     0xE7FF, r10, r10"
+        },
+        {
+          "pc": 38748,
+          "text": "or       r10, r30"
+        },
+        {
+          "pc": 38750,
+          "text": "st.h     r30, 0x4128[r1]"
+        },
+        {
+          "pc": 38754,
+          "text": "movea    0x400, r0, r10"
+        },
+        {
+          "pc": 38758,
+          "text": "cmp      r0, r7"
+        },
+        {
+          "pc": 38760,
+          "text": "be       0000976e"
+        },
+        {
+          "pc": 38762,
+          "text": "movea    0x500, r0, r10"
+        },
+        {
+          "pc": 38766,
+          "text": "mov      5, r1"
+        },
+        {
+          "pc": 38768,
+          "text": "out.h    r1, [r10]"
+        },
+        {
+          "pc": 38772,
+          "text": "out.h    r30, 0x0004[r10]"
+        },
+        {
+          "pc": 38776,
+          "text": "jmp      [lp]"
+        },
+        {
+          "pc": 70234,
+          "text": "ld.w     0x0008[sp], lp"
+        },
+        {
+          "pc": 70238,
+          "text": "ld.w     0x0024[sp], r21"
+        },
+        {
+          "pc": 70242,
+          "text": "ld.w     0x0020[sp], r22"
+        },
+        {
+          "pc": 70246,
+          "text": "ld.w     0x001c[sp], r25"
+        },
+        {
+          "pc": 70250,
+          "text": "ld.w     0x0018[sp], r26"
+        },
+        {
+          "pc": 70254,
+          "text": "ld.w     0x0014[sp], r27"
+        },
+        {
+          "pc": 70258,
+          "text": "ld.w     0x0010[sp], r28"
+        },
+        {
+          "pc": 70262,
+          "text": "ld.w     0x000c[sp], r29"
+        },
+        {
+          "pc": 70266,
+          "text": "addi     0x28, sp, sp"
+        },
+        {
+          "pc": 70270,
+          "text": "jmp      [lp]"
+        },
+        {
+          "pc": 33824,
+          "text": "jal      00010234"
+        },
+        {
+          "pc": 66100,
+          "text": "add      -8, sp"
+        },
+        {
+          "pc": 66102,
+          "text": "st.w     r28, 0x0004[sp]"
+        },
+        {
+          "pc": 66106,
+          "text": "st.w     r29, [sp]"
+        },
+        {
+          "pc": 66110,
+          "text": "movea    0x4C90, r0, r29"
+        },
+        {
+          "pc": 66114,
+          "text": "movea    0x4CD0, r0, r28"
+        },
+        {
+          "pc": 66118,
+          "text": "movea    0x15, r0, r10"
+        },
+        {
+          "pc": 66122,
+          "text": "out.h    r10, 0x0600[r0]"
+        },
+        {
+          "pc": 66126,
+          "text": "out.h    r0, 0x0604[r0]"
+        },
+        {
+          "pc": 66130,
+          "text": "movea    0x10, r0, r12"
+        },
+        {
+          "pc": 66134,
+          "text": "out.h    r12, 0x0600[r0]"
+        },
+        {
+          "pc": 66138,
+          "text": "ld.h     [r29], r14"
+        },
+        {
+          "pc": 66142,
+          "text": "out.h    r14, 0x0604[r0]"
+        },
+        {
+          "pc": 66146,
+          "text": "movea    0x15, r0, r15"
+        },
+        {
+          "pc": 66150,
+          "text": "out.h    r15, 0x0600[r0]"
+        },
+        {
+          "pc": 66154,
+          "text": "out.h    r0, 0x0604[r0]"
+        },
+        {
+          "pc": 66158,
+          "text": "movea    0x13, r0, r17"
+        },
+        {
+          "pc": 66162,
+          "text": "out.h    r17, 0x0600[r0]"
+        },
+        {
+          "pc": 66166,
+          "text": "out.h    r0, 0x0604[r0]"
+        },
+        {
+          "pc": 66170,
+          "text": "movea    0x14, r0, r19"
+        },
+        {
+          "pc": 66174,
+          "text": "out.h    r19, 0x0600[r0]"
+        },
+        {
+          "pc": 66178,
+          "text": "ld.h     [r28], r11"
+        },
+        {
+          "pc": 66182,
+          "text": "out.h    r11, 0x0604[r0]"
+        },
+        {
+          "pc": 66186,
+          "text": "ld.h     0x0002[r28], r13"
+        },
+        {
+          "pc": 66190,
+          "text": "out.h    r13, 0x0604[r0]"
+        },
+        {
+          "pc": 66194,
+          "text": "ld.h     0x0004[r28], r15"
+        },
+        {
+          "pc": 66198,
+          "text": "out.h    r15, 0x0604[r0]"
+        },
+        {
+          "pc": 66202,
+          "text": "ld.h     0x0006[r28], r17"
+        },
+        {
+          "pc": 66206,
+          "text": "out.h    r17, 0x0604[r0]"
+        },
+        {
+          "pc": 66210,
+          "text": "ld.h     0x0008[r28], r19"
+        },
+        {
+          "pc": 66214,
+          "text": "out.h    r19, 0x0604[r0]"
+        },
+        {
+          "pc": 66218,
+          "text": "ld.h     0x000a[r28], r11"
+        },
+        {
+          "pc": 66222,
+          "text": "out.h    r11, 0x0604[r0]"
+        },
+        {
+          "pc": 66226,
+          "text": "ld.h     0x000c[r28], r13"
+        },
+        {
+          "pc": 66230,
+          "text": "out.h    r13, 0x0604[r0]"
+        },
+        {
+          "pc": 66234,
+          "text": "ld.h     0x000e[r28], r15"
+        },
+        {
+          "pc": 66238,
+          "text": "out.h    r15, 0x0604[r0]"
+        },
+        {
+          "pc": 66242,
+          "text": "ld.h     0x0010[r28], r17"
+        },
+        {
+          "pc": 66246,
+          "text": "out.h    r17, 0x0604[r0]"
+        },
+        {
+          "pc": 66250,
+          "text": "ld.h     0x0012[r28], r19"
+        },
+        {
+          "pc": 66254,
+          "text": "out.h    r19, 0x0604[r0]"
+        },
+        {
+          "pc": 66258,
+          "text": "ld.h     0x0014[r28], r11"
+        },
+        {
+          "pc": 66262,
+          "text": "out.h    r11, 0x0604[r0]"
+        },
+        {
+          "pc": 66266,
+          "text": "ld.h     0x0016[r28], r13"
+        },
+        {
+          "pc": 66270,
+          "text": "out.h    r13, 0x0604[r0]"
+        },
+        {
+          "pc": 66274,
+          "text": "ld.h     0x0018[r28], r15"
+        },
+        {
+          "pc": 66278,
+          "text": "out.h    r15, 0x0604[r0]"
+        },
+        {
+          "pc": 66282,
+          "text": "ld.h     0x001a[r28], r17"
+        },
+        {
+          "pc": 66286,
+          "text": "out.h    r17, 0x0604[r0]"
+        },
+        {
+          "pc": 66290,
+          "text": "ld.h     0x001c[r28], r19"
+        },
+        {
+          "pc": 66294,
+          "text": "out.h    r19, 0x0604[r0]"
+        },
+        {
+          "pc": 66298,
+          "text": "ld.h     0x001e[r28], r11"
+        },
+        {
+          "pc": 66302,
+          "text": "out.h    r11, 0x0604[r0]"
+        },
+        {
+          "pc": 66306,
+          "text": "movea    0x15, r0, r12"
+        },
+        {
+          "pc": 66310,
+          "text": "out.h    r12, 0x0600[r0]"
+        },
+        {
+          "pc": 66314,
+          "text": "ld.h     0x0004[r29], r14"
+        },
+        {
+          "pc": 66318,
+          "text": "out.h    r14, 0x0604[r0]"
+        },
+        {
+          "pc": 66322,
+          "text": "movea    0x12, r0, r15"
+        },
+        {
+          "pc": 66326,
+          "text": "out.h    r15, 0x0600[r0]"
+        },
+        {
+          "pc": 66330,
+          "text": "ld.h     0x0002[r29], r17"
+        },
+        {
+          "pc": 66334,
+          "text": "out.h    r17, 0x0604[r0]"
+        },
+        {
+          "pc": 66338,
+          "text": "movea    0x16, r0, r18"
+        },
+        {
+          "pc": 66342,
+          "text": "out.h    r18, 0x0600[r0]"
+        },
+        {
+          "pc": 66346,
+          "text": "ld.h     0x0006[r29], r10"
+        },
+        {
+          "pc": 66350,
+          "text": "out.h    r10, 0x0604[r0]"
+        },
+        {
+          "pc": 66354,
+          "text": "movea    0x20, r0, r11"
+        },
+        {
+          "pc": 66358,
+          "text": "out.h    r11, 0x0600[r0]"
+        },
+        {
+          "pc": 66362,
+          "text": "ld.h     0x0008[r29], r13"
+        },
+        {
+          "pc": 66366,
+          "text": "out.h    r13, 0x0604[r0]"
+        },
+        {
+          "pc": 66370,
+          "text": "movea    0x21, r0, r14"
+        },
+        {
+          "pc": 66374,
+          "text": "out.h    r14, 0x0600[r0]"
+        },
+        {
+          "pc": 66378,
+          "text": "ld.h     0x000a[r29], r16"
+        },
+        {
+          "pc": 66382,
+          "text": "out.h    r16, 0x0604[r0]"
+        },
+        {
+          "pc": 66386,
+          "text": "movea    0x22, r0, r17"
+        },
+        {
+          "pc": 66390,
+          "text": "out.h    r17, 0x0600[r0]"
+        },
+        {
+          "pc": 66394,
+          "text": "ld.h     0x000c[r29], r19"
+        },
+        {
+          "pc": 66398,
+          "text": "out.h    r19, 0x0604[r0]"
+        },
+        {
+          "pc": 66402,
+          "text": "movea    0x23, r0, r10"
+        },
+        {
+          "pc": 66406,
+          "text": "out.h    r10, 0x0600[r0]"
+        },
+        {
+          "pc": 66410,
+          "text": "ld.h     0x000e[r29], r12"
+        },
+        {
+          "pc": 66414,
+          "text": "out.h    r12, 0x0604[r0]"
+        },
+        {
+          "pc": 66418,
+          "text": "movea    0x24, r0, r13"
+        },
+        {
+          "pc": 66422,
+          "text": "out.h    r13, 0x0600[r0]"
+        },
+        {
+          "pc": 66426,
+          "text": "ld.h     0x0010[r29], r15"
+        },
+        {
+          "pc": 66430,
+          "text": "out.h    r15, 0x0604[r0]"
+        },
+        {
+          "pc": 66434,
+          "text": "movea    0x25, r0, r16"
+        },
+        {
+          "pc": 66438,
+          "text": "out.h    r16, 0x0600[r0]"
+        },
+        {
+          "pc": 66442,
+          "text": "ld.h     0x0012[r29], r18"
+        },
+        {
+          "pc": 66446,
+          "text": "out.h    r18, 0x0604[r0]"
+        },
+        {
+          "pc": 66450,
+          "text": "movea    0x28, r0, r19"
+        },
+        {
+          "pc": 66454,
+          "text": "out.h    r19, 0x0600[r0]"
+        },
+        {
+          "pc": 66458,
+          "text": "ld.h     0x0014[r29], r11"
+        },
+        {
+          "pc": 66462,
+          "text": "out.h    r11, 0x0604[r0]"
+        },
+        {
+          "pc": 66466,
+          "text": "movea    0x29, r0, r12"
+        },
+        {
+          "pc": 66470,
+          "text": "out.h    r12, 0x0600[r0]"
+        },
+        {
+          "pc": 66474,
+          "text": "ld.h     0x0016[r29], r14"
+        },
+        {
+          "pc": 66478,
+          "text": "out.h    r14, 0x0604[r0]"
+        },
+        {
+          "pc": 66482,
+          "text": "movea    0x2A, r0, r15"
+        },
+        {
+          "pc": 66486,
+          "text": "out.h    r15, 0x0600[r0]"
+        },
+        {
+          "pc": 66490,
+          "text": "ld.h     0x0018[r29], r17"
+        },
+        {
+          "pc": 66494,
+          "text": "out.h    r17, 0x0604[r0]"
+        },
+        {
+          "pc": 66498,
+          "text": "movea    0x2B, r0, r18"
+        },
+        {
+          "pc": 66502,
+          "text": "out.h    r18, 0x0600[r0]"
+        },
+        {
+          "pc": 66506,
+          "text": "ld.h     0x001a[r29], r10"
+        },
+        {
+          "pc": 66510,
+          "text": "out.h    r10, 0x0604[r0]"
+        },
+        {
+          "pc": 66514,
+          "text": "movea    0x2C, r0, r11"
+        },
+        {
+          "pc": 66518,
+          "text": "out.h    r11, 0x0600[r0]"
+        },
+        {
+          "pc": 66522,
+          "text": "ld.h     0x001c[r29], r13"
+        },
+        {
+          "pc": 66526,
+          "text": "out.h    r13, 0x0604[r0]"
+        },
+        {
+          "pc": 66530,
+          "text": "movea    0x2D, r0, r14"
+        },
+        {
+          "pc": 66534,
+          "text": "out.h    r14, 0x0600[r0]"
+        },
+        {
+          "pc": 66538,
+          "text": "ld.h     0x001e[r29], r16"
+        },
+        {
+          "pc": 66542,
+          "text": "out.h    r16, 0x0604[r0]"
+        },
+        {
+          "pc": 66546,
+          "text": "movea    0x2E, r0, r17"
+        },
+        {
+          "pc": 66550,
+          "text": "out.h    r17, 0x0600[r0]"
+        },
+        {
+          "pc": 66554,
+          "text": "ld.h     0x0020[r29], r19"
+        },
+        {
+          "pc": 66558,
+          "text": "out.h    r19, 0x0604[r0]"
+        }
+      ]
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 61,
+      "method": "call_stack",
+      "params": {}
+    },
+    "response": {
+      "id": 61,
+      "ok": true,
+      "result": {
+        "call_stack": [
+          {
+            "pc": 112974,
+            "text": "jal      00008494"
+          },
+          {
+            "pc": 34066,
+            "text": "jal      0000ca6c"
+          },
+          {
+            "pc": 33178,
+            "text": "jal      000083d0"
+          },
+          {
+            "pc": 33824,
+            "text": "jal      00010234"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "call_stack": {
+      "call_stack": [
+        {
+          "pc": 112974,
+          "text": "jal      00008494"
+        },
+        {
+          "pc": 34066,
+          "text": "jal      0000ca6c"
+        },
+        {
+          "pc": 33178,
+          "text": "jal      000083d0"
+        },
+        {
+          "pc": 33824,
+          "text": "jal      00010234"
+        }
+      ]
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 62,
+      "method": "status",
+      "params": {}
+    },
+    "response": {
+      "id": 62,
+      "ok": true,
+      "result": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 1464,
+        "state": "frozen",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 63,
+      "method": "read_memory",
+      "params": {
+        "memory_type": "ram",
+        "address": 98844,
+        "length": 144
+      }
+    },
+    "response": {
+      "id": 63,
+      "ok": true,
+      "result": {
+        "hex": "1b3c81451b3e92bc914f82c996df82e90a1b3c81451b3e835e83438367838b89e696ca82c996df82e900001b3c81451b3e82648277826882730a1b3c81451b3e835a815b837582b782e90a1b3c81451b3e838d815b836882b782e900000000007844c3dc0400e3df0000feaf82fde3cc0400c0bc0600c6a0ac7700ac0835ca0000aca403e3cf000068441f187044c3dc"
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 64,
+      "method": "read_memory",
+      "params": {
+        "memory_type": "ram",
+        "address": 215328,
+        "length": 144
+      }
+    },
+    "response": {
+      "id": 64,
+      "ok": true,
+      "result": {
+        "hex": "180023df140043df100063df0c0083df0800a3df0400fdafd236a8028602f500c3cc2c00ecafc8b6aa033403a54e3e940003248a9dc300009cb7ff00b901d801c151ae05fcb5ffffe851efb5ffffedd50000a14701470c4fdc8d19d4180019d41a0019d41c0019d41e00e48aa34e3e940003248a9dc300009cb7ff0059027802615253065cb5ffff48514ab5ffff52d5"
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 65,
+      "method": "read_memory",
+      "params": {
+        "memory_type": "ram",
+        "address": 215840,
+        "length": 144
+      }
+    },
+    "response": {
+      "id": 65,
+      "ok": true,
+      "result": {
+        "hex": "1c0003df180023df140043df100063df0c0083df0800a3df0400fdafce34e802f700c3cc2400ecafc6b4aa0323cf2000e54e3e940003248a9dc300009cb7ff00b901d801c151ae05fcb5ffffe851efb5ffffedd50000a14701470c4fdc8d19d4180019d41a0019d41c0019d41e00e48ae34e3e940003248a9dc300009cb7ff0059027802615253065cb5ffff48514ab5"
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 66,
+      "method": "get_state",
+      "params": {
+        "groups": [
+          "cpu"
+        ]
+      }
+    },
+    "response": {
+      "id": 66,
+      "ok": false,
+      "error": {
+        "kind": "bad_params",
+        "message": "unknown state group 'cpu'; available: [\"g0\",\"g1\",\"g2\",\"g3\",\"g4\",\"SndBox\"]"
+      }
+    }
+  },
+  {
+    "snapshot": {
+      "label": "breakpoint_or_stop",
+      "status": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 1464,
+        "state": "frozen",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      },
+      "menu_ram": {
+        "hex": "1b3c81451b3e92bc914f82c996df82e90a1b3c81451b3e835e83438367838b89e696ca82c996df82e900001b3c81451b3e82648277826882730a1b3c81451b3e835a815b837582b782e90a1b3c81451b3e838d815b836882b782e900000000007844c3dc0400e3df0000feaf82fde3cc0400c0bc0600c6a0ac7700ac0835ca0000aca403e3cf000068441f187044c3dc"
+      },
+      "renderer_a": {
+        "hex": "180023df140043df100063df0c0083df0800a3df0400fdafd236a8028602f500c3cc2c00ecafc8b6aa033403a54e3e940003248a9dc300009cb7ff00b901d801c151ae05fcb5ffffe851efb5ffffedd50000a14701470c4fdc8d19d4180019d41a0019d41c0019d41e00e48aa34e3e940003248a9dc300009cb7ff0059027802615253065cb5ffff48514ab5ffff52d5"
+      },
+      "renderer_b": {
+        "hex": "1c0003df180023df140043df100063df0c0083df0800a3df0400fdafce34e802f700c3cc2400ecafc6b4aa0323cf2000e54e3e940003248a9dc300009cb7ff00b901d801c151ae05fcb5ffffe851efb5ffffedd50000a14701470c4fdc8d19d4180019d41a0019d41c0019d41e00e48ae34e3e940003248a9dc300009cb7ff0059027802615253065cb5ffff48514ab5"
+      },
+      "cpu_error": "RuntimeError('get_state: {\"id\": 66, \"ok\": false, \"error\": {\"kind\": \"bad_params\", \"message\": \"unknown state group \\'cpu\\'; available: [\\\\\"g0\\\\\",\\\\\"g1\\\\\",\\\\\"g2\\\\\",\\\\\"g3\\\\\",\\\\\"g4\\\\\",\\\\\"SndBox\\\\\"]\"}}')"
+    }
+  }
+]
