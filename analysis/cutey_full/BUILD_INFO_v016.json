@@ -1,0 +1,99 @@
+{
+  "version": "KR ALPHA v0.16",
+  "parent_track2_sha1": "1dd574364e40cb90dd0ff25940fe8df9e6793edf",
+  "output_track2_sha256": "3e6dd3e9c035ba30d0ce0c895e623efd43b0c25d4104156b9e2891c92aded100",
+  "hook_size": 4908,
+  "changed_raw_sectors": 34,
+  "translations": [
+    [
+      "直前に戻る",
+      "이전으로",
+      1,
+      "RAM 0x18222"
+    ],
+    [
+      "タイトル画面に戻る",
+      "타이틀로 돌아가기",
+      1,
+      "RAM 0x18233"
+    ],
+    [
+      "ＥＸＩＴ",
+      "종료",
+      2,
+      "LOGICAL 0x1124D;LOGICAL 0x1446847D"
+    ],
+    [
+      "セーブする",
+      "저장하기",
+      1,
+      "RAM 0x1825C"
+    ],
+    [
+      "ロードする",
+      "불러오기",
+      1,
+      "RAM 0x1826D"
+    ],
+    [
+      "この島から去れ。",
+      "이 섬을 떠나라",
+      10,
+      "LOGICAL 0x144F5D3B;LOGICAL 0x14505D3B;LOGICAL 0x14515D3B;LOGICAL 0x14525D3B;LOGICAL 0x14535D3B;LOGICAL 0x14545D3B;LOGICAL 0x14555D3B;LOGICAL 0x14565D3B;LOGICAL 0x14575D3B;LOGICAL 0x14585D3B"
+    ],
+    [
+      "私は無事です。",
+      "저는 무사해요",
+      10,
+      "LOGICAL 0x144F6081;LOGICAL 0x14506081;LOGICAL 0x14516081;LOGICAL 0x14526081;LOGICAL 0x14536081;LOGICAL 0x14546081;LOGICAL 0x14556081;LOGICAL 0x14566081;LOGICAL 0x14576081;LOGICAL 0x14586081"
+    ],
+    [
+      "警告は無視された。",
+      "경고는 무시됐다",
+      10,
+      "LOGICAL 0x144F6126;LOGICAL 0x14506126;LOGICAL 0x14516126;LOGICAL 0x14526126;LOGICAL 0x14536126;LOGICAL 0x14546126;LOGICAL 0x14556126;LOGICAL 0x14566126;LOGICAL 0x14576126;LOGICAL 0x14586126"
+    ],
+    [
+      "ゆり子・・・",
+      "유리코……",
+      4,
+      "LOGICAL 0x147180B4;LOGICAL 0x14727954;LOGICAL 0x14736F3C;LOGICAL 0x14747F5C"
+    ],
+    [
+      "キューティーハニーに変身！",
+      "큐티하니로 변신！",
+      2,
+      "LOGICAL 0x14478098;LOGICAL 0x1E041A6C"
+    ],
+    [
+      "如月ハニーに変身！",
+      "키사라기 변신！",
+      2,
+      "LOGICAL 0x144780B9;LOGICAL 0x1E041A8D"
+    ],
+    [
+      "コマンドハニーに変身！",
+      "커맨드하니 변신！",
+      2,
+      "LOGICAL 0x144780D2;LOGICAL 0x1E041AA6"
+    ],
+    [
+      "ファンタジーナイトハニーに変身！",
+      "판타지나이트 변신！",
+      2,
+      "LOGICAL 0x144780EF;LOGICAL 0x1E041AC3"
+    ],
+    [
+      "レスラーハニーに変身！",
+      "레슬러하니 변신！",
+      2,
+      "LOGICAL 0x14478116;LOGICAL 0x1E041AEA"
+    ],
+    [
+      "変身しない",
+      "변신 안함",
+      4,
+      "LOGICAL 0x14478133;LOGICAL 0x14996388;LOGICAL 0x149A6B00;LOGICAL 0x1E041B07"
+    ]
+  ]
+}
