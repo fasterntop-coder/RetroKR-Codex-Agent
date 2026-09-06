@@ -1,0 +1,12 @@
+﻿jp,kr,occurrences,location
+直前に戻る,이전으로,1,RAM 0x18222
+タイトル画面に戻る,타이틀로 돌아가기,1,RAM 0x18233
+ＥＸＩＴ,종료,1,RAM 0x1824D
+セーブする,저장하기,1,RAM 0x1825C
+ロードする,불러오기,1,RAM 0x1826D
+キューティーハニーに変身！,큐티하니로 변신！,2,LOGICAL 0x14478098;LOGICAL 0x1E041A6C
+如月ハニーに変身！,키사라기 변신！,2,LOGICAL 0x144780B9;LOGICAL 0x1E041A8D
+コマンドハニーに変身！,커맨드하니 변신！,2,LOGICAL 0x144780D2;LOGICAL 0x1E041AA6
+ファンタジーナイトハニーに変身！,판타지나이트 변신！,2,LOGICAL 0x144780EF;LOGICAL 0x1E041AC3
+レスラーハニーに変身！,레슬러하니 변신！,2,LOGICAL 0x14478116;LOGICAL 0x1E041AEA
+変身しない,변신 안함,4,LOGICAL 0x14478133;LOGICAL 0x14996388;LOGICAL 0x149A6B00;LOGICAL 0x1E041B07
