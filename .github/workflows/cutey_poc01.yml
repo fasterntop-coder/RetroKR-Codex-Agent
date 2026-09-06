@@ -1,166 +1,100 @@
-name: Cutey Honey FX POC01 Static Reverse
-
+name: Cutey Honey FX Persist Report
+permissions:
+  contents: write
 on:
   push:
     branches: [tmp-cutey-poc01]
   workflow_dispatch:
-
 jobs:
   analyze:
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
-      - name: Install tools
-        run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y -qq p7zip-full unzip curl
-          curl -L --retry 3 -o /tmp/v810.zip https://github.com/jbrandwood/v810-gcc/releases/download/latest/v810-gcc-Linux-x86_64.zip
-          unzip -q /tmp/v810.zip -d /tmp/v810tool
-          find /tmp/v810tool -type f -name '*objdump' -o -name '*gcc' | head -30
-      - name: Download and inspect CLEAN Redump
+        with:
+          ref: tmp-cutey-poc01
+      - name: Install
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq p7zip-full curl
+      - name: Download and parse
         shell: bash
         run: |
           set -euxo pipefail
-          curl -L --retry 3 --fail --progress-bar -o /tmp/cutey.7z 'https://archive.org/download/noaen-redump-nec-pc-fx-pc-fxga/Cutey%20Honey%20FX%20%28Japan%29.7z'
-          mkdir -p /tmp/cutey
+          curl -L --retry 3 --fail -o /tmp/cutey.7z 'https://archive.org/download/noaen-redump-nec-pc-fx-pc-fxga/Cutey%20Honey%20FX%20%28Japan%29.7z'
+          mkdir -p /tmp/cutey analysis
           7z x -y /tmp/cutey.7z -o/tmp/cutey >/dev/null
-          echo '=== CUE ===' | tee report.txt
-          cat /tmp/cutey/*.cue | tee -a report.txt
-          cat > /tmp/stage2.py <<'PY'
-          import pathlib,struct,hashlib,zlib,os,mmap
+          python3 - <<'PY' > analysis/cutey_poc01_static_report.txt
+          import pathlib,struct,hashlib,zlib,mmap
           root=pathlib.Path('/tmp/cutey')
           bins=sorted(root.glob('*.bin'))
           t1=next(p for p in bins if 'Track 1' in p.name)
           t2=next(p for p in bins if 'Track 2' in p.name)
           def hashes(p):
-              h1=hashlib.sha1();h256=hashlib.sha256();crc=0
-              with p.open('rb') as f:
-                while 1:
-                  b=f.read(8<<20)
-                  if not b:break
-                  h1.update(b);h256.update(b);crc=zlib.crc32(b,crc)
-              return f'{crc&0xffffffff:08x}',h1.hexdigest(),h256.hexdigest()
-          print('T1',t1.stat().st_size,*hashes(t1))
-          print('T2',t2.stat().st_size,*hashes(t2))
+            h1=hashlib.sha1();h256=hashlib.sha256();crc=0
+            with p.open('rb') as f:
+              while True:
+                b=f.read(8<<20)
+                if not b: break
+                h1.update(b);h256.update(b);crc=zlib.crc32(b,crc)
+            return f'{crc&0xffffffff:08x}',h1.hexdigest(),h256.hexdigest()
+          print('T1_SIZE',t1.stat().st_size); print('T1_HASHES',*hashes(t1))
+          print('T2_SIZE',t2.stat().st_size); print('T2_HASHES',*hashes(t2))
           hm=hashlib.sha256()
           for p in (t1,t2):
             with p.open('rb') as f:
-              while 1:
+              while True:
                 b=f.read(8<<20)
-                if not b:break
+                if not b: break
                 hm.update(b)
           print('MERGED_SIZE',t1.stat().st_size+t2.stat().st_size)
           print('MERGED_SHA256',hm.hexdigest())
           with t2.open('rb') as f:
             mm=mmap.mmap(f.fileno(),0,access=mmap.ACCESS_READ)
-            magic=b'PC-FX:Hu_CD-ROM'
-            hits=[];pos=0
-            while 1:
-              i=mm.find(magic,pos)
-              if i<0:break
-              hits.append(i);pos=i+1
-              if len(hits)>16:break
-            print('MAGIC_HITS',[hex(x) for x in hits])
-            if not hits: raise SystemExit('NO PCFX MAGIC')
-            m=hits[0]
-            # locate raw Mode1 sector start from magic: data payload begins +16
-            sec_start=m-16
-            print('DATA_RAW_BASE_TRACK2',hex(sec_start),'RAW_SECTOR',sec_start//2352,'INSECTOR',sec_start%2352)
-            if sec_start%2352: print('WARNING_UNALIGNED')
-            s0=mm[sec_start+16:sec_start+16+2048]
-            s1=mm[sec_start+2352+16:sec_start+2352+16+2048]
-            print('S0_0_64',s0[:64].hex(),repr(s0[:64]))
-            print('S1_0_128',s1[:128].hex(),repr(s1[:128]))
+            magic=b'PC-FX:Hu_CD-ROM'; m=mm.find(magic)
+            print('MAGIC_TRACK2_OFFSET',hex(m))
+            sec0=m-16
+            print('TRACK2_DATA_RAW_BASE',hex(sec0))
+            print('MERGED_DATA_RAW_BASE',hex(t1.stat().st_size+sec0))
+            print('MERGED_DATA_PAYLOAD_BASE',hex(t1.stat().st_size+sec0+16))
+            s0=mm[sec0+16:sec0+16+2048]
+            s1=mm[sec0+2352+16:sec0+2352+16+2048]
             title=s1[:32].split(b'\0')[0].decode('cp932','replace')
-            sect_off,sect_count,prog_off,prog_point=struct.unpack_from('<IIII',s1,32)
+            sect_off,sect_count,prog_load,prog_entry=struct.unpack_from('<IIII',s1,32)
+            print('SECTOR0_MAGIC',repr(s0[:32]))
             print('TITLE',repr(title))
             print('BOOT_SECT_OFF',sect_off)
             print('BOOT_SECT_COUNT',sect_count)
-            print('PROG_LOAD',hex(prog_off))
-            print('PROG_ENTRY',hex(prog_point))
-            maker_id=s1[48:52].split(b'\0')[0]
-            maker=s1[52:112].split(b'\0')[0].decode('cp932','replace')
-            print('MAKER_ID',maker_id,'MAKER',repr(maker))
-            def logical_payload(sec,n=1):
-              out=bytearray()
-              for k in range(sec,sec+n):
-                a=sec_start+k*2352+16; out+=mm[a:a+2048]
-              return bytes(out)
-            boot=logical_payload(sect_off,sect_count)
-            pathlib.Path('/tmp/boot.bin').write_bytes(boot)
-            print('BOOT_BYTES',len(boot),'SHA256',hashlib.sha256(boot).hexdigest())
-            print('BOOT_HEAD',boot[:128].hex())
-            # addresses/reference signatures for PC-FX ROMFONT BIOS entry FFF0000C
-            pats={
-              'ROMFONT_ADDR_LE':bytes.fromhex('0c00f0ff'),
-              'ROMFONT_ADDR_BE':bytes.fromhex('fff0000c'),
-              'SJIS_HONEY': 'ハニー'.encode('cp932'),
-              'SJIS_KISARAGI_HONEY':'如月ハニー'.encode('cp932'),
-              'SJIS_SAVE':'セーブ'.encode('cp932'),
-              'SJIS_LOAD':'ロード'.encode('cp932'),
-            }
-            for name,pat in pats.items():
-              hs=[];p=0
-              while 1:
-                i=mm.find(pat,p)
-                if i<0:break
-                hs.append(i);p=i+1
-                if len(hs)>=100:break
-              print(name,'COUNT_CAPPED',len(hs),'HITS',[hex(x) for x in hs[:40]])
-              for i in hs[:12]:
-                a=max(0,i-64);z=min(len(mm),i+128)
-                print('CTX',name,hex(i),mm[a:z].hex())
-            # Search candidate BIOS-call code: values often built as 0xFFF0xxxx.
-            pat=bytes.fromhex('f0ff')
-            hs=[];p=0
-            while len(hs)<300:
-              i=mm.find(pat,p)
-              if i<0:break
-              hs.append(i);p=i+1
-            print('F0FF_PAIR_COUNT_CAPPED',len(hs),'FIRST',[hex(x) for x in hs[:100]])
-            # Dump chunks around first occurrence of important dialogue/menu strings for objdump.
-            targets=[
-              ('credits','如月ハニー'.encode('cp932')),
-              ('transform','キューティーハニーに変身！'.encode('cp932')),
-              ('pcfxline','ＰＣーＦＸ'.encode('cp932')),
-              ('save','セーブ'.encode('cp932')),
-            ]
-            for name,pat in targets:
-              i=mm.find(pat)
-              print('TARGET',name,hex(i) if i>=0 else -1)
-              if i>=0:
-                a=max(0,i-0x800); z=min(len(mm),i+0x800)
-                pathlib.Path(f'/tmp/{name}.bin').write_bytes(mm[a:z])
-                print('TARGET_CTX',name,mm[max(0,i-128):i+256].hex())
+            print('PROG_LOAD',hex(prog_load))
+            print('PROG_ENTRY',hex(prog_entry))
+            print('HEADER_RAW_TRACK2_OFFSET',hex(sec0+2352+16))
+            print('HEADER_RAW_MERGED_OFFSET',hex(t1.stat().st_size+sec0+2352+16))
+            boot=bytearray()
+            for sec in range(sect_off,sect_off+sect_count):
+              a=sec0+sec*2352+16; boot += mm[a:a+2048]
+            print('BOOT_BYTES',len(boot))
+            print('BOOT_SHA256',hashlib.sha256(boot).hexdigest())
+            print('BOOT_HEAD_HEX',bytes(boot[:128]).hex())
+            for label,text in [('HONEY','如月ハニー'),('SAVE','セーブ'),('LOAD','ロード'),('TRANSFORM','キューティーハニーに変身！')]:
+              pat=text.encode('cp932'); hs=[]; pos=0
+              while len(hs)<32:
+                i=mm.find(pat,pos)
+                if i<0: break
+                hs.append(i); pos=i+1
+              print(label+'_HITS_TRACK2',','.join(hex(x) for x in hs))
+              print(label+'_HITS_MERGED',','.join(hex(t1.stat().st_size+x) for x in hs))
+            for label,pat in [('ROMFONT_LE',bytes.fromhex('0c00f0ff')),('FFF0_LE',bytes.fromhex('f0ff'))]:
+              hs=[];pos=0
+              while len(hs)<128:
+                i=mm.find(pat,pos)
+                if i<0: break
+                hs.append(i);pos=i+1
+              print(label+'_HITS_TRACK2',','.join(hex(x) for x in hs))
             mm.close()
-          # Global offsets in user's single BIN = track1 bytes + track2 raw offset
-          print('GLOBAL_TRACK2_BASE',hex(t1.stat().st_size))
           PY
-          python /tmp/stage2.py | tee -a report.txt
-      - name: V810 disassembly candidate chunks
-        shell: bash
+          cat analysis/cutey_poc01_static_report.txt
+      - name: Commit report
         run: |
-          set -euxo pipefail
-          OBJDUMP=$(find /tmp/v810tool -type f -name 'v810-objdump' -o -name 'v810-elf-objdump' | head -1)
-          echo OBJDUMP=$OBJDUMP | tee -a report.txt
-          if [ -n "$OBJDUMP" ]; then
-            chmod +x "$OBJDUMP"
-            "$OBJDUMP" --version | head -2 | tee -a report.txt
-            for f in /tmp/credits.bin /tmp/transform.bin /tmp/pcfxline.bin /tmp/save.bin /tmp/boot.bin; do
-              echo "=== DISASM $f ===" | tee -a report.txt
-              "$OBJDUMP" -D -b binary -m v810 "$f" 2>&1 | head -800 | tee -a report.txt || true
-            done
-          fi
-      - name: Upload static reverse artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: cutey-poc01-static-reverse
-          path: |
-            report.txt
-            /tmp/boot.bin
-            /tmp/credits.bin
-            /tmp/transform.bin
-            /tmp/pcfxline.bin
-            /tmp/save.bin
-          retention-days: 1
+          git config user.name 'Cutey POC Builder'
+          git config user.email 'actions@users.noreply.github.com'
+          git add analysis/cutey_poc01_static_report.txt
+          git commit -m 'temp: persist Cutey POC01 static report [skip ci]' || exit 0
+          git push origin HEAD:tmp-cutey-poc01
