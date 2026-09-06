@@ -24,11 +24,11 @@ jobs:
           git -C emucap-src checkout 3887f9e9de7525087c30ca4434d9cb8c3ff15103
           if ((git -C emucap-src rev-parse HEAD).Trim() -ne '3887f9e9de7525087c30ca4434d9cb8c3ff15103') { throw 'emucap commit mismatch' }
 
-      - name: Select Rust 1.88
+      - name: Select current stable Rust
         shell: pwsh
         run: |
-          rustup toolchain install 1.88.0-x86_64-pc-windows-msvc --profile minimal
-          rustup default 1.88.0-x86_64-pc-windows-msvc
+          rustup update stable
+          rustup default stable
           rustc --version
           cargo --version
 
@@ -41,7 +41,7 @@ jobs:
         working-directory: emucap-src
         shell: pwsh
         run: |
-          cargo build --release --bin emucap --bin emucap-mcp --bin emucap-track-mcp --bin emucap-broker
+          cargo build --locked --release --bin emucap --bin emucap-mcp --bin emucap-track-mcp --bin emucap-broker
 
       - name: Build emucap-compatible MesenCE
         working-directory: emucap-src
