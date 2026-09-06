@@ -74,7 +74,6 @@ jobs:
           Copy-Item "$src\target\release\emucap-mcp.exe" "$dst\target\release\"
           Copy-Item "$src\target\release\emucap-track-mcp.exe" "$dst\target\release\"
           Copy-Item "$src\target\release\emucap-broker.exe" "$dst\target\release\"
-
           $mesen = Get-ChildItem -Recurse -File -Filter 'Mesen.exe' "$src\adapters\mesen2\work\mesen\bin\win-x64\Release" | Select-Object -First 1
           if (-not $mesen) { throw 'Mesen.exe not found after build' }
           $mesenRoot = $mesen.DirectoryName
@@ -83,28 +82,17 @@ jobs:
           New-Item -ItemType Directory -Force -Path $mesenDst | Out-Null
           robocopy $mesenRoot $mesenDst /E | Out-Null
           if ($LASTEXITCODE -gt 7) { throw "robocopy Mesen runtime failed: $LASTEXITCODE" }
-
           @'
           @echo off
           setlocal
           set ROOT=%~dp0
-          echo [1/2] Registering emucap Control MCP...
           codex mcp add emucap --env "EMUCAP_REPO_ROOT=%ROOT:~0,-1%" -- "%ROOT%target\release\emucap-mcp.exe"
           if errorlevel 1 exit /b %errorlevel%
-          echo [2/2] Registering emucap Tracking MCP...
           codex mcp add emucap-track -- "%ROOT%target\release\emucap-track-mcp.exe"
           if errorlevel 1 exit /b %errorlevel%
-          echo.
-          echo DONE. Reconnect/restart Codex, then verify both bootstrap tools are present.
+          echo DONE. Reconnect/restart Codex.
           pause
           '@ | Set-Content -Encoding ASCII (Join-Path $dst 'REGISTER_CODEX_MCP.cmd')
-
-          @'
-          EMUCAP 0.16.1 WINDOWS PORTABLE BUNDLE
-          =====================================
-          Source commit: 3887f9e9de7525087c30ca4434d9cb8c3ff15103
-          The compatible MesenCE runtime and emucap build are included.
-          '@ | Set-Content -Encoding UTF8 (Join-Path $dst 'README_FIRST.txt')
 
       - name: Upload Windows emucap runtime
         uses: actions/upload-artifact@v4
@@ -154,10 +142,11 @@ jobs:
         run: |
           cargo build --locked --release --bin emucap --bin emucap-mcp --bin emucap-track-mcp --bin emucap-broker
 
-      - name: Build emucap-compatible MesenCE
+      - name: Build self-contained emucap-compatible MesenCE
         working-directory: emucap-src
         shell: bash
         run: |
+          export PUBLISHFLAGS='-r linux-x64 -p:SelfContained=true -p:PublishSingleFile=false'
           ./adapters/mesen2/build.sh
 
       - name: Assemble portable Linux runtime bundle
@@ -172,20 +161,11 @@ jobs:
           cp "$src/target/release/emucap-track-mcp" "$dst/target/release/"
           cp "$src/target/release/emucap-broker" "$dst/target/release/"
           mesen="$(find "$src/adapters/mesen2/work/mesen/bin" -path '*/publish/Mesen' -type f -perm -111 | head -1)"
-          if [ -z "$mesen" ]; then
-            echo 'Mesen binary not found after build' >&2
-            exit 1
-          fi
+          if [ -z "$mesen" ]; then echo 'Mesen binary not found after build' >&2; exit 1; fi
           mesen_root="$(dirname "$mesen")"
           rel="${mesen_root#$src/}"
           mkdir -p "$dst/$rel"
           rsync -a "$mesen_root/" "$dst/$rel/"
-          cat > "$dst/README_FIRST.txt" <<'EOF'
-          EMUCAP 0.16.1 LINUX PORTABLE BUNDLE
-          ===================================
-          Source commit: 3887f9e9de7525087c30ca4434d9cb8c3ff15103
-          Includes emucap Control/Tracking MCP and compatible patched MesenCE 2.2.1.
-          EOF
           sha256sum "$dst/target/release/emucap-mcp"
           sha256sum "$dst/target/release/emucap-track-mcp"
           sha256sum "$mesen"
