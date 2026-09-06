@@ -1,0 +1,277 @@
+name: Build Cutey Honey FX KR POC01
+permissions:
+  contents: write
+on:
+  push:
+    branches: [tmp-cutey-poc01]
+    paths:
+      - '.github/workflows/cutey_poc01_build.yml'
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: tmp-cutey-poc01
+      - name: Install host tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq p7zip-full unzip curl git make gcc fonts-nanum python3-pil xdelta3 zip
+      - name: Install V810 and PC-FX toolchains
+        shell: bash
+        run: |
+          set -euxo pipefail
+          curl -L --retry 3 --fail -o /tmp/v810.zip https://github.com/jbrandwood/v810-gcc/releases/download/latest/v810-gcc-Linux-x86_64.zip
+          mkdir -p /tmp/v810
+          unzip -q /tmp/v810.zip -d /tmp/v810
+          GCCBIN=$(find /tmp/v810 -type f -name v810-gcc | head -1)
+          test -n "$GCCBIN"
+          export V810GCC=$(dirname "$(dirname "$GCCBIN")")
+          export PATH="$V810GCC/bin:$PATH"
+          echo "V810GCC=$V810GCC" >> "$GITHUB_ENV"
+          echo "$V810GCC/bin" >> "$GITHUB_PATH"
+          v810-gcc --version | head -1
+          git clone -q https://github.com/jbrandwood/pcfxtools.git /tmp/pcfxtools
+          make -C /tmp/pcfxtools -j2
+          cp /tmp/pcfxtools/pcfx-cdlink /tmp/pcfxtools/bincat "$V810GCC/bin/"
+          git clone -q https://github.com/jbrandwood/liberis.git /tmp/liberis
+          make -C /tmp/liberis -j2
+          make -C /tmp/liberis install
+      - name: Generate Korean bitmap POC source
+        shell: bash
+        run: |
+          set -euxo pipefail
+          python3 - <<'PY'
+          from PIL import Image, ImageDraw, ImageFont
+          import os
+          W,H=256,96
+          im=Image.new('1',(W,H),0); d=ImageDraw.Draw(im)
+          font_candidates=[
+            '/usr/share/fonts/truetype/nanum/NanumGothicBold.ttf',
+            '/usr/share/fonts/truetype/nanum/NanumGothic.ttf',
+            '/usr/share/fonts/truetype/nanum/NanumBarunGothic.ttf']
+          fp=next(p for p in font_candidates if os.path.exists(p))
+          def centered(text,y,size):
+            f=ImageFont.truetype(fp,size)
+            b=d.textbbox((0,0),text,font=f,stroke_width=0)
+            tw=b[2]-b[0]
+            d.text(((W-tw)//2,y),text,font=f,fill=1)
+          centered('한글 출력 성공',8,26)
+          centered('CUTIE HONEY FX',44,16)
+          centered('KR POC01',66,17)
+          words=[]
+          for y in range(H):
+            for bx in range(32):
+              v=0
+              for x in range(8):
+                if im.getpixel((bx*8+x,y)):
+                  v |= 1 << (x*2)
+              words.append(v)
+          out=[]
+          out.append('#include <eris/types.h>')
+          out.append('#include <eris/king.h>')
+          out.append('#include <eris/tetsu.h>')
+          out.append('static const u16 screen_words[%d] = {'%len(words))
+          for i in range(0,len(words),16): out.append(','.join('0x%04X'%v for v in words[i:i+16])+',')
+          out.append('};')
+          out.append(r'''
+          int main(int argc, char **argv) {
+            int i,y,x;
+            u16 microprog[16];
+            eris_king_init();
+            eris_tetsu_init();
+            eris_tetsu_set_priorities(0,0,1,0,0,0,0);
+            eris_tetsu_set_king_palette(0,0,0,0);
+            eris_tetsu_set_rainbow_palette(0);
+            eris_king_set_bg_prio(KING_BGPRIO_3,KING_BGPRIO_HIDE,KING_BGPRIO_HIDE,KING_BGPRIO_HIDE,0);
+            eris_king_set_bg_mode(KING_BGMODE_4_PAL,0,0,0);
+            eris_king_set_kram_pages(0,0,0,0);
+            for(i=0;i<16;i++) microprog[i]=KING_CODE_NOP;
+            microprog[0]=KING_CODE_BG0_CG_0;
+            eris_king_disable_microprogram();
+            eris_king_write_microprogram(microprog,0,16);
+            eris_king_enable_microprogram();
+            eris_tetsu_set_palette(0,0x0000);
+            eris_tetsu_set_palette(1,0xE0F0);
+            eris_tetsu_set_palette(2,0xE088);
+            eris_tetsu_set_palette(3,0xFFFF);
+            eris_tetsu_set_video_mode(TETSU_LINES_262,0,TETSU_DOTCLOCK_5MHz,TETSU_COLORS_16,TETSU_COLORS_16,0,0,1,0,0,0,0);
+            eris_king_set_bat_cg_addr(KING_BG0,0,0);
+            eris_king_set_bat_cg_addr(KING_BG0SUB,0,0);
+            eris_king_set_scroll(KING_BG0,0,0);
+            eris_king_set_bg_size(KING_BG0,KING_BGSIZE_256,KING_BGSIZE_256,KING_BGSIZE_256,KING_BGSIZE_256);
+            eris_king_set_kram_write(0,1);
+            for(i=0;i<0x2000;i++) eris_king_kram_write(0);
+            for(y=0;y<96;y++) {
+              eris_king_set_kram_write((64+y)<<5,1);
+              for(x=0;x<32;x++) eris_king_kram_write(screen_words[y*32+x]);
+            }
+            for(;;) { }
+            return 0;
+          }
+          ''')
+          open('/tmp/liberis/examples/hello/hello.c','w',encoding='utf-8').write('\n'.join(out))
+          im.resize((512,192)).save('/tmp/poc_preview.png')
+          print('font',fp,'words',len(words))
+          PY
+          cat >/tmp/liberis/examples/hello/cdlink.txt <<'EOF'
+          binary ./out.bin
+          name Cutey Honey FX KR POC01
+          maker KR POC by Kedori
+          makerid KRP
+          date 20260907
+          country 1
+          version 256
+          EOF
+      - name: Build V810 Korean POC boot image
+        shell: bash
+        run: |
+          set -euxo pipefail
+          export PATH="$V810GCC/bin:$PATH"
+          make -C /tmp/liberis/examples/hello clean
+          make -C /tmp/liberis/examples/hello -j2 all
+          make -C /tmp/liberis/examples/hello cd
+          ls -l /tmp/liberis/examples/hello/hello.bin /tmp/liberis/examples/hello/hello_cd.bin
+          v810-objdump -h /tmp/liberis/examples/hello/hello.elf
+          sha256sum /tmp/liberis/examples/hello/hello.bin /tmp/liberis/examples/hello/hello_cd.bin
+      - name: Download CLEAN Cutey Honey FX and create sparse raw-sector patch
+        shell: bash
+        run: |
+          set -euxo pipefail
+          curl -L --retry 3 --fail -o /tmp/cutey.7z 'https://archive.org/download/noaen-redump-nec-pc-fx-pc-fxga/Cutey%20Honey%20FX%20%28Japan%29.7z'
+          mkdir -p /tmp/cutey /tmp/pkg
+          7z x -y /tmp/cutey.7z -o/tmp/cutey >/dev/null
+          python3 - <<'PY'
+          import pathlib,hashlib,struct,zlib,shutil,os
+          root=pathlib.Path('/tmp/cutey')
+          bins=sorted(root.glob('*.bin'))
+          t1=next(p for p in bins if 'Track 1' in p.name)
+          t2=next(p for p in bins if 'Track 2' in p.name)
+          hb=pathlib.Path('/tmp/liberis/examples/hello/hello_cd.bin').read_bytes()
+          assert len(hb)%2048==0
+          sect_off,sect_count,load,entry=struct.unpack_from('<IIII',hb,0x820)
+          assert sect_off==2 and load==0x8000 and entry==0x8000
+          used=sect_off+sect_count
+          print('HOMEBREW_BOOT_SECTORS',used,'PROGRAM_SECTORS',sect_count)
+          # CD-ROM EDC/ECC tables, same algorithm used by standard eccedc tools.
+          edc_lut=[0]*256; ef=[0]*256; eb=[0]*256
+          for i in range(256):
+            edc=i; j=i<<1
+            if j&0x100: j ^= 0x11D
+            ef[i]=j; eb[i^j]=i
+            for _ in range(8): edc=(edc>>1)^((0xD8018001) if edc&1 else 0)
+            edc_lut[i]=edc & 0xffffffff
+          def edc_compute(src):
+            edc=0
+            for b in src: edc=(edc>>8)^edc_lut[(edc^b)&0xff]
+            return edc & 0xffffffff
+          def ecc_compute(src,major_count,minor_count,major_mult,minor_inc):
+            size=major_count*minor_count; out=bytearray(major_count*2)
+            for major in range(major_count):
+              idx=(major>>1)*major_mult+(major&1); a=0;b=0
+              for _ in range(minor_count):
+                temp=src[idx]; idx+=minor_inc
+                if idx>=size: idx-=size
+                a ^= temp; b ^= temp; a=ef[a]
+              a=eb[ef[a]^b]; out[major]=a; out[major+major_count]=a^b
+            return out
+          def fix_mode1(sec):
+            assert len(sec)==2352 and sec[15]==1
+            e=edc_compute(sec[:0x810]); sec[0x810:0x814]=struct.pack('<I',e)
+            sec[0x814:0x81c]=b'\0'*8
+            src=sec[0x0c:0x0c+2064]
+            sec[0x81c:0x8c8]=ecc_compute(src,86,24,2,86)
+            # Q sees header/data/EDC/reserved/P: 2236 bytes from 0x0c.
+            srcq=sec[0x0c:0x0c+2236]
+            sec[0x8c8:0x930]=ecc_compute(srcq,52,43,86,88)
+            return sec
+          raw=t2.read_bytes(); magic=raw.find(b'PC-FX:Hu_CD-ROM')
+          assert magic>=16
+          data_raw=magic-16
+          assert data_raw%2352==0
+          print('TRACK2_DATA_RAW',hex(data_raw),'MERGED_DATA_RAW',hex(t1.stat().st_size+data_raw))
+          # Verify our ECC implementation byte-for-byte against three CLEAN sectors before using it.
+          for k in (0,1,2):
+            a=data_raw+k*2352; orig=raw[a:a+2352]; regen=fix_mode1(bytearray(orig))
+            if regen!=orig:
+              # Some rips can carry noncanonical parity; EDC must still match.
+              print('ECC_REGEN_DIFFERENCES',k,sum(x!=y for x,y in zip(regen,orig)))
+              assert regen[0x810:0x814]==orig[0x810:0x814], 'EDC algorithm mismatch'
+          patched=bytearray(raw)
+          rawseg=bytearray()
+          for k in range(used):
+            a=data_raw+k*2352
+            sec=bytearray(patched[a:a+2352])
+            sec[16:16+2048]=hb[k*2048:(k+1)*2048]
+            sec=fix_mode1(sec)
+            patched[a:a+2352]=sec
+            rawseg += sec
+          pathlib.Path('/tmp/pkg/poc01_raw_sectors.bin').write_bytes(rawseg)
+          clean='/tmp/Cutey_Honey_FX_JAP_CLEAN.bin'; out='/tmp/Cutey_Honey_FX_JAP_KR_POC01.bin'
+          with open(clean,'wb') as f: f.write(t1.read_bytes()); f.write(raw)
+          with open(out,'wb') as f: f.write(t1.read_bytes()); f.write(patched)
+          def sha(p):
+            h=hashlib.sha256()
+            with open(p,'rb') as f:
+              while True:
+                b=f.read(8<<20)
+                if not b: break
+                h.update(b)
+            return h.hexdigest()
+          clean_sha=sha(clean); out_sha=sha(out)
+          print('CLEAN_SIZE',os.path.getsize(clean),'CLEAN_SHA256',clean_sha)
+          print('POC_SIZE',os.path.getsize(out),'POC_SHA256',out_sha)
+          pathlib.Path('/tmp/pkg/BUILD_INFO.txt').write_text(f'''Cutey Honey FX KR POC01\nCLEAN_SIZE={os.path.getsize(clean)}\nCLEAN_SHA256={clean_sha}\nOUTPUT_SHA256={out_sha}\nPATCH_OFFSET=0x{t1.stat().st_size+data_raw:X}\nPATCH_BYTES={len(rawseg)}\nBOOT_SECTORS={used}\nV810_LOAD=0x{load:X}\nV810_ENTRY=0x{entry:X}\nDISPLAY=한글 출력 성공 / CUTIE HONEY FX / KR POC01\n''',encoding='utf-8')
+          # Pure Python patcher, no external dependency.
+          patcher=f'''import sys,hashlib,shutil,pathlib\nEXPECTED_SIZE={os.path.getsize(clean)}\nEXPECTED_SHA=\"{clean_sha}\"\nOFFSET={t1.stat().st_size+data_raw}\nHERE=pathlib.Path(__file__).resolve().parent\nif len(sys.argv)<2:\n print(\"Usage: py -3 apply_poc01.py <Cutey_Honey_FX_JAP.bin> [output.bin]\"); raise SystemExit(2)\nsrc=pathlib.Path(sys.argv[1]); dst=pathlib.Path(sys.argv[2]) if len(sys.argv)>2 else src.with_name(\"Cutey_Honey_FX_JAP_KR_POC01.bin\")\nif src.stat().st_size!=EXPECTED_SIZE: raise SystemExit(f\"ERROR size {{src.stat().st_size}} expected {{EXPECTED_SIZE}}\")\nh=hashlib.sha256();\nwith src.open(\"rb\") as f:\n while True:\n  b=f.read(8*1024*1024)\n  if not b: break\n  h.update(b)\nif h.hexdigest()!=EXPECTED_SHA: raise SystemExit(f\"ERROR SHA256 {{h.hexdigest()}} expected {{EXPECTED_SHA}}\")\nshutil.copyfile(src,dst)\nblob=(HERE/\"poc01_raw_sectors.bin\").read_bytes()\nwith dst.open(\"r+b\") as f: f.seek(OFFSET); f.write(blob)\nprint(\"[PASS] POC01 created:\",dst)\n'''
+          pathlib.Path('/tmp/pkg/apply_poc01.py').write_text(patcher,encoding='utf-8')
+          PY
+          xdelta3 -e -s /tmp/Cutey_Honey_FX_JAP_CLEAN.bin /tmp/Cutey_Honey_FX_JAP_KR_POC01.bin /tmp/pkg/Cutey_Honey_FX_KR_POC01.xdelta
+          cat >/tmp/pkg/apply_poc01.bat <<'EOF'
+          @echo off
+          chcp 65001 >nul
+          if "%~1"=="" (
+            echo 원본 단일 BIN을 이 BAT 파일 위로 끌어다 놓으세요.
+            pause
+            exit /b 1
+          )
+          py -3 "%~dp0apply_poc01.py" "%~1"
+          pause
+          EOF
+          cat >/tmp/pkg/Cutey_Honey_FX_JAP_KR_POC01.cue <<'EOF'
+          FILE "Cutey_Honey_FX_JAP_KR_POC01.bin" BINARY
+            TRACK 01 AUDIO
+              INDEX 01 00:00:00
+            TRACK 02 MODE1/2352
+              INDEX 01 00:58:45
+          EOF
+          cat >/tmp/pkg/README_KO.txt <<'EOF'
+          큐티하니 FX PC-FX 한글 출력 POC01
+          =================================
+          목적: 게임 전체 한글화가 아니라 PC-FX에서 커스텀 한글 glyph 출력 경로를 실기로 최초 확인하는 부트 POC입니다.
+          정상 결과: 부팅 후 화면에 "한글 출력 성공", "CUTIE HONEY FX", "KR POC01"이 표시되고 그대로 유지됩니다.
+
+          가장 쉬운 적용법
+          1) 원본 단일 BIN을 apply_poc01.bat 위로 드래그합니다.
+          2) 같은 폴더에 Cutey_Honey_FX_JAP_KR_POC01.bin 이 생성됩니다.
+          3) 제공 CUE와 생성 BIN을 같은 폴더에 둡니다.
+          4) Mednafen/실기 환경에서 CUE로 부팅합니다.
+
+          BAT는 Windows의 py -3(Python)를 사용합니다. Python이 없으면 동봉 xdelta를 평소 쓰는 xdelta 패처로 원본 BIN에 적용해도 됩니다.
+          원본 크기/SHA-256은 적용 전에 자동 검증합니다.
+          POC 화면이 확인되면 다음 빌드부터 이 커스텀 glyph 경로를 원본 게임의 대사 렌더러에 연결합니다.
+          EOF
+          cp /tmp/poc_preview.png /tmp/pkg/POC01_EXPECTED_PREVIEW.png
+          (cd /tmp/pkg && sha256sum * > SHA256SUMS.txt)
+          mkdir -p artifacts
+          (cd /tmp/pkg && zip -9 -r "$GITHUB_WORKSPACE/artifacts/CuteyHoneyFX_KR_POC01_v0.01.zip" .)
+          ls -lh artifacts/CuteyHoneyFX_KR_POC01_v0.01.zip /tmp/pkg/Cutey_Honey_FX_KR_POC01.xdelta
+      - name: Commit patch package only
+        run: |
+          git config user.name 'Cutey POC Builder'
+          git config user.email 'actions@users.noreply.github.com'
+          git add artifacts/CuteyHoneyFX_KR_POC01_v0.01.zip
+          git commit -m 'artifact: Cutey Honey FX KR POC01 v0.01 [skip ci]'
+          git push origin HEAD:tmp-cutey-poc01
