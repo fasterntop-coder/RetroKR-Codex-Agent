@@ -47,9 +47,21 @@ jobs:
         working-directory: emucap-src
         shell: pwsh
         run: |
-          # VS2026 promotes CRT getenv deprecation to an error because Mesen uses /WX.
-          # This define restores the warning behavior expected by the pinned MesenCE 2.2.1 source.
+          # GitHub's current VS2026 image needs two compatibility adjustments for the pinned MesenCE source:
+          # 1) suppress CRT getenv deprecation that /WX would otherwise promote to an error;
+          # 2) restore the managed UI NuGet graph before the solution Rebuild target.
           $env:CL = '/D_CRT_SECURE_NO_WARNINGS'
+          $buildScript = '.\adapters\mesen2\build.ps1'
+          $text = Get-Content -Raw -LiteralPath $buildScript
+          $needle = '    Write-Host "Building MesenCE locally with Visual Studio Release/x64"'
+          if (-not $text.Contains($needle)) { throw 'Mesen build insertion point not found' }
+          $insert = @'
+              Write-Host "Restoring MesenCE UI NuGet packages"
+              Invoke-Native "dotnet" @("restore", (Join-Path $Source "UI/UI.csproj"))
+
+          '@
+          $text = $text.Replace($needle, $insert + $needle)
+          Set-Content -LiteralPath $buildScript -Value $text -Encoding UTF8
           .\adapters\mesen2\build.ps1
 
       - name: Assemble portable runtime bundle
