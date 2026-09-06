@@ -1,0 +1,325 @@
+name: Build Cutey Honey FX POC02 Save Load KR
+permissions:
+  contents: write
+on:
+  push:
+    branches: [tmp-cutey-poc01]
+    paths: ['.github/workflows/cutey_poc02_save_load_kr.yml']
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with: {ref: tmp-cutey-poc01}
+      - name: Install tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq p7zip-full unzip curl python3 python3-pil fonts-nanum golang-go
+          curl -L --retry 3 --fail -o /tmp/v810.zip https://github.com/jbrandwood/v810-gcc/releases/download/latest/v810-gcc-Linux-x86_64.zip
+          mkdir -p /tmp/v810 && unzip -q /tmp/v810.zip -d /tmp/v810
+          B=$(find /tmp/v810 -type f -name v810-gcc | head -1); ROOT=$(dirname "$(dirname "$B")")
+          echo "$ROOT/bin" >> "$GITHUB_PATH"
+          echo "V810ROOT=$ROOT" >> "$GITHUB_ENV"
+      - name: Download exact CLEAN split-track parent
+        shell: bash
+        run: |
+          set -euxo pipefail
+          curl -L --retry 3 --fail -o /tmp/cutey.7z 'https://archive.org/download/noaen-redump-nec-pc-fx-pc-fxga/Cutey%20Honey%20FX%20%28Japan%29.7z'
+          mkdir -p /tmp/game /tmp/build /tmp/pkg artifacts
+          7z x -y /tmp/cutey.7z -o/tmp/game >/dev/null
+          T1=$(find /tmp/game -maxdepth 1 -type f -name '*Track 1*.bin' | head -1)
+          T2=$(find /tmp/game -maxdepth 1 -type f -name '*Track 2*.bin' | head -1)
+          echo 'ffae85763f581d312abb6b5096f6f7d62e771aae  '"$T1" | sha1sum -c -
+          echo '1dd574364e40cb90dd0ff25940fe8df9e6793edf  '"$T2" | sha1sum -c -
+          cp "$T1" /tmp/game/t1.bin; cp "$T2" /tmp/game/t2.bin
+      - name: Generate 16x16 and 12x12 Korean BIOS-format glyphs
+        shell: bash
+        run: |
+          set -euxo pipefail
+          python3 - <<'PY'
+          from PIL import Image,ImageDraw,ImageFont
+          from pathlib import Path
+          font='/usr/share/fonts/truetype/nanum/NanumGothicBold.ttf'
+          chars=['저','장','하','기','불','러','오']
+          def raster(ch,n,fontsize):
+              im=Image.new('1',(n,n),0); d=ImageDraw.Draw(im); f=ImageFont.truetype(font,fontsize)
+              b=d.textbbox((0,0),ch,font=f)
+              w,h=b[2]-b[0],b[3]-b[1]
+              x=(n-w)//2-b[0]; y=(n-h)//2-b[1]
+              d.text((x,y),ch,font=f,fill=1)
+              return im
+          def pack16(im):
+              out=[]
+              for y in range(16):
+                  row=0
+                  for x in range(16):
+                      if im.getpixel((x,y)): row |= 1<<(15-x)
+                  out += [(row>>8)&255,row&255]
+              return out
+          def pack12(im):
+              rows=[]
+              for y in range(12):
+                  row=0
+                  for x in range(12):
+                      if im.getpixel((x,y)): row |= 1<<(11-x)
+                  rows.append(row)
+              out=[]
+              for i in range(0,12,2):
+                  a,b=rows[i],rows[i+1]
+                  out += [(a>>4)&255, ((a&15)<<4)|((b>>8)&15), b&255]
+              return out
+          g16=[pack16(raster(c,16,15)) for c in chars]
+          g12=[pack12(raster(c,12,12)) for c in chars]
+          assert all(len(x)==32 for x in g16) and all(len(x)==18 for x in g12)
+          def arr(name,data,width):
+              s=[f'static const u8 {name}[7][{width}] __attribute__((aligned(4))) = {{']
+              for a in data:s.append('  {'+','.join(f'0x{x:02X}' for x in a)+'},')
+              s.append('};'); return '\n'.join(s)
+          src='''typedef unsigned int u32; typedef unsigned char u8;\n'''+arr('glyph16',g16,32)+'\n'+arr('glyph12',g12,18)+r'''
+          __attribute__((noinline,section(".text.hook")))
+          u8 *hook(u32 sjis, u32 type) {
+            unsigned idx=99;
+            if(sjis==0x8790u || sjis==0x9087u) idx=0; /* 저 */
+            else if(sjis==0x8791u || sjis==0x9187u) idx=1; /* 장 */
+            else if(sjis==0x8792u || sjis==0x9287u) idx=2; /* 하 */
+            else if(sjis==0x8793u || sjis==0x9387u) idx=3; /* 기 */
+            else if(sjis==0x8794u || sjis==0x9487u) idx=4; /* 불 */
+            else if(sjis==0x8795u || sjis==0x9587u) idx=5; /* 러 */
+            else if(sjis==0x8796u || sjis==0x9687u) idx=6; /* 오 */
+            if(idx<7u) {
+              if(type==0u) return (u8*)glyph16[idx];
+              if(type==1u) return (u8*)glyph12[idx];
+            }
+            return ((u8 *(*)(u32,u32))0xFFF0000Cu)(sjis,type);
+          }
+          '''
+          Path('/tmp/build/hook.c').write_text(src,encoding='utf-8')
+          # Preview sheets are only QA references, not used by the game.
+          sheet=Image.new('1',(7*20,40),0)
+          for i,c in enumerate(chars): sheet.paste(raster(c,16,15),(i*20+2,2))
+          sheet.resize((560,160)).save('/tmp/pkg/GLYPH_PREVIEW.png')
+          print('generated',chars)
+          PY
+      - name: Compile relocatable V810 ROMFONT hook at safe slack 0x6C800
+        shell: bash
+        run: |
+          set -euxo pipefail
+          v810-gcc -Os -ffreestanding -fno-builtin -fno-jump-tables -c /tmp/build/hook.c -o /tmp/build/hook.o
+          cat >/tmp/build/hook.ld <<'EOF'
+          ENTRY(_hook)
+          SECTIONS {
+            . = 0x6C800;
+            .text : { *(.text.hook) *(.text*) }
+            .rodata : { *(.rodata*) }
+            .data : { *(.data*) }
+            .bss : { *(.bss*) *(COMMON) }
+          }
+          EOF
+          v810-ld -T /tmp/build/hook.ld -o /tmp/build/hook.elf /tmp/build/hook.o
+          v810-nm -n /tmp/build/hook.elf | tee /tmp/build/hook.nm
+          v810-objdump -h -d /tmp/build/hook.elf | tee /tmp/build/hook.disasm
+          HOOK=$(awk '$3=="_hook" || $3=="hook" {print $1; exit}' /tmp/build/hook.nm)
+          test -n "$HOOK"
+          test "$(printf '%x' $((16#$HOOK)))" = "6c800"
+          v810-objcopy -O binary /tmp/build/hook.elf /tmp/build/hook.bin
+          SZ=$(stat -c%s /tmp/build/hook.bin)
+          test "$SZ" -gt 0
+          test "$SZ" -lt 4096
+          echo "HOOK_SIZE=$SZ" | tee /tmp/build/hook_meta.txt
+          # Slack begins 0x6C61E and continues through 0x7FFFF; hook starts at 0x6C800.
+          test $((0x6C800 + SZ)) -le $((0x80000))
+      - name: Build original-game POC02 sector patch
+        shell: bash
+        run: |
+          set -euxo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import struct,hashlib,json
+          t2=Path('/tmp/game/t2.bin').read_bytes(); hook=Path('/tmp/build/hook.bin').read_bytes()
+          base=t2.find(b'PC-FX:Hu_CD-ROM')-16; assert base==0x81330
+          def pay(n): return t2[base+n*2352+16:base+n*2352+2064]
+          vh=pay(1); first,count,load,entry=struct.unpack_from('<IIII',vh,32); assert (first,count,load,entry)==(2,240,0x8000,0x8000)
+          boot=bytearray(b''.join(pay(n) for n in range(first,first+count)))
+          original=bytes(boot)
+          # Verify targets before changing anything.
+          save_off=0x1825C-load; load_off=0x1826D-load
+          assert boot[save_off:save_off+10]==bytes.fromhex('83 5A 81 5B 83 75 82 B7 82 E9')
+          assert boot[load_off:load_off+10]==bytes.fromhex('83 8D 81 5B 83 68 82 B7 82 E9')
+          # Reserved double-byte codes, exactly 10 bytes per original string.
+          boot[save_off:save_off+10]=bytes.fromhex('87 90 87 91 87 92 87 93 81 40') # 저장하기 + fullwidth space
+          boot[load_off:load_off+10]=bytes.fromhex('87 94 87 95 87 96 87 93 81 40') # 불러오기 + fullwidth space
+          # Inject hook into verified zero padding.
+          hook_addr=0x6C800; hook_off=hook_addr-load
+          assert all(b==0 for b in original[hook_off:hook_off+len(hook)])
+          boot[hook_off:hook_off+len(hook)]=hook
+          # Patch the two direct BIOS jal calls. V810 JAL disp26: first half 0xAC00|disp[25:16], second=disp[15:0].
+          def jal(pc,target):
+              d=(target-pc) & 0x03FFFFFF
+              return struct.pack('<HH',0xAC00|((d>>16)&0x3FF),d&0xFFFF)
+          for pc in (0x34944,0x34B46):
+              o=pc-load
+              old=bytes(boot[o:o+4])
+              if pc==0x34944: assert old==bytes.fromhex('EC AF C8 B6')
+              if pc==0x34B46: assert old==bytes.fromhex('EC AF C6 B4')
+              boot[o:o+4]=jal(pc,hook_addr)
+          assert boot[0x34944-load:0x34948-load]==bytes.fromhex('03 AC BC 7E')
+          assert boot[0x34B46-load:0x34B4A-load]==bytes.fromhex('03 AC BA 7C')
+          # EDC/ECC
+          edc_lut=[0]*256; ef=[0]*256; eb=[0]*256
+          for i in range(256):
+              edc=i; j=i<<1
+              if j&0x100:j^=0x11D
+              ef[i]=j; eb[i^j]=i
+              for _ in range(8):edc=(edc>>1)^(0xD8018001 if edc&1 else 0)
+              edc_lut[i]=edc&0xffffffff
+          def edc(src):
+              e=0
+              for b in src:e=(e>>8)^edc_lut[(e^b)&255]
+              return e&0xffffffff
+          def ecc(src,maj,minc,mult,inc):
+              size=maj*minc; out=bytearray(maj*2)
+              for m in range(maj):
+                  idx=(m>>1)*mult+(m&1);a=b=0
+                  for _ in range(minc):
+                      x=src[idx];idx+=inc
+                      if idx>=size:idx-=size
+                      a^=x;b^=x;a=ef[a]
+                  a=eb[ef[a]^b];out[m]=a;out[m+maj]=a^b
+              return out
+          def fix(s):
+              assert len(s)==2352 and s[15]==1
+              s[0x810:0x814]=struct.pack('<I',edc(s[:0x810]));s[0x814:0x81c]=b'\0'*8
+              s[0x81c:0x8c8]=ecc(s[0x0c:0x0c+2064],86,24,2,86);s[0x8c8:0x930]=ecc(s[0x0c:0x0c+2236],52,43,86,88);return s
+          changed=[]
+          for k in range(count):
+              a=k*2048;b=a+2048
+              if boot[a:b]!=original[a:b]: changed.append(k)
+          raw_records=[]
+          patched=bytearray(t2)
+          for k in changed:
+              logical=first+k; ro=base+logical*2352
+              s=bytearray(patched[ro:ro+2352]); assert s[15]==1
+              s[16:2064]=boot[k*2048:(k+1)*2048];s=fix(s);patched[ro:ro+2352]=s
+              raw_records.append((ro,bytes(s)))
+          # Validate untouched bytes outside changed raw sectors logically by construction.
+          blob=bytearray(b'KR02');blob+=struct.pack('<I',len(raw_records))
+          for ro,s in raw_records:blob+=struct.pack('<Q',ro)+s
+          Path('/tmp/pkg/poc02_sector_records.bin').write_bytes(blob)
+          out=Path('/tmp/build/t2_poc02.bin');out.write_bytes(patched)
+          info={
+            'parent_track2_sha1':hashlib.sha1(t2).hexdigest(),
+            'output_track2_sha256':hashlib.sha256(patched).hexdigest(),
+            'boot_original_sha256':hashlib.sha256(original).hexdigest(),
+            'boot_patched_sha256':hashlib.sha256(boot).hexdigest(),
+            'hook_addr':'0x6C800','hook_size':len(hook),
+            'romfont_calls_patched':['0x34944','0x34B46'],
+            'save_string_mem':'0x1825C','load_string_mem':'0x1826D',
+            'changed_boot_chunks':changed,
+            'changed_raw_sectors':len(raw_records),
+            'goal':['저장하기','불러오기']
+          }
+          Path('/tmp/pkg/BUILD_INFO.json').write_text(json.dumps(info,ensure_ascii=False,indent=2),encoding='utf-8')
+          Path('/tmp/pkg/STATIC_AUDIT.txt').write_text('\n'.join([
+            'Cutey Honey FX POC02 v0.01 STATIC AUDIT',
+            '========================================',
+            'Parent: exact Redump split Track 1/2',
+            f'Changed boot 2048-byte chunks: {changed}',
+            f'Changed raw MODE1 sectors: {len(raw_records)}',
+            f'Hook: 0x6C800, {len(hook)} bytes, original region all-zero verified',
+            'ROMFONT direct calls 0x34944 / 0x34B46 redirected to hook',
+            'All non-reserved SJIS codes tail-call original BIOS vector 0xFFF0000C',
+            'Original 10-byte strings verified before replacement',
+            'Control bytes following strings are unchanged',
+            'MODE1 EDC/ECC regenerated per changed raw sector',
+            'STATUS: STATIC BUILD PASS; HW PASS requires user test.',
+          ]),encoding='utf-8')
+          print(json.dumps(info,ensure_ascii=False,indent=2))
+          PY
+          # Verify the generated JAL bytes independently with objdump.
+          printf '\x03\xAC\xBC\x7E' >/tmp/build/j1.bin
+          printf '\x03\xAC\xBA\x7C' >/tmp/build/j2.bin
+          v810-objdump -D -b binary -m v810 --adjust-vma=0x34944 /tmp/build/j1.bin | tee /tmp/build/j1.txt
+          v810-objdump -D -b binary -m v810 --adjust-vma=0x34B46 /tmp/build/j2.bin | tee /tmp/build/j2.txt
+          grep -qi 'jal.*0x6c800' /tmp/build/j1.txt
+          grep -qi 'jal.*0x6c800' /tmp/build/j2.txt
+      - name: Build self-contained Windows split-track patcher
+        shell: bash
+        run: |
+          set -euxo pipefail
+          mkdir -p /tmp/go
+          cp /tmp/pkg/poc02_sector_records.bin /tmp/go/
+          cat >/tmp/go/go.mod <<'EOF'
+          module cutey-poc02
+          go 1.20
+          EOF
+          cat >/tmp/go/main.go <<'EOF'
+          package main
+          import("bufio";"crypto/sha1";_ "embed";"encoding/binary";"encoding/hex";"fmt";"io";"os";"path/filepath";"strings")
+          //go:embed poc02_sector_records.bin
+          var rec []byte
+          const t1size int64=9807840;const t2size int64=656549040
+          const t1sha="ffae85763f581d312abb6b5096f6f7d62e771aae";const t2sha="1dd574364e40cb90dd0ff25940fe8df9e6793edf"
+          func pause(){fmt.Print("\nPress Enter to close...");bufio.NewReader(os.Stdin).ReadString('\n')}
+          func hs(p string)(string,error){f,e:=os.Open(p);if e!=nil{return "",e};defer f.Close();h:=sha1.New();_,e=io.Copy(h,f);return hex.EncodeToString(h.Sum(nil)),e}
+          func bysize(d string,n int64,skip string)[]string{es,_:=os.ReadDir(d);var r[]string;for _,x:=range es{if x.IsDir()||!strings.EqualFold(filepath.Ext(x.Name()),".bin"){continue};p:=filepath.Join(d,x.Name());if skip!=""&&strings.EqualFold(p,skip){continue};s,e:=x.Info();if e==nil&&s.Size()==n{r=append(r,p)}};return r}
+          func main(){
+            fmt.Println("Cutey Honey FX KR POC02 v0.01 - IN-GAME SAVE/LOAD HANGUL")
+            fmt.Println("============================================================")
+            ex,_:=os.Executable();d:=filepath.Dir(ex);c:=bysize(d,t2size,"");if len(c)!=1{fmt.Println("[ERROR] Put exact CLEAN Track 1/Track 2 BINs with this EXE.");pause();return};t2:=c[0]
+            fmt.Println("[1/5] Verifying CLEAN Track 2...");s,_:=hs(t2);if s!=t2sha{fmt.Println("[ERROR] Track 2 SHA-1",s);pause();return};fmt.Println("[PASS]")
+            c=bysize(d,t1size,t2);if len(c)!=1{fmt.Println("[ERROR] CLEAN Track 1 not uniquely found.");pause();return};t1:=c[0]
+            fmt.Println("[2/5] Verifying CLEAN Track 1...");s,_=hs(t1);if s!=t1sha{fmt.Println("[ERROR] Track 1 SHA-1",s);pause();return};fmt.Println("[PASS]")
+            dst:=filepath.Join(d,"Cutey Honey FX (Japan) (Track 2) [KR POC02 v0.01].bin")
+            fmt.Println("[3/5] Copying original Track 2...");i,e:=os.Open(t2);if e!=nil{fmt.Println(e);pause();return};o,e:=os.Create(dst);if e!=nil{i.Close();fmt.Println(e);pause();return};_,e=io.Copy(o,i);i.Close();if e!=nil{o.Close();fmt.Println(e);pause();return}
+            if len(rec)<8||string(rec[:4])!="KR02"{o.Close();fmt.Println("[ERROR] internal patch record");pause();return};n:=binary.LittleEndian.Uint32(rec[4:8]);pos:=8
+            fmt.Printf("[4/5] Applying %d validated MODE1 sectors...\n",n)
+            for z:=uint32(0);z<n;z++{if pos+8+2352>len(rec){o.Close();fmt.Println("[ERROR] record truncated");pause();return};off:=binary.LittleEndian.Uint64(rec[pos:pos+8]);pos+=8;if _,e=o.Seek(int64(off),io.SeekStart);e!=nil{o.Close();fmt.Println(e);pause();return};if _,e=o.Write(rec[pos:pos+2352]);e!=nil{o.Close();fmt.Println(e);pause();return};pos+=2352};o.Close()
+            cue:=fmt.Sprintf("FILE \"%s\" BINARY\r\n  TRACK 01 AUDIO\r\n    INDEX 01 00:00:00\r\nFILE \"%s\" BINARY\r\n  TRACK 02 MODE1/2352\r\n    INDEX 00 00:00:00\r\n    INDEX 01 00:03:00\r\n",filepath.Base(t1),filepath.Base(dst));cp:=filepath.Join(d,"Cutey Honey FX (Japan) [KR POC02 v0.01].cue");if e=os.WriteFile(cp,[]byte(cue),0644);e!=nil{fmt.Println(e);pause();return}
+            fmt.Println("[5/5] [PASS] POC02 created.");fmt.Println("Boot generated CUE:",cp);fmt.Println("Target in original game UI: 저장하기 / 불러오기");fmt.Println("HW PASS is NOT claimed until you test it.");pause()
+          }
+          EOF
+          cd /tmp/go
+          GOOS=windows GOARCH=amd64 CGO_ENABLED=0 go build -trimpath -ldflags='-s -w' -o /tmp/pkg/POC02_v001_INGAME_SAVE_LOAD_KR_Patcher.exe .
+          cp /tmp/build/hook_meta.txt /tmp/pkg/HOOK_INFO.txt
+          cat >/tmp/pkg/README_KO.txt <<'EOF'
+          큐티하니 FX PC-FX POC02 v0.01 — 원본 게임 내 한글 출력 테스트
+          ==================================================================
+          부모롬: Redump 일본판 분리 Track 1 + Track 2 (POC01과 동일 CLEAN)
+
+          목표:
+            セーブする -> 저장하기
+            ロードする -> 불러오기
+
+          이번 버전은 POC01처럼 별도 부트화면을 띄우지 않습니다.
+          원본 게임을 그대로 부팅하면서 원본 텍스트 렌더러의 BIOS ROMFONT 호출을 후킹합니다.
+
+          사용법:
+          1) CLEAN Track 1 BIN + CLEAN Track 2 BIN + EXE를 같은 폴더에 둡니다.
+          2) POC02_v001_INGAME_SAVE_LOAD_KR_Patcher.exe 실행
+          3) 생성된 `Cutey Honey FX (Japan) [KR POC02 v0.01].cue`로 실행
+          4) 세이브/로드 선택 문구가 나오는 화면에서 한글 여부를 확인
+
+          상태: STATIC BUILD PASS / PRE-HW
+          실기/에뮬레이터 사용자 검증 전에는 HW PASS가 아닙니다.
+          EOF
+          (cd /tmp/pkg && sha256sum * > SHA256SUMS.txt)
+          rm -f "$GITHUB_WORKSPACE/artifacts/CuteyHoneyFX_KR_POC02_v0.01_INGAME_SAVE_LOAD.zip"
+          (cd /tmp/pkg && zip -9 -r "$GITHUB_WORKSPACE/artifacts/CuteyHoneyFX_KR_POC02_v0.01_INGAME_SAVE_LOAD.zip" .)
+          sha256sum "$GITHUB_WORKSPACE/artifacts/CuteyHoneyFX_KR_POC02_v0.01_INGAME_SAVE_LOAD.zip"
+      - name: Upload package
+        uses: actions/upload-artifact@v4
+        with:
+          name: CuteyHoneyFX_KR_POC02_v0.01_INGAME_SAVE_LOAD
+          path: artifacts/CuteyHoneyFX_KR_POC02_v0.01_INGAME_SAVE_LOAD.zip
+          retention-days: 7
+      - name: Commit artifact and audit
+        run: |
+          mkdir -p analysis/cutey_poc02
+          cp /tmp/pkg/BUILD_INFO.json analysis/cutey_poc02/Cutey_POC02_v001_BUILD_INFO.json
+          cp /tmp/pkg/STATIC_AUDIT.txt analysis/cutey_poc02/Cutey_POC02_v001_STATIC_AUDIT.txt
+          git config user.name 'Cutey POC Builder';git config user.email 'actions@users.noreply.github.com'
+          git add artifacts/CuteyHoneyFX_KR_POC02_v0.01_INGAME_SAVE_LOAD.zip analysis/cutey_poc02/Cutey_POC02_v001_BUILD_INFO.json analysis/cutey_poc02/Cutey_POC02_v001_STATIC_AUDIT.txt
+          git commit -m 'artifact: Cutey POC02 v0.01 in-game save load KR [skip ci]'
+          git push origin HEAD:tmp-cutey-poc01
