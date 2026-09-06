@@ -24,8 +24,8 @@ jobs:
         run: |
           set -euxo pipefail
           rm -rf /tmp/v1 /tmp/go-patcher /tmp/pkg
-          mkdir -p /tmp/v1 /tmp/go-patcher /tmp/pkg artifacts
-          unzip -q artifacts/CuteyHoneyFX_KR_POC01_v0.01.zip -d /tmp/v1
+          mkdir -p /tmp/v1 /tmp/go-patcher /tmp/pkg "$GITHUB_WORKSPACE/artifacts"
+          unzip -q "$GITHUB_WORKSPACE/artifacts/CuteyHoneyFX_KR_POC01_v0.01.zip" -d /tmp/v1
           cp /tmp/v1/poc01_raw_sectors.bin /tmp/go-patcher/
           cat >/tmp/go-patcher/go.mod <<'EOF'
           module cutey-poc01-patcher
@@ -71,17 +71,11 @@ jobs:
           func main() {
             fmt.Println("Cutey Honey FX KR POC01 v0.02 - self-contained patcher")
             fmt.Println("------------------------------------------------------")
-
             exe, _ := os.Executable()
             exeDir := filepath.Dir(exe)
             var src string
-            if len(os.Args) >= 2 {
-              src = strings.Trim(os.Args[1], "\"")
-            } else {
-              src = filepath.Join(exeDir, "Cutey_Honey_FX_JAP.bin")
-            }
+            if len(os.Args) >= 2 { src = strings.Trim(os.Args[1], "\"") } else { src = filepath.Join(exeDir, "Cutey_Honey_FX_JAP.bin") }
             src, _ = filepath.Abs(src)
-
             st, err := os.Stat(src)
             if err != nil {
               fmt.Println("[ERROR] Original BIN not found:", src)
@@ -89,22 +83,12 @@ jobs:
               fmt.Println("or drag the original BIN onto this EXE.")
               pause(); return
             }
-            if st.Size() != expectedSize {
-              fmt.Printf("[ERROR] Wrong file size: %d (expected %d)\n", st.Size(), expectedSize)
-              pause(); return
-            }
-
+            if st.Size() != expectedSize { fmt.Printf("[ERROR] Wrong file size: %d (expected %d)\n", st.Size(), expectedSize); pause(); return }
             fmt.Println("[1/4] Checking CLEAN SHA-256...")
             sh, err := fileSHA(src)
             if err != nil { fmt.Println("[ERROR]", err); pause(); return }
-            if sh != expectedSHA {
-              fmt.Println("[ERROR] CLEAN SHA-256 mismatch")
-              fmt.Println("Found:   ", sh)
-              fmt.Println("Expected:", expectedSHA)
-              pause(); return
-            }
+            if sh != expectedSHA { fmt.Println("[ERROR] CLEAN SHA-256 mismatch"); fmt.Println("Found:   ", sh); fmt.Println("Expected:", expectedSHA); pause(); return }
             fmt.Println("[PASS] CLEAN verified")
-
             dst := filepath.Join(filepath.Dir(src), "Cutey_Honey_FX_JAP_KR_POC01.bin")
             fmt.Println("[2/4] Copying original BIN...")
             in, err := os.Open(src)
@@ -114,22 +98,14 @@ jobs:
             _, err = io.Copy(out, in)
             in.Close()
             if err != nil { out.Close(); fmt.Println("[ERROR]", err); pause(); return }
-
             fmt.Printf("[3/4] Writing %d patch bytes at 0x%08X...\n", len(patch), patchOffset)
             if _, err = out.Seek(patchOffset, io.SeekStart); err != nil { out.Close(); fmt.Println("[ERROR]", err); pause(); return }
             if _, err = out.Write(patch); err != nil { out.Close(); fmt.Println("[ERROR]", err); pause(); return }
             if err = out.Close(); err != nil { fmt.Println("[ERROR]", err); pause(); return }
-
             fmt.Println("[4/4] Verifying patched BIN...")
             osh, err := fileSHA(dst)
             if err != nil { fmt.Println("[ERROR]", err); pause(); return }
-            if osh != outputSHA {
-              fmt.Println("[ERROR] Output SHA-256 mismatch")
-              fmt.Println("Found:   ", osh)
-              fmt.Println("Expected:", outputSHA)
-              pause(); return
-            }
-
+            if osh != outputSHA { fmt.Println("[ERROR] Output SHA-256 mismatch"); fmt.Println("Found:   ", osh); fmt.Println("Expected:", outputSHA); pause(); return }
             fmt.Println("\n[PASS] POC01 patch completed successfully.")
             fmt.Println("Output:", dst)
             fmt.Println("Use Cutey_Honey_FX_JAP_KR_POC01.cue to boot it.")
@@ -168,10 +144,10 @@ jobs:
           정상 화면: 한글 출력 성공 / CUTIE HONEY FX / KR POC01
           EOF
           (cd /tmp/pkg && sha256sum * > SHA256SUMS.txt)
-          rm -f artifacts/CuteyHoneyFX_KR_POC01_v0.02.zip
+          rm -f "$GITHUB_WORKSPACE/artifacts/CuteyHoneyFX_KR_POC01_v0.02.zip"
           (cd /tmp/pkg && zip -9 -r "$GITHUB_WORKSPACE/artifacts/CuteyHoneyFX_KR_POC01_v0.02.zip" .)
-          sha256sum artifacts/CuteyHoneyFX_KR_POC01_v0.02.zip
-          ls -lh /tmp/pkg/POC01_Patcher.exe artifacts/CuteyHoneyFX_KR_POC01_v0.02.zip
+          sha256sum "$GITHUB_WORKSPACE/artifacts/CuteyHoneyFX_KR_POC01_v0.02.zip"
+          ls -lh /tmp/pkg/POC01_Patcher.exe "$GITHUB_WORKSPACE/artifacts/CuteyHoneyFX_KR_POC01_v0.02.zip"
       - name: Upload package
         uses: actions/upload-artifact@v4
         with:
