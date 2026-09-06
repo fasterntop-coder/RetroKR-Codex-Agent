@@ -1,0 +1,37 @@
+name: Cutey Honey FX KR ALPHA v0.14 Runner
+permissions:
+  contents: write
+on:
+  push:
+    branches: [tmp-cutey-poc01]
+    paths:
+      - '.github/workflows/cutey_full_alpha_v014_runner.yml'
+      - 'scripts/cutey_fx/build_alpha_v014.sh'
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: tmp-cutey-poc01
+      - name: Build package
+        run: bash scripts/cutey_fx/build_alpha_v014.sh
+      - name: Upload package
+        uses: actions/upload-artifact@v4
+        with:
+          name: CuteyHoneyFX_KR_ALPHA_v0.14
+          path: /tmp/CuteyHoneyFX_KR_ALPHA_v0.14.zip
+          compression-level: 0
+      - name: Commit summaries
+        run: |
+          mkdir -p analysis/cutey_full
+          cp /tmp/pkg/EXTRACTION_SUMMARY.json analysis/cutey_full/EXTRACTION_CONTROL_v014.json
+          cp /tmp/pkg/BUILD_INFO.json analysis/cutey_full/BUILD_INFO_v014.json
+          cp /tmp/pkg/TRANSLATION_PROGRESS.csv analysis/cutey_full/TRANSLATION_PROGRESS_v014.csv
+          git config user.name 'Cutey full builder'
+          git config user.email 'actions@users.noreply.github.com'
+          git add analysis/cutey_full
+          git diff --cached --quiet || git commit -m 'analysis: Cutey KR alpha v0.14 [skip ci]'
+          git push origin HEAD:tmp-cutey-poc01
