@@ -1,0 +1,52 @@
+name: Cutey Honey FX POC02 Boot Slack Map
+permissions:
+  contents: write
+on:
+  push:
+    branches: [tmp-cutey-poc01]
+    paths: ['.github/workflows/cutey_poc02_slack.yml']
+  workflow_dispatch:
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with: {ref: tmp-cutey-poc01}
+      - run: sudo apt-get update -qq && sudo apt-get install -y -qq p7zip-full curl python3
+      - name: Map boot zero runs
+        shell: bash
+        run: |
+          set -euxo pipefail
+          curl -L --retry 3 --fail -o /tmp/c.7z 'https://archive.org/download/noaen-redump-nec-pc-fx-pc-fxga/Cutey%20Honey%20FX%20%28Japan%29.7z'
+          mkdir -p /tmp/c analysis/cutey_poc02
+          7z x -y /tmp/c.7z -o/tmp/c >/dev/null
+          python3 - <<'PY'
+          from pathlib import Path
+          import struct
+          t2=next(p for p in Path('/tmp/c').glob('*.bin') if 'Track 2' in p.name)
+          raw=t2.read_bytes(); base=raw.find(b'PC-FX:Hu_CD-ROM')-16
+          def pay(n): return raw[base+n*2352+16:base+n*2352+2064]
+          vh=pay(1); first,count,load,entry=struct.unpack_from('<IIII',vh,32)
+          boot=b''.join(pay(n) for n in range(first,first+count))
+          runs=[]; i=0
+          while i<len(boot):
+              if boot[i]!=0: i+=1; continue
+              j=i+1
+              while j<len(boot) and boot[j]==0:j+=1
+              if j-i>=128:runs.append((j-i,i,j))
+              i=j
+          runs.sort(reverse=True)
+          out=['Cutey Honey FX boot zero/slack runs','===================================',f'boot_size=0x{len(boot):X} load=0x{load:X} end=0x{load+len(boot):X}','']
+          for n,a,b in runs[:100]:
+              # include nonzero guard bytes around the run
+              out.append(f'len=0x{n:X} ({n}) boot_off=0x{a:X}-0x{b-1:X} MEM=0x{load+a:X}-0x{load+b-1:X} prev={boot[max(0,a-8):a].hex()} next={boot[b:min(len(boot),b+8)].hex()}')
+          Path('analysis/cutey_poc02/Cutey_POC02_SLACK_MAP.txt').write_text('\n'.join(out),encoding='utf-8')
+          print('\n'.join(out[:30]))
+          PY
+      - name: Commit
+        run: |
+          git config user.name 'Cutey POC Builder'; git config user.email 'actions@users.noreply.github.com'
+          git add analysis/cutey_poc02/Cutey_POC02_SLACK_MAP.txt
+          git commit -m 'analysis: Cutey POC02 slack map [skip ci]' || true
+          git push origin HEAD:tmp-cutey-poc01
