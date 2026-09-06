@@ -1,0 +1,4604 @@
+[
+  {
+    "request": {
+      "v": 1,
+      "id": 1,
+      "method": "hello",
+      "params": {}
+    },
+    "response": {
+      "id": 1,
+      "ok": true,
+      "result": {
+        "protocol_version": 1,
+        "system": "pcfx",
+        "adapter": "mednafen",
+        "build": "3887f9e@mednafen-1.32.1",
+        "debugger": true,
+        "host_features": [
+          "controlled_start"
+        ],
+        "methods": [
+          "hello",
+          "status",
+          "save_state",
+          "load_state",
+          "run_frames",
+          "set_input",
+          "press_buttons",
+          "screenshot",
+          "pause",
+          "resume",
+          "step",
+          "reset",
+          "get_state",
+          "read_memory",
+          "find_pattern",
+          "dump_memory",
+          "write_memory",
+          "probe",
+          "set_breakpoint",
+          "clear_breakpoint",
+          "clear_all_breakpoints",
+          "list_breakpoints",
+          "poll_events",
+          "disassemble",
+          "step_instructions",
+          "watch_register",
+          "set_trace",
+          "get_trace",
+          "call_stack",
+          "set_layer_enable",
+          "get_rom_info"
+        ],
+        "memory_types": [
+          "cpu",
+          "ram",
+          "backup",
+          "exbackup",
+          "bios",
+          "kram0",
+          "kram1",
+          "vdcvram0",
+          "vdcvram1",
+          "vce",
+          "track0-2-4395"
+        ],
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "breakpoint_kinds": [
+          {
+            "kind": "exec",
+            "range_unit": "address",
+            "range_mode": "inclusive",
+            "memory_type_used": true,
+            "snapshot": true,
+            "snapshot_timing": "backend_stop"
+          },
+          {
+            "kind": "read",
+            "range_unit": "address",
+            "range_mode": "inclusive",
+            "memory_type_used": true,
+            "snapshot": true,
+            "snapshot_timing": "backend_stop"
+          },
+          {
+            "kind": "write",
+            "range_unit": "address",
+            "range_mode": "inclusive",
+            "memory_type_used": true,
+            "snapshot": true,
+            "snapshot_timing": "backend_stop"
+          }
+        ],
+        "contracts": {
+          "catalog": "emucap-feature-contracts/v3",
+          "active_exceptions": [
+            "mednafen.input-hold.port-zero-only",
+            "mednafen.input-pulse.port-zero-only",
+            "mednafen.call-stack.best-effort",
+            "mednafen.pcfx.protected-write-spaces"
+          ]
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "content": "/tmp/game/game.cue"
+      }
+    }
+  },
+  {
+    "hello_summary": {
+      "protocol_version": 1,
+      "system": "pcfx",
+      "methods": [
+        "hello",
+        "status",
+        "save_state",
+        "load_state",
+        "run_frames",
+        "set_input",
+        "press_buttons",
+        "screenshot",
+        "pause",
+        "resume",
+        "step",
+        "reset",
+        "get_state",
+        "read_memory",
+        "find_pattern",
+        "dump_memory",
+        "write_memory",
+        "probe",
+        "set_breakpoint",
+        "clear_breakpoint",
+        "clear_all_breakpoints",
+        "list_breakpoints",
+        "poll_events",
+        "disassemble",
+        "step_instructions",
+        "watch_register",
+        "set_trace",
+        "get_trace",
+        "call_stack",
+        "set_layer_enable",
+        "get_rom_info"
+      ],
+      "memory_types": [
+        "cpu",
+        "ram",
+        "backup",
+        "exbackup",
+        "bios",
+        "kram0",
+        "kram1",
+        "vdcvram0",
+        "vdcvram1",
+        "vce",
+        "track0-2-4395"
+      ],
+      "breakpoint_kinds": [
+        {
+          "kind": "exec",
+          "range_unit": "address",
+          "range_mode": "inclusive",
+          "memory_type_used": true,
+          "snapshot": true,
+          "snapshot_timing": "backend_stop"
+        },
+        {
+          "kind": "read",
+          "range_unit": "address",
+          "range_mode": "inclusive",
+          "memory_type_used": true,
+          "snapshot": true,
+          "snapshot_timing": "backend_stop"
+        },
+        {
+          "kind": "write",
+          "range_unit": "address",
+          "range_mode": "inclusive",
+          "memory_type_used": true,
+          "snapshot": true,
+          "snapshot_timing": "backend_stop"
+        }
+      ],
+      "state_groups": [
+        "g0",
+        "g1",
+        "g2",
+        "g3",
+        "g4",
+        "SndBox"
+      ]
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 2,
+      "method": "status",
+      "params": {}
+    },
+    "response": {
+      "id": 2,
+      "ok": true,
+      "result": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 0,
+        "state": "frozen",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    }
+  },
+  {
+    "initial_status": {
+      "connected": true,
+      "system": "pcfx",
+      "debugger": true,
+      "frame": 0,
+      "state": "frozen",
+      "last_game_input": "0x0000",
+      "last_game_buttons": [],
+      "input_override": {
+        "observable": true,
+        "engaged": false,
+        "mode": "native",
+        "pressed_mask": 0
+      },
+      "execution_limits": {
+        "max_sync_advance_count": 5000
+      },
+      "state_groups": [
+        "g0",
+        "g1",
+        "g2",
+        "g3",
+        "g4",
+        "SndBox"
+      ],
+      "cpu_targets": [
+        {
+          "id": "main",
+          "aliases": [
+            "v810"
+          ],
+          "default": true,
+          "disassembly_modes": [
+            "auto",
+            "v810"
+          ]
+        }
+      ],
+      "launch_start": {
+        "requested_frozen": true,
+        "controlled": true,
+        "boundary": "pre_first_instruction"
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 3,
+      "method": "read_memory",
+      "params": {
+        "memory_type": "ram",
+        "address": 98844,
+        "length": 144
+      }
+    },
+    "response": {
+      "id": 3,
+      "ok": true,
+      "result": {
+        "hex": "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+      }
+    }
+  },
+  {
+    "menu_ram": {
+      "hex": "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 4,
+      "method": "read_memory",
+      "params": {
+        "memory_type": "ram",
+        "address": 215328,
+        "length": 144
+      }
+    },
+    "response": {
+      "id": 4,
+      "ok": true,
+      "result": {
+        "hex": "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+      }
+    }
+  },
+  {
+    "renderer_site_a": {
+      "hex": "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 5,
+      "method": "read_memory",
+      "params": {
+        "memory_type": "ram",
+        "address": 215840,
+        "length": 144
+      }
+    },
+    "response": {
+      "id": 5,
+      "ok": true,
+      "result": {
+        "hex": "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+      }
+    }
+  },
+  {
+    "renderer_site_b": {
+      "hex": "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 6,
+      "method": "set_breakpoint",
+      "params": {
+        "kind": "exec",
+        "memory_type": "cpu",
+        "start": 215364,
+        "end": 215364,
+        "pause_on_hit": true
+      }
+    },
+    "response": {
+      "id": 6,
+      "ok": true,
+      "result": {
+        "id": 1,
+        "set": true
+      }
+    }
+  },
+  {
+    "breakpoint": {
+      "address": "0x34944",
+      "result": {
+        "id": 1,
+        "set": true
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 7,
+      "method": "set_breakpoint",
+      "params": {
+        "kind": "exec",
+        "memory_type": "cpu",
+        "start": 215878,
+        "end": 215878,
+        "pause_on_hit": true
+      }
+    },
+    "response": {
+      "id": 7,
+      "ok": true,
+      "result": {
+        "id": 2,
+        "set": true
+      }
+    }
+  },
+  {
+    "breakpoint": {
+      "address": "0x34b46",
+      "result": {
+        "id": 2,
+        "set": true
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 8,
+      "method": "set_trace",
+      "params": {
+        "enabled": true
+      }
+    },
+    "response": {
+      "id": 8,
+      "ok": true,
+      "result": {
+        "enabled": true
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 9,
+      "method": "resume",
+      "params": {}
+    },
+    "response": {
+      "id": 9,
+      "ok": true,
+      "result": {
+        "state": "running"
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 10,
+      "method": "status",
+      "params": {}
+    },
+    "response": {
+      "id": 10,
+      "ok": true,
+      "result": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 22,
+        "state": "running",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    }
+  },
+  {
+    "poll": 0,
+    "status": {
+      "connected": true,
+      "system": "pcfx",
+      "debugger": true,
+      "frame": 22,
+      "state": "running",
+      "last_game_input": "0x0000",
+      "last_game_buttons": [],
+      "input_override": {
+        "observable": true,
+        "engaged": false,
+        "mode": "native",
+        "pressed_mask": 0
+      },
+      "execution_limits": {
+        "max_sync_advance_count": 5000
+      },
+      "state_groups": [
+        "g0",
+        "g1",
+        "g2",
+        "g3",
+        "g4",
+        "SndBox"
+      ],
+      "cpu_targets": [
+        {
+          "id": "main",
+          "aliases": [
+            "v810"
+          ],
+          "default": true,
+          "disassembly_modes": [
+            "auto",
+            "v810"
+          ]
+        }
+      ],
+      "launch_start": {
+        "requested_frozen": true,
+        "controlled": true,
+        "boundary": "pre_first_instruction"
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 11,
+      "method": "status",
+      "params": {}
+    },
+    "response": {
+      "id": 11,
+      "ok": true,
+      "result": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 46,
+        "state": "running",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    }
+  },
+  {
+    "poll": 1,
+    "status": {
+      "connected": true,
+      "system": "pcfx",
+      "debugger": true,
+      "frame": 46,
+      "state": "running",
+      "last_game_input": "0x0000",
+      "last_game_buttons": [],
+      "input_override": {
+        "observable": true,
+        "engaged": false,
+        "mode": "native",
+        "pressed_mask": 0
+      },
+      "execution_limits": {
+        "max_sync_advance_count": 5000
+      },
+      "state_groups": [
+        "g0",
+        "g1",
+        "g2",
+        "g3",
+        "g4",
+        "SndBox"
+      ],
+      "cpu_targets": [
+        {
+          "id": "main",
+          "aliases": [
+            "v810"
+          ],
+          "default": true,
+          "disassembly_modes": [
+            "auto",
+            "v810"
+          ]
+        }
+      ],
+      "launch_start": {
+        "requested_frozen": true,
+        "controlled": true,
+        "boundary": "pre_first_instruction"
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 12,
+      "method": "status",
+      "params": {}
+    },
+    "response": {
+      "id": 12,
+      "ok": true,
+      "result": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 69,
+        "state": "running",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    }
+  },
+  {
+    "poll": 2,
+    "status": {
+      "connected": true,
+      "system": "pcfx",
+      "debugger": true,
+      "frame": 69,
+      "state": "running",
+      "last_game_input": "0x0000",
+      "last_game_buttons": [],
+      "input_override": {
+        "observable": true,
+        "engaged": false,
+        "mode": "native",
+        "pressed_mask": 0
+      },
+      "execution_limits": {
+        "max_sync_advance_count": 5000
+      },
+      "state_groups": [
+        "g0",
+        "g1",
+        "g2",
+        "g3",
+        "g4",
+        "SndBox"
+      ],
+      "cpu_targets": [
+        {
+          "id": "main",
+          "aliases": [
+            "v810"
+          ],
+          "default": true,
+          "disassembly_modes": [
+            "auto",
+            "v810"
+          ]
+        }
+      ],
+      "launch_start": {
+        "requested_frozen": true,
+        "controlled": true,
+        "boundary": "pre_first_instruction"
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 13,
+      "method": "status",
+      "params": {}
+    },
+    "response": {
+      "id": 13,
+      "ok": true,
+      "result": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 93,
+        "state": "running",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    }
+  },
+  {
+    "poll": 3,
+    "status": {
+      "connected": true,
+      "system": "pcfx",
+      "debugger": true,
+      "frame": 93,
+      "state": "running",
+      "last_game_input": "0x0000",
+      "last_game_buttons": [],
+      "input_override": {
+        "observable": true,
+        "engaged": false,
+        "mode": "native",
+        "pressed_mask": 0
+      },
+      "execution_limits": {
+        "max_sync_advance_count": 5000
+      },
+      "state_groups": [
+        "g0",
+        "g1",
+        "g2",
+        "g3",
+        "g4",
+        "SndBox"
+      ],
+      "cpu_targets": [
+        {
+          "id": "main",
+          "aliases": [
+            "v810"
+          ],
+          "default": true,
+          "disassembly_modes": [
+            "auto",
+            "v810"
+          ]
+        }
+      ],
+      "launch_start": {
+        "requested_frozen": true,
+        "controlled": true,
+        "boundary": "pre_first_instruction"
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 14,
+      "method": "status",
+      "params": {}
+    },
+    "response": {
+      "id": 14,
+      "ok": true,
+      "result": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 117,
+        "state": "running",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    }
+  },
+  {
+    "poll": 4,
+    "status": {
+      "connected": true,
+      "system": "pcfx",
+      "debugger": true,
+      "frame": 117,
+      "state": "running",
+      "last_game_input": "0x0000",
+      "last_game_buttons": [],
+      "input_override": {
+        "observable": true,
+        "engaged": false,
+        "mode": "native",
+        "pressed_mask": 0
+      },
+      "execution_limits": {
+        "max_sync_advance_count": 5000
+      },
+      "state_groups": [
+        "g0",
+        "g1",
+        "g2",
+        "g3",
+        "g4",
+        "SndBox"
+      ],
+      "cpu_targets": [
+        {
+          "id": "main",
+          "aliases": [
+            "v810"
+          ],
+          "default": true,
+          "disassembly_modes": [
+            "auto",
+            "v810"
+          ]
+        }
+      ],
+      "launch_start": {
+        "requested_frozen": true,
+        "controlled": true,
+        "boundary": "pre_first_instruction"
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 15,
+      "method": "status",
+      "params": {}
+    },
+    "response": {
+      "id": 15,
+      "ok": true,
+      "result": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 140,
+        "state": "running",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    }
+  },
+  {
+    "poll": 5,
+    "status": {
+      "connected": true,
+      "system": "pcfx",
+      "debugger": true,
+      "frame": 140,
+      "state": "running",
+      "last_game_input": "0x0000",
+      "last_game_buttons": [],
+      "input_override": {
+        "observable": true,
+        "engaged": false,
+        "mode": "native",
+        "pressed_mask": 0
+      },
+      "execution_limits": {
+        "max_sync_advance_count": 5000
+      },
+      "state_groups": [
+        "g0",
+        "g1",
+        "g2",
+        "g3",
+        "g4",
+        "SndBox"
+      ],
+      "cpu_targets": [
+        {
+          "id": "main",
+          "aliases": [
+            "v810"
+          ],
+          "default": true,
+          "disassembly_modes": [
+            "auto",
+            "v810"
+          ]
+        }
+      ],
+      "launch_start": {
+        "requested_frozen": true,
+        "controlled": true,
+        "boundary": "pre_first_instruction"
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 16,
+      "method": "status",
+      "params": {}
+    },
+    "response": {
+      "id": 16,
+      "ok": true,
+      "result": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 163,
+        "state": "running",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    }
+  },
+  {
+    "poll": 6,
+    "status": {
+      "connected": true,
+      "system": "pcfx",
+      "debugger": true,
+      "frame": 163,
+      "state": "running",
+      "last_game_input": "0x0000",
+      "last_game_buttons": [],
+      "input_override": {
+        "observable": true,
+        "engaged": false,
+        "mode": "native",
+        "pressed_mask": 0
+      },
+      "execution_limits": {
+        "max_sync_advance_count": 5000
+      },
+      "state_groups": [
+        "g0",
+        "g1",
+        "g2",
+        "g3",
+        "g4",
+        "SndBox"
+      ],
+      "cpu_targets": [
+        {
+          "id": "main",
+          "aliases": [
+            "v810"
+          ],
+          "default": true,
+          "disassembly_modes": [
+            "auto",
+            "v810"
+          ]
+        }
+      ],
+      "launch_start": {
+        "requested_frozen": true,
+        "controlled": true,
+        "boundary": "pre_first_instruction"
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 17,
+      "method": "status",
+      "params": {}
+    },
+    "response": {
+      "id": 17,
+      "ok": true,
+      "result": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 185,
+        "state": "running",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    }
+  },
+  {
+    "poll": 7,
+    "status": {
+      "connected": true,
+      "system": "pcfx",
+      "debugger": true,
+      "frame": 185,
+      "state": "running",
+      "last_game_input": "0x0000",
+      "last_game_buttons": [],
+      "input_override": {
+        "observable": true,
+        "engaged": false,
+        "mode": "native",
+        "pressed_mask": 0
+      },
+      "execution_limits": {
+        "max_sync_advance_count": 5000
+      },
+      "state_groups": [
+        "g0",
+        "g1",
+        "g2",
+        "g3",
+        "g4",
+        "SndBox"
+      ],
+      "cpu_targets": [
+        {
+          "id": "main",
+          "aliases": [
+            "v810"
+          ],
+          "default": true,
+          "disassembly_modes": [
+            "auto",
+            "v810"
+          ]
+        }
+      ],
+      "launch_start": {
+        "requested_frozen": true,
+        "controlled": true,
+        "boundary": "pre_first_instruction"
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 18,
+      "method": "status",
+      "params": {}
+    },
+    "response": {
+      "id": 18,
+      "ok": true,
+      "result": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 208,
+        "state": "running",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    }
+  },
+  {
+    "poll": 8,
+    "status": {
+      "connected": true,
+      "system": "pcfx",
+      "debugger": true,
+      "frame": 208,
+      "state": "running",
+      "last_game_input": "0x0000",
+      "last_game_buttons": [],
+      "input_override": {
+        "observable": true,
+        "engaged": false,
+        "mode": "native",
+        "pressed_mask": 0
+      },
+      "execution_limits": {
+        "max_sync_advance_count": 5000
+      },
+      "state_groups": [
+        "g0",
+        "g1",
+        "g2",
+        "g3",
+        "g4",
+        "SndBox"
+      ],
+      "cpu_targets": [
+        {
+          "id": "main",
+          "aliases": [
+            "v810"
+          ],
+          "default": true,
+          "disassembly_modes": [
+            "auto",
+            "v810"
+          ]
+        }
+      ],
+      "launch_start": {
+        "requested_frozen": true,
+        "controlled": true,
+        "boundary": "pre_first_instruction"
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 19,
+      "method": "status",
+      "params": {}
+    },
+    "response": {
+      "id": 19,
+      "ok": true,
+      "result": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 231,
+        "state": "running",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    }
+  },
+  {
+    "poll": 9,
+    "status": {
+      "connected": true,
+      "system": "pcfx",
+      "debugger": true,
+      "frame": 231,
+      "state": "running",
+      "last_game_input": "0x0000",
+      "last_game_buttons": [],
+      "input_override": {
+        "observable": true,
+        "engaged": false,
+        "mode": "native",
+        "pressed_mask": 0
+      },
+      "execution_limits": {
+        "max_sync_advance_count": 5000
+      },
+      "state_groups": [
+        "g0",
+        "g1",
+        "g2",
+        "g3",
+        "g4",
+        "SndBox"
+      ],
+      "cpu_targets": [
+        {
+          "id": "main",
+          "aliases": [
+            "v810"
+          ],
+          "default": true,
+          "disassembly_modes": [
+            "auto",
+            "v810"
+          ]
+        }
+      ],
+      "launch_start": {
+        "requested_frozen": true,
+        "controlled": true,
+        "boundary": "pre_first_instruction"
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 20,
+      "method": "status",
+      "params": {}
+    },
+    "response": {
+      "id": 20,
+      "ok": true,
+      "result": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 255,
+        "state": "running",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    }
+  },
+  {
+    "poll": 10,
+    "status": {
+      "connected": true,
+      "system": "pcfx",
+      "debugger": true,
+      "frame": 255,
+      "state": "running",
+      "last_game_input": "0x0000",
+      "last_game_buttons": [],
+      "input_override": {
+        "observable": true,
+        "engaged": false,
+        "mode": "native",
+        "pressed_mask": 0
+      },
+      "execution_limits": {
+        "max_sync_advance_count": 5000
+      },
+      "state_groups": [
+        "g0",
+        "g1",
+        "g2",
+        "g3",
+        "g4",
+        "SndBox"
+      ],
+      "cpu_targets": [
+        {
+          "id": "main",
+          "aliases": [
+            "v810"
+          ],
+          "default": true,
+          "disassembly_modes": [
+            "auto",
+            "v810"
+          ]
+        }
+      ],
+      "launch_start": {
+        "requested_frozen": true,
+        "controlled": true,
+        "boundary": "pre_first_instruction"
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 21,
+      "method": "status",
+      "params": {}
+    },
+    "response": {
+      "id": 21,
+      "ok": true,
+      "result": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 279,
+        "state": "running",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    }
+  },
+  {
+    "poll": 11,
+    "status": {
+      "connected": true,
+      "system": "pcfx",
+      "debugger": true,
+      "frame": 279,
+      "state": "running",
+      "last_game_input": "0x0000",
+      "last_game_buttons": [],
+      "input_override": {
+        "observable": true,
+        "engaged": false,
+        "mode": "native",
+        "pressed_mask": 0
+      },
+      "execution_limits": {
+        "max_sync_advance_count": 5000
+      },
+      "state_groups": [
+        "g0",
+        "g1",
+        "g2",
+        "g3",
+        "g4",
+        "SndBox"
+      ],
+      "cpu_targets": [
+        {
+          "id": "main",
+          "aliases": [
+            "v810"
+          ],
+          "default": true,
+          "disassembly_modes": [
+            "auto",
+            "v810"
+          ]
+        }
+      ],
+      "launch_start": {
+        "requested_frozen": true,
+        "controlled": true,
+        "boundary": "pre_first_instruction"
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 22,
+      "method": "status",
+      "params": {}
+    },
+    "response": {
+      "id": 22,
+      "ok": true,
+      "result": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 305,
+        "state": "running",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    }
+  },
+  {
+    "poll": 12,
+    "status": {
+      "connected": true,
+      "system": "pcfx",
+      "debugger": true,
+      "frame": 305,
+      "state": "running",
+      "last_game_input": "0x0000",
+      "last_game_buttons": [],
+      "input_override": {
+        "observable": true,
+        "engaged": false,
+        "mode": "native",
+        "pressed_mask": 0
+      },
+      "execution_limits": {
+        "max_sync_advance_count": 5000
+      },
+      "state_groups": [
+        "g0",
+        "g1",
+        "g2",
+        "g3",
+        "g4",
+        "SndBox"
+      ],
+      "cpu_targets": [
+        {
+          "id": "main",
+          "aliases": [
+            "v810"
+          ],
+          "default": true,
+          "disassembly_modes": [
+            "auto",
+            "v810"
+          ]
+        }
+      ],
+      "launch_start": {
+        "requested_frozen": true,
+        "controlled": true,
+        "boundary": "pre_first_instruction"
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 23,
+      "method": "status",
+      "params": {}
+    },
+    "response": {
+      "id": 23,
+      "ok": true,
+      "result": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 330,
+        "state": "running",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    }
+  },
+  {
+    "poll": 13,
+    "status": {
+      "connected": true,
+      "system": "pcfx",
+      "debugger": true,
+      "frame": 330,
+      "state": "running",
+      "last_game_input": "0x0000",
+      "last_game_buttons": [],
+      "input_override": {
+        "observable": true,
+        "engaged": false,
+        "mode": "native",
+        "pressed_mask": 0
+      },
+      "execution_limits": {
+        "max_sync_advance_count": 5000
+      },
+      "state_groups": [
+        "g0",
+        "g1",
+        "g2",
+        "g3",
+        "g4",
+        "SndBox"
+      ],
+      "cpu_targets": [
+        {
+          "id": "main",
+          "aliases": [
+            "v810"
+          ],
+          "default": true,
+          "disassembly_modes": [
+            "auto",
+            "v810"
+          ]
+        }
+      ],
+      "launch_start": {
+        "requested_frozen": true,
+        "controlled": true,
+        "boundary": "pre_first_instruction"
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 24,
+      "method": "status",
+      "params": {}
+    },
+    "response": {
+      "id": 24,
+      "ok": true,
+      "result": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 354,
+        "state": "running",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    }
+  },
+  {
+    "poll": 14,
+    "status": {
+      "connected": true,
+      "system": "pcfx",
+      "debugger": true,
+      "frame": 354,
+      "state": "running",
+      "last_game_input": "0x0000",
+      "last_game_buttons": [],
+      "input_override": {
+        "observable": true,
+        "engaged": false,
+        "mode": "native",
+        "pressed_mask": 0
+      },
+      "execution_limits": {
+        "max_sync_advance_count": 5000
+      },
+      "state_groups": [
+        "g0",
+        "g1",
+        "g2",
+        "g3",
+        "g4",
+        "SndBox"
+      ],
+      "cpu_targets": [
+        {
+          "id": "main",
+          "aliases": [
+            "v810"
+          ],
+          "default": true,
+          "disassembly_modes": [
+            "auto",
+            "v810"
+          ]
+        }
+      ],
+      "launch_start": {
+        "requested_frozen": true,
+        "controlled": true,
+        "boundary": "pre_first_instruction"
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 25,
+      "method": "status",
+      "params": {}
+    },
+    "response": {
+      "id": 25,
+      "ok": true,
+      "result": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 378,
+        "state": "running",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    }
+  },
+  {
+    "poll": 15,
+    "status": {
+      "connected": true,
+      "system": "pcfx",
+      "debugger": true,
+      "frame": 378,
+      "state": "running",
+      "last_game_input": "0x0000",
+      "last_game_buttons": [],
+      "input_override": {
+        "observable": true,
+        "engaged": false,
+        "mode": "native",
+        "pressed_mask": 0
+      },
+      "execution_limits": {
+        "max_sync_advance_count": 5000
+      },
+      "state_groups": [
+        "g0",
+        "g1",
+        "g2",
+        "g3",
+        "g4",
+        "SndBox"
+      ],
+      "cpu_targets": [
+        {
+          "id": "main",
+          "aliases": [
+            "v810"
+          ],
+          "default": true,
+          "disassembly_modes": [
+            "auto",
+            "v810"
+          ]
+        }
+      ],
+      "launch_start": {
+        "requested_frozen": true,
+        "controlled": true,
+        "boundary": "pre_first_instruction"
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 26,
+      "method": "status",
+      "params": {}
+    },
+    "response": {
+      "id": 26,
+      "ok": true,
+      "result": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 402,
+        "state": "running",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    }
+  },
+  {
+    "poll": 16,
+    "status": {
+      "connected": true,
+      "system": "pcfx",
+      "debugger": true,
+      "frame": 402,
+      "state": "running",
+      "last_game_input": "0x0000",
+      "last_game_buttons": [],
+      "input_override": {
+        "observable": true,
+        "engaged": false,
+        "mode": "native",
+        "pressed_mask": 0
+      },
+      "execution_limits": {
+        "max_sync_advance_count": 5000
+      },
+      "state_groups": [
+        "g0",
+        "g1",
+        "g2",
+        "g3",
+        "g4",
+        "SndBox"
+      ],
+      "cpu_targets": [
+        {
+          "id": "main",
+          "aliases": [
+            "v810"
+          ],
+          "default": true,
+          "disassembly_modes": [
+            "auto",
+            "v810"
+          ]
+        }
+      ],
+      "launch_start": {
+        "requested_frozen": true,
+        "controlled": true,
+        "boundary": "pre_first_instruction"
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 27,
+      "method": "status",
+      "params": {}
+    },
+    "response": {
+      "id": 27,
+      "ok": true,
+      "result": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 426,
+        "state": "running",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    }
+  },
+  {
+    "poll": 17,
+    "status": {
+      "connected": true,
+      "system": "pcfx",
+      "debugger": true,
+      "frame": 426,
+      "state": "running",
+      "last_game_input": "0x0000",
+      "last_game_buttons": [],
+      "input_override": {
+        "observable": true,
+        "engaged": false,
+        "mode": "native",
+        "pressed_mask": 0
+      },
+      "execution_limits": {
+        "max_sync_advance_count": 5000
+      },
+      "state_groups": [
+        "g0",
+        "g1",
+        "g2",
+        "g3",
+        "g4",
+        "SndBox"
+      ],
+      "cpu_targets": [
+        {
+          "id": "main",
+          "aliases": [
+            "v810"
+          ],
+          "default": true,
+          "disassembly_modes": [
+            "auto",
+            "v810"
+          ]
+        }
+      ],
+      "launch_start": {
+        "requested_frozen": true,
+        "controlled": true,
+        "boundary": "pre_first_instruction"
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 28,
+      "method": "status",
+      "params": {}
+    },
+    "response": {
+      "id": 28,
+      "ok": true,
+      "result": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 450,
+        "state": "running",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    }
+  },
+  {
+    "poll": 18,
+    "status": {
+      "connected": true,
+      "system": "pcfx",
+      "debugger": true,
+      "frame": 450,
+      "state": "running",
+      "last_game_input": "0x0000",
+      "last_game_buttons": [],
+      "input_override": {
+        "observable": true,
+        "engaged": false,
+        "mode": "native",
+        "pressed_mask": 0
+      },
+      "execution_limits": {
+        "max_sync_advance_count": 5000
+      },
+      "state_groups": [
+        "g0",
+        "g1",
+        "g2",
+        "g3",
+        "g4",
+        "SndBox"
+      ],
+      "cpu_targets": [
+        {
+          "id": "main",
+          "aliases": [
+            "v810"
+          ],
+          "default": true,
+          "disassembly_modes": [
+            "auto",
+            "v810"
+          ]
+        }
+      ],
+      "launch_start": {
+        "requested_frozen": true,
+        "controlled": true,
+        "boundary": "pre_first_instruction"
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 29,
+      "method": "status",
+      "params": {}
+    },
+    "response": {
+      "id": 29,
+      "ok": true,
+      "result": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 474,
+        "state": "running",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    }
+  },
+  {
+    "poll": 19,
+    "status": {
+      "connected": true,
+      "system": "pcfx",
+      "debugger": true,
+      "frame": 474,
+      "state": "running",
+      "last_game_input": "0x0000",
+      "last_game_buttons": [],
+      "input_override": {
+        "observable": true,
+        "engaged": false,
+        "mode": "native",
+        "pressed_mask": 0
+      },
+      "execution_limits": {
+        "max_sync_advance_count": 5000
+      },
+      "state_groups": [
+        "g0",
+        "g1",
+        "g2",
+        "g3",
+        "g4",
+        "SndBox"
+      ],
+      "cpu_targets": [
+        {
+          "id": "main",
+          "aliases": [
+            "v810"
+          ],
+          "default": true,
+          "disassembly_modes": [
+            "auto",
+            "v810"
+          ]
+        }
+      ],
+      "launch_start": {
+        "requested_frozen": true,
+        "controlled": true,
+        "boundary": "pre_first_instruction"
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 30,
+      "method": "status",
+      "params": {}
+    },
+    "response": {
+      "id": 30,
+      "ok": true,
+      "result": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 498,
+        "state": "running",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    }
+  },
+  {
+    "poll": 20,
+    "status": {
+      "connected": true,
+      "system": "pcfx",
+      "debugger": true,
+      "frame": 498,
+      "state": "running",
+      "last_game_input": "0x0000",
+      "last_game_buttons": [],
+      "input_override": {
+        "observable": true,
+        "engaged": false,
+        "mode": "native",
+        "pressed_mask": 0
+      },
+      "execution_limits": {
+        "max_sync_advance_count": 5000
+      },
+      "state_groups": [
+        "g0",
+        "g1",
+        "g2",
+        "g3",
+        "g4",
+        "SndBox"
+      ],
+      "cpu_targets": [
+        {
+          "id": "main",
+          "aliases": [
+            "v810"
+          ],
+          "default": true,
+          "disassembly_modes": [
+            "auto",
+            "v810"
+          ]
+        }
+      ],
+      "launch_start": {
+        "requested_frozen": true,
+        "controlled": true,
+        "boundary": "pre_first_instruction"
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 31,
+      "method": "status",
+      "params": {}
+    },
+    "response": {
+      "id": 31,
+      "ok": true,
+      "result": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 522,
+        "state": "running",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    }
+  },
+  {
+    "poll": 21,
+    "status": {
+      "connected": true,
+      "system": "pcfx",
+      "debugger": true,
+      "frame": 522,
+      "state": "running",
+      "last_game_input": "0x0000",
+      "last_game_buttons": [],
+      "input_override": {
+        "observable": true,
+        "engaged": false,
+        "mode": "native",
+        "pressed_mask": 0
+      },
+      "execution_limits": {
+        "max_sync_advance_count": 5000
+      },
+      "state_groups": [
+        "g0",
+        "g1",
+        "g2",
+        "g3",
+        "g4",
+        "SndBox"
+      ],
+      "cpu_targets": [
+        {
+          "id": "main",
+          "aliases": [
+            "v810"
+          ],
+          "default": true,
+          "disassembly_modes": [
+            "auto",
+            "v810"
+          ]
+        }
+      ],
+      "launch_start": {
+        "requested_frozen": true,
+        "controlled": true,
+        "boundary": "pre_first_instruction"
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 32,
+      "method": "status",
+      "params": {}
+    },
+    "response": {
+      "id": 32,
+      "ok": true,
+      "result": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 546,
+        "state": "running",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    }
+  },
+  {
+    "poll": 22,
+    "status": {
+      "connected": true,
+      "system": "pcfx",
+      "debugger": true,
+      "frame": 546,
+      "state": "running",
+      "last_game_input": "0x0000",
+      "last_game_buttons": [],
+      "input_override": {
+        "observable": true,
+        "engaged": false,
+        "mode": "native",
+        "pressed_mask": 0
+      },
+      "execution_limits": {
+        "max_sync_advance_count": 5000
+      },
+      "state_groups": [
+        "g0",
+        "g1",
+        "g2",
+        "g3",
+        "g4",
+        "SndBox"
+      ],
+      "cpu_targets": [
+        {
+          "id": "main",
+          "aliases": [
+            "v810"
+          ],
+          "default": true,
+          "disassembly_modes": [
+            "auto",
+            "v810"
+          ]
+        }
+      ],
+      "launch_start": {
+        "requested_frozen": true,
+        "controlled": true,
+        "boundary": "pre_first_instruction"
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 33,
+      "method": "status",
+      "params": {}
+    },
+    "response": {
+      "id": 33,
+      "ok": true,
+      "result": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 570,
+        "state": "running",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    }
+  },
+  {
+    "poll": 23,
+    "status": {
+      "connected": true,
+      "system": "pcfx",
+      "debugger": true,
+      "frame": 570,
+      "state": "running",
+      "last_game_input": "0x0000",
+      "last_game_buttons": [],
+      "input_override": {
+        "observable": true,
+        "engaged": false,
+        "mode": "native",
+        "pressed_mask": 0
+      },
+      "execution_limits": {
+        "max_sync_advance_count": 5000
+      },
+      "state_groups": [
+        "g0",
+        "g1",
+        "g2",
+        "g3",
+        "g4",
+        "SndBox"
+      ],
+      "cpu_targets": [
+        {
+          "id": "main",
+          "aliases": [
+            "v810"
+          ],
+          "default": true,
+          "disassembly_modes": [
+            "auto",
+            "v810"
+          ]
+        }
+      ],
+      "launch_start": {
+        "requested_frozen": true,
+        "controlled": true,
+        "boundary": "pre_first_instruction"
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 34,
+      "method": "status",
+      "params": {}
+    },
+    "response": {
+      "id": 34,
+      "ok": true,
+      "result": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 592,
+        "state": "running",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    }
+  },
+  {
+    "poll": 24,
+    "status": {
+      "connected": true,
+      "system": "pcfx",
+      "debugger": true,
+      "frame": 592,
+      "state": "running",
+      "last_game_input": "0x0000",
+      "last_game_buttons": [],
+      "input_override": {
+        "observable": true,
+        "engaged": false,
+        "mode": "native",
+        "pressed_mask": 0
+      },
+      "execution_limits": {
+        "max_sync_advance_count": 5000
+      },
+      "state_groups": [
+        "g0",
+        "g1",
+        "g2",
+        "g3",
+        "g4",
+        "SndBox"
+      ],
+      "cpu_targets": [
+        {
+          "id": "main",
+          "aliases": [
+            "v810"
+          ],
+          "default": true,
+          "disassembly_modes": [
+            "auto",
+            "v810"
+          ]
+        }
+      ],
+      "launch_start": {
+        "requested_frozen": true,
+        "controlled": true,
+        "boundary": "pre_first_instruction"
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 35,
+      "method": "status",
+      "params": {}
+    },
+    "response": {
+      "id": 35,
+      "ok": true,
+      "result": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 613,
+        "state": "running",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    }
+  },
+  {
+    "poll": 25,
+    "status": {
+      "connected": true,
+      "system": "pcfx",
+      "debugger": true,
+      "frame": 613,
+      "state": "running",
+      "last_game_input": "0x0000",
+      "last_game_buttons": [],
+      "input_override": {
+        "observable": true,
+        "engaged": false,
+        "mode": "native",
+        "pressed_mask": 0
+      },
+      "execution_limits": {
+        "max_sync_advance_count": 5000
+      },
+      "state_groups": [
+        "g0",
+        "g1",
+        "g2",
+        "g3",
+        "g4",
+        "SndBox"
+      ],
+      "cpu_targets": [
+        {
+          "id": "main",
+          "aliases": [
+            "v810"
+          ],
+          "default": true,
+          "disassembly_modes": [
+            "auto",
+            "v810"
+          ]
+        }
+      ],
+      "launch_start": {
+        "requested_frozen": true,
+        "controlled": true,
+        "boundary": "pre_first_instruction"
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 36,
+      "method": "status",
+      "params": {}
+    },
+    "response": {
+      "id": 36,
+      "ok": true,
+      "result": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 633,
+        "state": "running",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    }
+  },
+  {
+    "poll": 26,
+    "status": {
+      "connected": true,
+      "system": "pcfx",
+      "debugger": true,
+      "frame": 633,
+      "state": "running",
+      "last_game_input": "0x0000",
+      "last_game_buttons": [],
+      "input_override": {
+        "observable": true,
+        "engaged": false,
+        "mode": "native",
+        "pressed_mask": 0
+      },
+      "execution_limits": {
+        "max_sync_advance_count": 5000
+      },
+      "state_groups": [
+        "g0",
+        "g1",
+        "g2",
+        "g3",
+        "g4",
+        "SndBox"
+      ],
+      "cpu_targets": [
+        {
+          "id": "main",
+          "aliases": [
+            "v810"
+          ],
+          "default": true,
+          "disassembly_modes": [
+            "auto",
+            "v810"
+          ]
+        }
+      ],
+      "launch_start": {
+        "requested_frozen": true,
+        "controlled": true,
+        "boundary": "pre_first_instruction"
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 37,
+      "method": "status",
+      "params": {}
+    },
+    "response": {
+      "id": 37,
+      "ok": true,
+      "result": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 654,
+        "state": "running",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    }
+  },
+  {
+    "poll": 27,
+    "status": {
+      "connected": true,
+      "system": "pcfx",
+      "debugger": true,
+      "frame": 654,
+      "state": "running",
+      "last_game_input": "0x0000",
+      "last_game_buttons": [],
+      "input_override": {
+        "observable": true,
+        "engaged": false,
+        "mode": "native",
+        "pressed_mask": 0
+      },
+      "execution_limits": {
+        "max_sync_advance_count": 5000
+      },
+      "state_groups": [
+        "g0",
+        "g1",
+        "g2",
+        "g3",
+        "g4",
+        "SndBox"
+      ],
+      "cpu_targets": [
+        {
+          "id": "main",
+          "aliases": [
+            "v810"
+          ],
+          "default": true,
+          "disassembly_modes": [
+            "auto",
+            "v810"
+          ]
+        }
+      ],
+      "launch_start": {
+        "requested_frozen": true,
+        "controlled": true,
+        "boundary": "pre_first_instruction"
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 38,
+      "method": "status",
+      "params": {}
+    },
+    "response": {
+      "id": 38,
+      "ok": true,
+      "result": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 675,
+        "state": "running",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    }
+  },
+  {
+    "poll": 28,
+    "status": {
+      "connected": true,
+      "system": "pcfx",
+      "debugger": true,
+      "frame": 675,
+      "state": "running",
+      "last_game_input": "0x0000",
+      "last_game_buttons": [],
+      "input_override": {
+        "observable": true,
+        "engaged": false,
+        "mode": "native",
+        "pressed_mask": 0
+      },
+      "execution_limits": {
+        "max_sync_advance_count": 5000
+      },
+      "state_groups": [
+        "g0",
+        "g1",
+        "g2",
+        "g3",
+        "g4",
+        "SndBox"
+      ],
+      "cpu_targets": [
+        {
+          "id": "main",
+          "aliases": [
+            "v810"
+          ],
+          "default": true,
+          "disassembly_modes": [
+            "auto",
+            "v810"
+          ]
+        }
+      ],
+      "launch_start": {
+        "requested_frozen": true,
+        "controlled": true,
+        "boundary": "pre_first_instruction"
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 39,
+      "method": "status",
+      "params": {}
+    },
+    "response": {
+      "id": 39,
+      "ok": true,
+      "result": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 696,
+        "state": "running",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    }
+  },
+  {
+    "poll": 29,
+    "status": {
+      "connected": true,
+      "system": "pcfx",
+      "debugger": true,
+      "frame": 696,
+      "state": "running",
+      "last_game_input": "0x0000",
+      "last_game_buttons": [],
+      "input_override": {
+        "observable": true,
+        "engaged": false,
+        "mode": "native",
+        "pressed_mask": 0
+      },
+      "execution_limits": {
+        "max_sync_advance_count": 5000
+      },
+      "state_groups": [
+        "g0",
+        "g1",
+        "g2",
+        "g3",
+        "g4",
+        "SndBox"
+      ],
+      "cpu_targets": [
+        {
+          "id": "main",
+          "aliases": [
+            "v810"
+          ],
+          "default": true,
+          "disassembly_modes": [
+            "auto",
+            "v810"
+          ]
+        }
+      ],
+      "launch_start": {
+        "requested_frozen": true,
+        "controlled": true,
+        "boundary": "pre_first_instruction"
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 40,
+      "method": "status",
+      "params": {}
+    },
+    "response": {
+      "id": 40,
+      "ok": true,
+      "result": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 717,
+        "state": "running",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    }
+  },
+  {
+    "poll": 30,
+    "status": {
+      "connected": true,
+      "system": "pcfx",
+      "debugger": true,
+      "frame": 717,
+      "state": "running",
+      "last_game_input": "0x0000",
+      "last_game_buttons": [],
+      "input_override": {
+        "observable": true,
+        "engaged": false,
+        "mode": "native",
+        "pressed_mask": 0
+      },
+      "execution_limits": {
+        "max_sync_advance_count": 5000
+      },
+      "state_groups": [
+        "g0",
+        "g1",
+        "g2",
+        "g3",
+        "g4",
+        "SndBox"
+      ],
+      "cpu_targets": [
+        {
+          "id": "main",
+          "aliases": [
+            "v810"
+          ],
+          "default": true,
+          "disassembly_modes": [
+            "auto",
+            "v810"
+          ]
+        }
+      ],
+      "launch_start": {
+        "requested_frozen": true,
+        "controlled": true,
+        "boundary": "pre_first_instruction"
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 41,
+      "method": "status",
+      "params": {}
+    },
+    "response": {
+      "id": 41,
+      "ok": true,
+      "result": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 738,
+        "state": "running",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    }
+  },
+  {
+    "poll": 31,
+    "status": {
+      "connected": true,
+      "system": "pcfx",
+      "debugger": true,
+      "frame": 738,
+      "state": "running",
+      "last_game_input": "0x0000",
+      "last_game_buttons": [],
+      "input_override": {
+        "observable": true,
+        "engaged": false,
+        "mode": "native",
+        "pressed_mask": 0
+      },
+      "execution_limits": {
+        "max_sync_advance_count": 5000
+      },
+      "state_groups": [
+        "g0",
+        "g1",
+        "g2",
+        "g3",
+        "g4",
+        "SndBox"
+      ],
+      "cpu_targets": [
+        {
+          "id": "main",
+          "aliases": [
+            "v810"
+          ],
+          "default": true,
+          "disassembly_modes": [
+            "auto",
+            "v810"
+          ]
+        }
+      ],
+      "launch_start": {
+        "requested_frozen": true,
+        "controlled": true,
+        "boundary": "pre_first_instruction"
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 42,
+      "method": "status",
+      "params": {}
+    },
+    "response": {
+      "id": 42,
+      "ok": true,
+      "result": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 759,
+        "state": "running",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    }
+  },
+  {
+    "poll": 32,
+    "status": {
+      "connected": true,
+      "system": "pcfx",
+      "debugger": true,
+      "frame": 759,
+      "state": "running",
+      "last_game_input": "0x0000",
+      "last_game_buttons": [],
+      "input_override": {
+        "observable": true,
+        "engaged": false,
+        "mode": "native",
+        "pressed_mask": 0
+      },
+      "execution_limits": {
+        "max_sync_advance_count": 5000
+      },
+      "state_groups": [
+        "g0",
+        "g1",
+        "g2",
+        "g3",
+        "g4",
+        "SndBox"
+      ],
+      "cpu_targets": [
+        {
+          "id": "main",
+          "aliases": [
+            "v810"
+          ],
+          "default": true,
+          "disassembly_modes": [
+            "auto",
+            "v810"
+          ]
+        }
+      ],
+      "launch_start": {
+        "requested_frozen": true,
+        "controlled": true,
+        "boundary": "pre_first_instruction"
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 43,
+      "method": "status",
+      "params": {}
+    },
+    "response": {
+      "id": 43,
+      "ok": true,
+      "result": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 780,
+        "state": "running",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    }
+  },
+  {
+    "poll": 33,
+    "status": {
+      "connected": true,
+      "system": "pcfx",
+      "debugger": true,
+      "frame": 780,
+      "state": "running",
+      "last_game_input": "0x0000",
+      "last_game_buttons": [],
+      "input_override": {
+        "observable": true,
+        "engaged": false,
+        "mode": "native",
+        "pressed_mask": 0
+      },
+      "execution_limits": {
+        "max_sync_advance_count": 5000
+      },
+      "state_groups": [
+        "g0",
+        "g1",
+        "g2",
+        "g3",
+        "g4",
+        "SndBox"
+      ],
+      "cpu_targets": [
+        {
+          "id": "main",
+          "aliases": [
+            "v810"
+          ],
+          "default": true,
+          "disassembly_modes": [
+            "auto",
+            "v810"
+          ]
+        }
+      ],
+      "launch_start": {
+        "requested_frozen": true,
+        "controlled": true,
+        "boundary": "pre_first_instruction"
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 44,
+      "method": "status",
+      "params": {}
+    },
+    "response": {
+      "id": 44,
+      "ok": true,
+      "result": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 801,
+        "state": "running",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    }
+  },
+  {
+    "poll": 34,
+    "status": {
+      "connected": true,
+      "system": "pcfx",
+      "debugger": true,
+      "frame": 801,
+      "state": "running",
+      "last_game_input": "0x0000",
+      "last_game_buttons": [],
+      "input_override": {
+        "observable": true,
+        "engaged": false,
+        "mode": "native",
+        "pressed_mask": 0
+      },
+      "execution_limits": {
+        "max_sync_advance_count": 5000
+      },
+      "state_groups": [
+        "g0",
+        "g1",
+        "g2",
+        "g3",
+        "g4",
+        "SndBox"
+      ],
+      "cpu_targets": [
+        {
+          "id": "main",
+          "aliases": [
+            "v810"
+          ],
+          "default": true,
+          "disassembly_modes": [
+            "auto",
+            "v810"
+          ]
+        }
+      ],
+      "launch_start": {
+        "requested_frozen": true,
+        "controlled": true,
+        "boundary": "pre_first_instruction"
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 45,
+      "method": "status",
+      "params": {}
+    },
+    "response": {
+      "id": 45,
+      "ok": true,
+      "result": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 822,
+        "state": "running",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    }
+  },
+  {
+    "poll": 35,
+    "status": {
+      "connected": true,
+      "system": "pcfx",
+      "debugger": true,
+      "frame": 822,
+      "state": "running",
+      "last_game_input": "0x0000",
+      "last_game_buttons": [],
+      "input_override": {
+        "observable": true,
+        "engaged": false,
+        "mode": "native",
+        "pressed_mask": 0
+      },
+      "execution_limits": {
+        "max_sync_advance_count": 5000
+      },
+      "state_groups": [
+        "g0",
+        "g1",
+        "g2",
+        "g3",
+        "g4",
+        "SndBox"
+      ],
+      "cpu_targets": [
+        {
+          "id": "main",
+          "aliases": [
+            "v810"
+          ],
+          "default": true,
+          "disassembly_modes": [
+            "auto",
+            "v810"
+          ]
+        }
+      ],
+      "launch_start": {
+        "requested_frozen": true,
+        "controlled": true,
+        "boundary": "pre_first_instruction"
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 46,
+      "method": "status",
+      "params": {}
+    },
+    "response": {
+      "id": 46,
+      "ok": true,
+      "result": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 843,
+        "state": "running",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    }
+  },
+  {
+    "poll": 36,
+    "status": {
+      "connected": true,
+      "system": "pcfx",
+      "debugger": true,
+      "frame": 843,
+      "state": "running",
+      "last_game_input": "0x0000",
+      "last_game_buttons": [],
+      "input_override": {
+        "observable": true,
+        "engaged": false,
+        "mode": "native",
+        "pressed_mask": 0
+      },
+      "execution_limits": {
+        "max_sync_advance_count": 5000
+      },
+      "state_groups": [
+        "g0",
+        "g1",
+        "g2",
+        "g3",
+        "g4",
+        "SndBox"
+      ],
+      "cpu_targets": [
+        {
+          "id": "main",
+          "aliases": [
+            "v810"
+          ],
+          "default": true,
+          "disassembly_modes": [
+            "auto",
+            "v810"
+          ]
+        }
+      ],
+      "launch_start": {
+        "requested_frozen": true,
+        "controlled": true,
+        "boundary": "pre_first_instruction"
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 47,
+      "method": "status",
+      "params": {}
+    },
+    "response": {
+      "id": 47,
+      "ok": true,
+      "result": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 864,
+        "state": "running",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    }
+  },
+  {
+    "poll": 37,
+    "status": {
+      "connected": true,
+      "system": "pcfx",
+      "debugger": true,
+      "frame": 864,
+      "state": "running",
+      "last_game_input": "0x0000",
+      "last_game_buttons": [],
+      "input_override": {
+        "observable": true,
+        "engaged": false,
+        "mode": "native",
+        "pressed_mask": 0
+      },
+      "execution_limits": {
+        "max_sync_advance_count": 5000
+      },
+      "state_groups": [
+        "g0",
+        "g1",
+        "g2",
+        "g3",
+        "g4",
+        "SndBox"
+      ],
+      "cpu_targets": [
+        {
+          "id": "main",
+          "aliases": [
+            "v810"
+          ],
+          "default": true,
+          "disassembly_modes": [
+            "auto",
+            "v810"
+          ]
+        }
+      ],
+      "launch_start": {
+        "requested_frozen": true,
+        "controlled": true,
+        "boundary": "pre_first_instruction"
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 48,
+      "method": "status",
+      "params": {}
+    },
+    "response": {
+      "id": 48,
+      "ok": true,
+      "result": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 889,
+        "state": "running",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    }
+  },
+  {
+    "poll": 38,
+    "status": {
+      "connected": true,
+      "system": "pcfx",
+      "debugger": true,
+      "frame": 889,
+      "state": "running",
+      "last_game_input": "0x0000",
+      "last_game_buttons": [],
+      "input_override": {
+        "observable": true,
+        "engaged": false,
+        "mode": "native",
+        "pressed_mask": 0
+      },
+      "execution_limits": {
+        "max_sync_advance_count": 5000
+      },
+      "state_groups": [
+        "g0",
+        "g1",
+        "g2",
+        "g3",
+        "g4",
+        "SndBox"
+      ],
+      "cpu_targets": [
+        {
+          "id": "main",
+          "aliases": [
+            "v810"
+          ],
+          "default": true,
+          "disassembly_modes": [
+            "auto",
+            "v810"
+          ]
+        }
+      ],
+      "launch_start": {
+        "requested_frozen": true,
+        "controlled": true,
+        "boundary": "pre_first_instruction"
+      }
+    }
+  },
+  {
+    "request": {
+      "v": 1,
+      "id": 49,
+      "method": "status",
+      "params": {}
+    },
+    "response": {
+      "id": 49,
+      "ok": true,
+      "result": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 914,
+        "state": "running",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    }
+  },
+  {
+    "poll": 39,
+    "status": {
+      "connected": true,
+      "system": "pcfx",
+      "debugger": true,
+      "frame": 914,
+      "state": "running",
+      "last_game_input": "0x0000",
+      "last_game_buttons": [],
+      "input_override": {
+        "observable": true,
+        "engaged": false,
+        "mode": "native",
+        "pressed_mask": 0
+      },
+      "execution_limits": {
+        "max_sync_advance_count": 5000
+      },
+      "state_groups": [
+        "g0",
+        "g1",
+        "g2",
+        "g3",
+        "g4",
+        "SndBox"
+      ],
+      "cpu_targets": [
+        {
+          "id": "main",
+          "aliases": [
+            "v810"
+          ],
+          "default": true,
+          "disassembly_modes": [
+            "auto",
+            "v810"
+          ]
+        }
+      ],
+      "launch_start": {
+        "requested_frozen": true,
+        "controlled": true,
+        "boundary": "pre_first_instruction"
+      }
+    }
+  }
+]

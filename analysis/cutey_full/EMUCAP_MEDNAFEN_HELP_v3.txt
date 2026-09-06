@@ -1,0 +1,39 @@
+Starting Mednafen 1.32.1
+ Build information:
+   Compiled with gcc 13.3.0
+   Compiled against zlib 1.3, running with zlib 1.3(flags=0x000000a9)
+   Compiled against SDL 2.30.0(SDL-release-2.30.0-0-g859844eae (Ubuntu 2.30.0+dfsg-1ubuntu3.1)), running with SDL 2.30.0(SDL-release-2.30.0-0-g859844eae (Ubuntu 2.30.0+dfsg-1ubuntu3.1))
+   Running with libFLAC 1.4.3
+ Base directory: /home/runner/.mednafen
+ Emulation modules: apple2 nes snes gb gba pce lynx md pcfx ngp psx ss ssfplay vb wswan sms gg sasplay snes_faust pce_fast demo cdplay
+ Opening lockfile...
+ Loading settings from "/home/runner/.mednafen/mednafen.cfg"...
+  Loaded 0 valid settings and 0 unknown settings.
+Usage: adapters/mednafen/work/mednafen/src/mednafen [OPTION]... [FILE]
+
+Options:
+
+ -help
+	Show help!
+ -ovconfig <parameter>
+	Load global override settings from specified file.
+ -which_medium <parameter>
+	Start with specified disk/CD(numbered from 0) inserted.
+ -force_module <parameter>
+	Force usage of specified emulation module.
+ -soundrecord <parameter>
+	Record sound output to the specified filename in the MS WAV format.
+ -qtrecord <parameter>
+	Record video and audio output to the specified filename in the QuickTime format.
+ -connect
+	Connect to the remote server and start network play.
+
+Each setting(listed in the documentation) can also be passed as an argument by prefixing the name with a hyphen,
+and specifying the value to change the setting to as the next argument.
+
+For example:
+	adapters/mednafen/work/mednafen/src/mednafen -pce.stretch aspect -pce.shader autoipsharper "Hyper Bonk Soldier.pce"
+
+Settings specified in this manner are automatically saved to the configuration file, hence they
+do not need to be passed to future invocations of the Mednafen executable.
+
