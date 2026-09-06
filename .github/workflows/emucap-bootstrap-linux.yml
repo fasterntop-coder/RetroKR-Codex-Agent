@@ -1,0 +1,98 @@
+name: emucap bootstrap Linux
+
+on:
+  push:
+    branches:
+      - emucap-bootstrap-20260906
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-linux:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 90
+    steps:
+      - name: Checkout helper repo
+        uses: actions/checkout@v4
+
+      - name: Install Linux build prerequisites
+        shell: bash
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential clang libsdl2-dev zip
+
+      - name: Checkout emucap 0.16.1 source
+        shell: bash
+        run: |
+          git clone https://github.com/mcpads/emucap.git emucap-src
+          git -C emucap-src checkout 3887f9e9de7525087c30ca4434d9cb8c3ff15103
+          test "$(git -C emucap-src rev-parse HEAD)" = "3887f9e9de7525087c30ca4434d9cb8c3ff15103"
+
+      - name: Select current stable Rust
+        shell: bash
+        run: |
+          rustup update stable
+          rustup default stable
+          rustc --version
+          cargo --version
+
+      - name: Ensure .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Build emucap NES core MCPs
+        working-directory: emucap-src
+        shell: bash
+        run: |
+          cargo build --locked --release --bin emucap --bin emucap-mcp --bin emucap-track-mcp --bin emucap-broker
+
+      - name: Build emucap-compatible MesenCE
+        working-directory: emucap-src
+        shell: bash
+        run: |
+          ./adapters/mesen2/build.sh
+
+      - name: Assemble portable runtime bundle
+        shell: bash
+        run: |
+          src="$PWD/emucap-src"
+          dst="$PWD/emucap-runtime-linux"
+          mkdir -p "$dst/target/release"
+          rsync -a --exclude '.git' --exclude 'target' --exclude 'adapters/mesen2/work' "$src/" "$dst/"
+          cp "$src/target/release/emucap" "$dst/target/release/"
+          cp "$src/target/release/emucap-mcp" "$dst/target/release/"
+          cp "$src/target/release/emucap-track-mcp" "$dst/target/release/"
+          cp "$src/target/release/emucap-broker" "$dst/target/release/"
+
+          mesen="$(find "$src/adapters/mesen2/work/mesen/bin" -path '*/publish/Mesen' -type f -perm -111 | head -1)"
+          if [ -z "$mesen" ]; then
+            echo 'Mesen binary not found after build' >&2
+            exit 1
+          fi
+          mesen_root="$(dirname "$mesen")"
+          rel="${mesen_root#$src/}"
+          mkdir -p "$dst/$rel"
+          rsync -a "$mesen_root/" "$dst/$rel/"
+
+          cat > "$dst/README_FIRST.txt" <<'EOF'
+EMUCAP 0.16.1 LINUX PORTABLE BUNDLE
+===================================
+Source commit: 3887f9e9de7525087c30ca4434d9cb8c3ff15103
+Includes emucap Control + Tracking MCP binaries and the compatible patched MesenCE 2.2.1 runtime.
+EOF
+
+          sha256sum "$dst/target/release/emucap-mcp"
+          sha256sum "$dst/target/release/emucap-track-mcp"
+          sha256sum "$mesen"
+
+      - name: Upload Linux emucap runtime
+        uses: actions/upload-artifact@v4
+        with:
+          name: emucap-0.16.1-linux-runtime
+          path: emucap-runtime-linux
+          if-no-files-found: error
+          compression-level: 6
+          retention-days: 14
