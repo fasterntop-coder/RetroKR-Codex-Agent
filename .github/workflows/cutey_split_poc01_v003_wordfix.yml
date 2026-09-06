@@ -30,7 +30,7 @@ jobs:
           V810GCC=$(dirname "$(dirname "$GCCBIN")")
           echo "V810GCC=$V810GCC" >> "$GITHUB_ENV"
           echo "$V810GCC/bin" >> "$GITHUB_PATH"
-          export PATH="$V810GCC/bin:$PATH"
+          export V810GCC PATH="$V810GCC/bin:$PATH"
           git clone -q https://github.com/jbrandwood/pcfxtools.git /tmp/pcfxtools
           make -C /tmp/pcfxtools -j2
           cp /tmp/pcfxtools/pcfx-cdlink /tmp/pcfxtools/bincat "$V810GCC/bin/"
