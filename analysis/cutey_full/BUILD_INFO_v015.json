@@ -1,0 +1,75 @@
+{
+  "version": "KR ALPHA v0.15",
+  "parent_track2_sha1": "1dd574364e40cb90dd0ff25940fe8df9e6793edf",
+  "output_track2_sha256": "75088a9e6a80b0b8d76e02093f5cb7aa855eba48bc4f061da080eb2ef301e9cf",
+  "hook_size": 3116,
+  "changed_raw_sectors": 9,
+  "translations": [
+    [
+      "直前に戻る",
+      "이전으로",
+      1,
+      "RAM 0x18222"
+    ],
+    [
+      "タイトル画面に戻る",
+      "타이틀로 돌아가기",
+      1,
+      "RAM 0x18233"
+    ],
+    [
+      "ＥＸＩＴ",
+      "종료",
+      2,
+      "LOGICAL 0x1124D;LOGICAL 0x1446847D"
+    ],
+    [
+      "セーブする",
+      "저장하기",
+      1,
+      "RAM 0x1825C"
+    ],
+    [
+      "ロードする",
+      "불러오기",
+      1,
+      "RAM 0x1826D"
+    ],
+    [
+      "キューティーハニーに変身！",
+      "큐티하니로 변신！",
+      2,
+      "LOGICAL 0x14478098;LOGICAL 0x1E041A6C"
+    ],
+    [
+      "如月ハニーに変身！",
+      "키사라기 변신！",
+      2,
+      "LOGICAL 0x144780B9;LOGICAL 0x1E041A8D"
+    ],
+    [
+      "コマンドハニーに変身！",
+      "커맨드하니 변신！",
+      2,
+      "LOGICAL 0x144780D2;LOGICAL 0x1E041AA6"
+    ],
+    [
+      "ファンタジーナイトハニーに変身！",
+      "판타지나이트 변신！",
+      2,
+      "LOGICAL 0x144780EF;LOGICAL 0x1E041AC3"
+    ],
+    [
+      "レスラーハニーに変身！",
+      "레슬러하니 변신！",
+      2,
+      "LOGICAL 0x14478116;LOGICAL 0x1E041AEA"
+    ],
+    [
+      "変身しない",
+      "변신 안함",
+      4,
+      "LOGICAL 0x14478133;LOGICAL 0x14996388;LOGICAL 0x149A6B00;LOGICAL 0x1E041B07"
+    ]
+  ]
+}
