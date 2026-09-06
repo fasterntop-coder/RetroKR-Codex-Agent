@@ -1,0 +1,118 @@
+name: emucap bootstrap Windows
+
+on:
+  push:
+    branches:
+      - emucap-bootstrap-20260906
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    timeout-minutes: 90
+    steps:
+      - name: Checkout helper repo
+        uses: actions/checkout@v4
+
+      - name: Checkout emucap 0.16.1 source
+        shell: pwsh
+        run: |
+          git clone https://github.com/mcpads/emucap.git emucap-src
+          git -C emucap-src checkout 3887f9e9de7525087c30ca4434d9cb8c3ff15103
+          if ((git -C emucap-src rev-parse HEAD).Trim() -ne '3887f9e9de7525087c30ca4434d9cb8c3ff15103') { throw 'emucap commit mismatch' }
+
+      - name: Select Rust 1.88
+        shell: pwsh
+        run: |
+          rustup toolchain install 1.88.0-x86_64-pc-windows-msvc --profile minimal
+          rustup default 1.88.0-x86_64-pc-windows-msvc
+          rustc --version
+          cargo --version
+
+      - name: Ensure .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Build emucap NES core MCPs
+        working-directory: emucap-src
+        shell: pwsh
+        run: |
+          cargo build --release --bin emucap --bin emucap-mcp --bin emucap-track-mcp --bin emucap-broker
+
+      - name: Build emucap-compatible MesenCE
+        working-directory: emucap-src
+        shell: pwsh
+        run: |
+          .\adapters\mesen2\build.ps1
+
+      - name: Assemble portable runtime bundle
+        shell: pwsh
+        run: |
+          $src = (Resolve-Path 'emucap-src').Path
+          $dst = Join-Path $PWD 'emucap-runtime-windows'
+          New-Item -ItemType Directory -Force -Path $dst | Out-Null
+          robocopy $src $dst /E /XD .git target adapters\mesen2\work | Out-Null
+          if ($LASTEXITCODE -gt 7) { throw "robocopy source tree failed: $LASTEXITCODE" }
+          New-Item -ItemType Directory -Force -Path (Join-Path $dst 'target\release') | Out-Null
+          Copy-Item "$src\target\release\emucap.exe" "$dst\target\release\"
+          Copy-Item "$src\target\release\emucap-mcp.exe" "$dst\target\release\"
+          Copy-Item "$src\target\release\emucap-track-mcp.exe" "$dst\target\release\"
+          Copy-Item "$src\target\release\emucap-broker.exe" "$dst\target\release\"
+
+          $mesen = Get-ChildItem -Recurse -File -Filter 'Mesen.exe' "$src\adapters\mesen2\work\mesen\bin\win-x64\Release" | Select-Object -First 1
+          if (-not $mesen) { throw 'Mesen.exe not found after build' }
+          $mesenRoot = $mesen.DirectoryName
+          $rel = $mesenRoot.Substring($src.Length).TrimStart('\')
+          $mesenDst = Join-Path $dst $rel
+          New-Item -ItemType Directory -Force -Path $mesenDst | Out-Null
+          robocopy $mesenRoot $mesenDst /E | Out-Null
+          if ($LASTEXITCODE -gt 7) { throw "robocopy Mesen runtime failed: $LASTEXITCODE" }
+
+          @'
+          @echo off
+          setlocal
+          set ROOT=%~dp0
+          echo [1/2] Registering emucap Control MCP...
+          codex mcp add emucap --env "EMUCAP_REPO_ROOT=%ROOT:~0,-1%" -- "%ROOT%target\release\emucap-mcp.exe"
+          if errorlevel 1 exit /b %errorlevel%
+          echo [2/2] Registering emucap Tracking MCP...
+          codex mcp add emucap-track -- "%ROOT%target\release\emucap-track-mcp.exe"
+          if errorlevel 1 exit /b %errorlevel%
+          echo.
+          echo DONE. Reconnect/restart Codex, then verify both bootstrap tools are present.
+          pause
+          '@ | Set-Content -Encoding ASCII (Join-Path $dst 'REGISTER_CODEX_MCP.cmd')
+
+          @'
+          EMUCAP 0.16.1 WINDOWS PORTABLE BUNDLE
+          =====================================
+          Source commit: 3887f9e9de7525087c30ca4434d9cb8c3ff15103
+
+          1. Extract this ZIP to an ASCII-only path, e.g. C:\emucap-runtime-windows
+          2. Ensure Codex CLI is installed and `codex` works in cmd/PowerShell.
+          3. Double-click REGISTER_CODEX_MCP.cmd
+          4. Restart/reconnect Codex.
+          5. Verify both MCPs expose bootstrap:
+             - emucap      (Control)
+             - emucap-track (Tracking)
+          6. Then ask the agent to bootstrap, launch the NES ROM with the Mesen2 adapter, and start the tracked QA run.
+
+          The compatible MesenCE runtime and emucap build are included. Do not replace Mesen.exe with stock Mesen.
+          '@ | Set-Content -Encoding UTF8 (Join-Path $dst 'README_FIRST.txt')
+
+          Get-FileHash "$dst\target\release\emucap-mcp.exe" -Algorithm SHA256
+          Get-FileHash "$dst\target\release\emucap-track-mcp.exe" -Algorithm SHA256
+          Get-FileHash $mesen.FullName -Algorithm SHA256
+
+      - name: Upload Windows emucap runtime
+        uses: actions/upload-artifact@v4
+        with:
+          name: emucap-0.16.1-windows-runtime
+          path: emucap-runtime-windows
+          if-no-files-found: error
+          compression-level: 6
+          retention-days: 14
