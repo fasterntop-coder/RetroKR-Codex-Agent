@@ -1,0 +1,101 @@
+name: Cutey Honey FX POC02 Renderer Context
+permissions:
+  contents: write
+on:
+  push:
+    branches: [tmp-cutey-poc01]
+    paths:
+      - '.github/workflows/cutey_poc02_renderer_context.yml'
+  workflow_dispatch:
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: tmp-cutey-poc01
+      - name: Install tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq p7zip-full unzip curl python3
+          curl -L --retry 3 --fail -o /tmp/v810.zip https://github.com/jbrandwood/v810-gcc/releases/download/latest/v810-gcc-Linux-x86_64.zip
+          mkdir -p /tmp/v810
+          unzip -q /tmp/v810.zip -d /tmp/v810
+          B=$(find /tmp/v810 -type f -name v810-gcc | head -1); ROOT=$(dirname "$(dirname "$B")")
+          echo "$ROOT/bin" >> "$GITHUB_PATH"
+      - name: Extract and analyze
+        shell: bash
+        run: |
+          set -euxo pipefail
+          curl -L --retry 3 --fail -o /tmp/cutey.7z 'https://archive.org/download/noaen-redump-nec-pc-fx-pc-fxga/Cutey%20Honey%20FX%20%28Japan%29.7z'
+          mkdir -p /tmp/cutey /tmp/out analysis/cutey_poc02
+          7z x -y /tmp/cutey.7z -o/tmp/cutey >/dev/null
+          python3 - <<'PY'
+          from pathlib import Path
+          import struct
+          t2=next(p for p in Path('/tmp/cutey').glob('*.bin') if 'Track 2' in p.name)
+          raw=t2.read_bytes(); base=raw.find(b'PC-FX:Hu_CD-ROM')-16; assert base==0x81330
+          def pay(n): return raw[base+n*2352+16:base+n*2352+2064]
+          vh=pay(1); first,count,load,entry=struct.unpack_from('<IIII',vh,32); assert (first,count,load)==(2,240,0x8000)
+          boot=b''.join(pay(n) for n in range(first,first+count)); Path('/tmp/out/boot.bin').write_bytes(boot)
+          # Data windows around boot-resident strings
+          targets={'SAVE':0x1825C,'LOAD':0x1826D,'HONEY':0x48315}
+          r=[]
+          for n,a in targets.items():
+              o=a-load
+              lo=max(0,o-64); hi=min(len(boot),o+96)
+              b=boot[lo:hi]
+              r.append(f'[{n}] MEM=0x{a:X} BOOT_OFF=0x{o:X}')
+              for k in range(0,len(b),16):
+                  aa=load+lo+k; chunk=b[k:k+16]
+                  asc=''.join(chr(x) if 32<=x<127 else '.' for x in chunk)
+                  r.append(f'{aa:08X}: {chunk.hex(" "):<47}  {asc}')
+              r.append('')
+          Path('/tmp/out/DATA_WINDOWS.txt').write_text('\n'.join(r),encoding='utf-8')
+          PY
+          v810-objdump -D -b binary -m v810 --adjust-vma=0x8000 /tmp/out/boot.bin > /tmp/out/disasm.txt
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          lines=Path('/tmp/out/disasm.txt').read_text(errors='replace').splitlines()
+          parsed=[]
+          for i,l in enumerate(lines):
+              m=re.match(r'\s*([0-9a-fA-F]+):',l)
+              if m: parsed.append((int(m.group(1),16),i,l))
+          def context_addr(addr,before=100,after=140):
+              candidates=[x for x in parsed if x[0]<=addr]
+              if not candidates:return []
+              _,idx,_=candidates[-1]
+              return lines[max(0,idx-before):min(len(lines),idx+after)]
+          out=[]
+          for addr in [0x34944,0x34B46]:
+              out.append('='*80); out.append(f'ROMFONT CALL @ 0x{addr:X}')
+              out.extend(context_addr(addr))
+          # Find direct calls into broad renderer regions
+          out.append('\n'+'='*80); out.append('DIRECT JAL XREFS INTO 0x34800-0x34CFF')
+          for a,i,l in parsed:
+              ml=re.search(r'\bjal\s+0x([0-9a-fA-F]+)',l)
+              if ml:
+                  t=int(ml.group(1),16)
+                  if 0x34800<=t<=0x34CFF: out.append(l)
+          # Candidate function return points and stack prologues nearby
+          out.append('\n'+'='*80); out.append('NEARBY RETURNS / SP ADJUSTMENTS')
+          for a,i,l in parsed:
+              if 0x34500<=a<=0x34F00 and ('[lp]' in l or 'sp' in l): out.append(l)
+          Path('/tmp/out/RENDERER_CONTEXT.txt').write_text('\n'.join(out),encoding='utf-8')
+          PY
+          cp /tmp/out/RENDERER_CONTEXT.txt analysis/cutey_poc02/Cutey_POC02_RENDERER_CONTEXT.txt
+          cp /tmp/out/DATA_WINDOWS.txt analysis/cutey_poc02/Cutey_POC02_DATA_WINDOWS.txt
+      - name: Commit
+        run: |
+          git config user.name 'Cutey POC Builder'
+          git config user.email 'actions@users.noreply.github.com'
+          git add analysis/cutey_poc02
+          git commit -m 'analysis: Cutey POC02 renderer contexts [skip ci]' || true
+          git push origin HEAD:tmp-cutey-poc01
+      - uses: actions/upload-artifact@v4
+        with:
+          name: CuteyHoneyFX_POC02_RENDERER_CONTEXT
+          path: analysis/cutey_poc02/
+          retention-days: 7
