@@ -1,0 +1,110 @@
+name: Cutey Honey FX POC02 ROMFONT Trace
+permissions:
+  contents: write
+on:
+  push:
+    branches: [tmp-cutey-poc01]
+    paths:
+      - '.github/workflows/cutey_poc02_romfont_trace.yml'
+  workflow_dispatch:
+jobs:
+  trace:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: tmp-cutey-poc01
+      - name: Install tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq p7zip-full unzip curl python3
+          curl -L --retry 3 --fail -o /tmp/v810.zip https://github.com/jbrandwood/v810-gcc/releases/download/latest/v810-gcc-Linux-x86_64.zip
+          mkdir -p /tmp/v810
+          unzip -q /tmp/v810.zip -d /tmp/v810
+          B=$(find /tmp/v810 -type f -name v810-gcc | head -1); ROOT=$(dirname "$(dirname "$B")")
+          echo "PATH=$ROOT/bin:$PATH" >> "$GITHUB_ENV"
+      - name: Download and extract CLEAN boot
+        shell: bash
+        run: |
+          set -euxo pipefail
+          curl -L --retry 3 --fail -o /tmp/cutey.7z 'https://archive.org/download/noaen-redump-nec-pc-fx-pc-fxga/Cutey%20Honey%20FX%20%28Japan%29.7z'
+          mkdir -p /tmp/cutey /tmp/out analysis/cutey_poc02
+          7z x -y /tmp/cutey.7z -o/tmp/cutey >/dev/null
+          python3 - <<'PY'
+          from pathlib import Path
+          import struct
+          t2=next(p for p in Path('/tmp/cutey').glob('*.bin') if 'Track 2' in p.name)
+          raw=t2.read_bytes(); m=raw.find(b'PC-FX:Hu_CD-ROM'); base=m-16; assert base==0x81330
+          def pay(n):
+              s=raw[base+n*2352:base+(n+1)*2352]; assert s[15]==1; return s[16:2064]
+          vh=pay(1); first,count,load,entry=struct.unpack_from('<IIII',vh,32); assert (first,count,load,entry)==(2,240,0x8000,0x8000)
+          boot=b''.join(pay(n) for n in range(first,first+count)); Path('/tmp/out/boot.bin').write_bytes(boot)
+          PY
+          v810-objdump -D -b binary -m v810 --adjust-vma=0x8000 /tmp/out/boot.bin > /tmp/out/disasm.txt
+      - name: Build canonical ROMFONT call signature and search
+        shell: bash
+        run: |
+          set -euxo pipefail
+          cat >/tmp/out/romfont.S <<'EOF'
+          .global _start
+          _start:
+            mov 0xC, r10
+            movhi 0xFFF0, r10, r10
+            jmp [r10]
+          EOF
+          v810-as /tmp/out/romfont.S -o /tmp/out/romfont.o
+          v810-objcopy -O binary -j .text /tmp/out/romfont.o /tmp/out/romfont.sig
+          xxd -p /tmp/out/romfont.sig | tr -d '\n' > /tmp/out/romfont_sig.hex
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          boot=Path('/tmp/out/boot.bin').read_bytes(); sig=Path('/tmp/out/romfont.sig').read_bytes()
+          lines=Path('/tmp/out/disasm.txt').read_text(errors='replace').splitlines()
+          out=[]
+          out.append('Cutey Honey FX POC02 ROMFONT TRACE')
+          out.append('===================================')
+          out.append('canonical_liberis_sequence: mov 0xC,r10 ; movhi 0xFFF0,r10,r10 ; jmp [r10]')
+          out.append('signature='+sig.hex())
+          pos=0; hits=[]
+          while True:
+              p=boot.find(sig,pos)
+              if p<0: break
+              hits.append(p); pos=p+1
+          out.append(f'exact_signature_hits={len(hits)}')
+          for p in hits: out.append(f'  boot_off=0x{p:X} MEM=0x{0x8000+p:X}')
+          out.append('')
+          # textual disassembly neighborhoods for any FFF0 high-half references and nearby jmp
+          marks=[]
+          for i,l in enumerate(lines):
+              ll=l.lower()
+              if 'fff0' in ll or '0xfff0' in ll:
+                  marks.append(i)
+          out.append(f'disasm_fff0_hits={len(marks)}')
+          seen=set()
+          for i in marks:
+              block='\n'.join(lines[max(0,i-5):min(len(lines),i+8)])
+              if block in seen: continue
+              seen.add(block); out.append('\n--- FFF0 CONTEXT ---\n'+block)
+          # Search 0x0c immediate in a small window before each fff0 line to identify vector offsets.
+          out.append('\n[CANDIDATES vector 0x0C + FFF0]')
+          for i in marks:
+              pre='\n'.join(lines[max(0,i-6):i+4])
+              if re.search(r'\b0xc\b|\b12\b',pre,re.I): out.append(pre+'\n')
+          Path('/tmp/out/ROMFONT_TRACE.txt').write_text('\n'.join(out),encoding='utf-8')
+          print('\n'.join(out[:80]))
+          PY
+          cp /tmp/out/ROMFONT_TRACE.txt analysis/cutey_poc02/Cutey_POC02_ROMFONT_TRACE.txt
+      - name: Commit report
+        run: |
+          git config user.name 'Cutey POC Builder'
+          git config user.email 'actions@users.noreply.github.com'
+          git add analysis/cutey_poc02/Cutey_POC02_ROMFONT_TRACE.txt
+          git commit -m 'analysis: Cutey POC02 ROMFONT trace [skip ci]' || true
+          git push origin HEAD:tmp-cutey-poc01
+      - name: Upload report
+        uses: actions/upload-artifact@v4
+        with:
+          name: CuteyHoneyFX_POC02_ROMFONT_TRACE
+          path: analysis/cutey_poc02/Cutey_POC02_ROMFONT_TRACE.txt
+          retention-days: 7
