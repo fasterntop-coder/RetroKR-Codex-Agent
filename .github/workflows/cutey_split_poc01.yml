@@ -1,0 +1,248 @@
+name: Build Cutey Honey FX Split Track POC01
+permissions:
+  contents: write
+on:
+  push:
+    branches: [tmp-cutey-poc01]
+    paths:
+      - '.github/workflows/cutey_split_poc01.yml'
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: tmp-cutey-poc01
+      - name: Install tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq unzip zip golang-go
+      - name: Build split-track Windows patcher
+        shell: bash
+        run: |
+          set -euxo pipefail
+          rm -rf /tmp/v1 /tmp/go-patcher /tmp/pkg
+          mkdir -p /tmp/v1 /tmp/go-patcher /tmp/pkg artifacts
+          unzip -q artifacts/CuteyHoneyFX_KR_POC01_v0.01.zip -d /tmp/v1
+          cp /tmp/v1/poc01_raw_sectors.bin /tmp/go-patcher/
+          cat >/tmp/go-patcher/go.mod <<'EOF'
+          module cutey-split-poc01
+          go 1.20
+          EOF
+          cat >/tmp/go-patcher/main.go <<'EOF'
+          package main
+
+          import (
+            "bufio"
+            "bytes"
+            "crypto/sha1"
+            "crypto/sha256"
+            _ "embed"
+            "encoding/hex"
+            "fmt"
+            "io"
+            "os"
+            "path/filepath"
+            "strings"
+          )
+
+          //go:embed poc01_raw_sectors.bin
+          var patch []byte
+
+          const track1Size int64 = 9807840
+          const track2Size int64 = 656549040
+          const track1SHA1 = "ffae85763f581d312abb6b5096f6f7d62e771aae"
+          const track2SHA1 = "1dd574364e40cb90dd0ff25940fe8df9e6793edf"
+          const patchOffset int64 = 0x00081330
+          const payloadOffset int64 = 0x00081340
+          const magic = "PC-FX:Hu_CD-ROM"
+
+          func pause() {
+            fmt.Print("\nPress Enter to close...")
+            _, _ = bufio.NewReader(os.Stdin).ReadString('\n')
+          }
+
+          func hashSHA1(path string) (string, error) {
+            f, err := os.Open(path); if err != nil { return "", err }
+            defer f.Close()
+            h := sha1.New(); if _, err = io.Copy(h, f); err != nil { return "", err }
+            return hex.EncodeToString(h.Sum(nil)), nil
+          }
+
+          func hashSHA256(path string) (string, error) {
+            f, err := os.Open(path); if err != nil { return "", err }
+            defer f.Close()
+            h := sha256.New(); if _, err = io.Copy(h, f); err != nil { return "", err }
+            return hex.EncodeToString(h.Sum(nil)), nil
+          }
+
+          func findBySize(dir string, want int64, skip string) ([]string, error) {
+            ents, err := os.ReadDir(dir); if err != nil { return nil, err }
+            var out []string
+            for _, e := range ents {
+              if e.IsDir() { continue }
+              p := filepath.Join(dir, e.Name())
+              if skip != "" && strings.EqualFold(p, skip) { continue }
+              if !strings.EqualFold(filepath.Ext(e.Name()), ".bin") { continue }
+              st, err := e.Info(); if err != nil { continue }
+              if st.Size() == want { out = append(out, p) }
+            }
+            return out, nil
+          }
+
+          func main() {
+            fmt.Println("Cutey Honey FX KR POC01 - Redump split-track patcher")
+            fmt.Println("=======================================================")
+            exe, _ := os.Executable(); exeDir := filepath.Dir(exe)
+
+            var track2 string
+            if len(os.Args) >= 2 {
+              track2 = strings.Trim(os.Args[1], "\"")
+              if st, err := os.Stat(track2); err == nil && st.IsDir() {
+                cands, _ := findBySize(track2, track2Size, "")
+                if len(cands) == 1 { track2 = cands[0] }
+              }
+            } else {
+              cands, _ := findBySize(exeDir, track2Size, "")
+              if len(cands) == 1 { track2 = cands[0] }
+            }
+            if track2 == "" {
+              fmt.Println("[ERROR] Could not uniquely find the Track 2 BIN.")
+              fmt.Println("Put this EXE in the same folder as the extracted Track 1/Track 2 files,")
+              fmt.Println("or drag the Track 2 BIN onto this EXE.")
+              pause(); return
+            }
+            track2, _ = filepath.Abs(track2)
+            st2, err := os.Stat(track2)
+            if err != nil || st2.Size() != track2Size {
+              fmt.Println("[ERROR] Track 2 size mismatch.")
+              if err == nil { fmt.Printf("Found: %d, expected: %d bytes\n", st2.Size(), track2Size) }
+              pause(); return
+            }
+
+            fmt.Println("[1/6] Verifying Redump Track 2 SHA-1...")
+            s2, err := hashSHA1(track2); if err != nil { fmt.Println("[ERROR]", err); pause(); return }
+            if s2 != track2SHA1 {
+              fmt.Println("[ERROR] Track 2 is not the expected Redump parent.")
+              fmt.Println("Found:   ", s2)
+              fmt.Println("Expected:", track2SHA1)
+              pause(); return
+            }
+            fmt.Println("[PASS] Track 2 CLEAN")
+
+            f2, err := os.Open(track2); if err != nil { fmt.Println("[ERROR]", err); pause(); return }
+            if _, err = f2.Seek(payloadOffset, io.SeekStart); err != nil { f2.Close(); fmt.Println("[ERROR]", err); pause(); return }
+            mb := make([]byte, len(magic)); _, err = io.ReadFull(f2, mb); f2.Close()
+            if err != nil || string(mb) != magic {
+              fmt.Printf("[ERROR] PC-FX boot magic missing at 0x%X.\n", payloadOffset)
+              pause(); return
+            }
+            fmt.Println("[2/6] PC-FX boot header verified")
+
+            dir := filepath.Dir(track2)
+            track1s, _ := findBySize(dir, track1Size, track2)
+            if len(track1s) != 1 {
+              fmt.Println("[ERROR] Could not uniquely find Redump Track 1 BIN in the same folder.")
+              pause(); return
+            }
+            track1 := track1s[0]
+            fmt.Println("[3/6] Verifying Redump Track 1 SHA-1...")
+            s1, err := hashSHA1(track1); if err != nil { fmt.Println("[ERROR]", err); pause(); return }
+            if s1 != track1SHA1 {
+              fmt.Println("[ERROR] Track 1 is not the expected Redump parent.")
+              fmt.Println("Found:   ", s1)
+              fmt.Println("Expected:", track1SHA1)
+              pause(); return
+            }
+            fmt.Println("[PASS] Track 1 CLEAN")
+
+            outName := "Cutey Honey FX (Japan) (Track 2) [KR POC01].bin"
+            dst := filepath.Join(dir, outName)
+            fmt.Println("[4/6] Copying Track 2...")
+            in, err := os.Open(track2); if err != nil { fmt.Println("[ERROR]", err); pause(); return }
+            out, err := os.Create(dst); if err != nil { in.Close(); fmt.Println("[ERROR]", err); pause(); return }
+            _, err = io.Copy(out, in); in.Close()
+            if err != nil { out.Close(); fmt.Println("[ERROR]", err); pause(); return }
+
+            fmt.Printf("[5/6] Writing %d bytes at Track 2 offset 0x%X...\n", len(patch), patchOffset)
+            if _, err = out.Seek(patchOffset, io.SeekStart); err != nil { out.Close(); fmt.Println("[ERROR]", err); pause(); return }
+            if _, err = out.Write(patch); err != nil { out.Close(); fmt.Println("[ERROR]", err); pause(); return }
+            if err = out.Close(); err != nil { fmt.Println("[ERROR]", err); pause(); return }
+
+            vf, err := os.Open(dst); if err != nil { fmt.Println("[ERROR]", err); pause(); return }
+            if _, err = vf.Seek(patchOffset, io.SeekStart); err != nil { vf.Close(); fmt.Println("[ERROR]", err); pause(); return }
+            chk := make([]byte, len(patch)); _, err = io.ReadFull(vf, chk); vf.Close()
+            if err != nil || !bytes.Equal(chk, patch) {
+              fmt.Println("[ERROR] Patch readback verification failed.")
+              pause(); return
+            }
+
+            cueName := "Cutey Honey FX (Japan) [KR POC01].cue"
+            cuePath := filepath.Join(dir, cueName)
+            cue := fmt.Sprintf("FILE \"%s\" BINARY\r\n  TRACK 01 AUDIO\r\n    INDEX 01 00:00:00\r\nFILE \"%s\" BINARY\r\n  TRACK 02 MODE1/2352\r\n    INDEX 00 00:00:00\r\n    INDEX 01 00:03:00\r\n", filepath.Base(track1), outName)
+            if err = os.WriteFile(cuePath, []byte(cue), 0644); err != nil { fmt.Println("[ERROR]", err); pause(); return }
+
+            fmt.Println("[6/6] Calculating patched Track 2 SHA-256...")
+            outSHA, err := hashSHA256(dst); if err != nil { fmt.Println("[ERROR]", err); pause(); return }
+            fmt.Println("\n[PASS] Split-track POC01 patch completed.")
+            fmt.Println("Patched Track 2:", dst)
+            fmt.Println("Generated CUE:   ", cuePath)
+            fmt.Println("Patched SHA-256: ", outSHA)
+            fmt.Println("Boot the GENERATED CUE, not the original CUE.")
+            pause()
+          }
+          EOF
+          cd /tmp/go-patcher
+          GOOS=windows GOARCH=amd64 CGO_ENABLED=0 go build -trimpath -ldflags='-s -w' -o /tmp/pkg/POC01_SplitTrack_Patcher.exe .
+          test -s /tmp/pkg/POC01_SplitTrack_Patcher.exe
+          cp /tmp/v1/POC01_EXPECTED_PREVIEW.png /tmp/pkg/
+          cat >/tmp/pkg/README_KO.txt <<'EOF'
+          큐티하니 FX PC-FX 한글 출력 POC01 - 분리 트랙 Redump 전용
+          =========================================================
+          새 부모롬: Cutey Honey FX (Japan) Redump Track 1 + Track 2
+
+          CLEAN 기준
+          Track 1: 9,807,840 bytes
+                   SHA-1 ffae85763f581d312abb6b5096f6f7d62e771aae
+          Track 2: 656,549,040 bytes
+                   SHA-1 1dd574364e40cb90dd0ff25940fe8df9e6793edf
+
+          사용법
+          1. 새 원본 ZIP을 먼저 압축 해제합니다.
+          2. Track 1 BIN, Track 2 BIN과 POC01_SplitTrack_Patcher.exe를 같은 폴더에 둡니다.
+          3. POC01_SplitTrack_Patcher.exe를 더블클릭합니다.
+             또는 Track 2 BIN을 EXE 위로 드래그합니다.
+          4. 두 트랙 모두 CLEAN 검증 PASS 후 패치가 진행됩니다.
+          5. 생성된 `Cutey Honey FX (Japan) [KR POC01].cue`로 부팅합니다.
+
+          패치 위치
+          Track 2 raw offset 0x00081330 (INDEX 01 앞 225 raw sectors 뒤)
+          패치 길이 14,112 bytes (6 raw sectors)
+
+          정상 목표 화면
+          한글 출력 성공
+          CUTIE HONEY FX
+          KR POC01
+
+          이 POC01은 원본 게임 내 대사가 아니라 PC-FX 커스텀 한글 출력 경로 검증입니다.
+          EOF
+          (cd /tmp/pkg && sha256sum * > SHA256SUMS.txt)
+          rm -f "$GITHUB_WORKSPACE/artifacts/CuteyHoneyFX_KR_POC01_SPLIT_v0.01.zip"
+          (cd /tmp/pkg && zip -9 -r "$GITHUB_WORKSPACE/artifacts/CuteyHoneyFX_KR_POC01_SPLIT_v0.01.zip" .)
+          sha256sum "$GITHUB_WORKSPACE/artifacts/CuteyHoneyFX_KR_POC01_SPLIT_v0.01.zip"
+          ls -lh /tmp/pkg/POC01_SplitTrack_Patcher.exe "$GITHUB_WORKSPACE/artifacts/CuteyHoneyFX_KR_POC01_SPLIT_v0.01.zip"
+      - name: Upload package
+        uses: actions/upload-artifact@v4
+        with:
+          name: CuteyHoneyFX_KR_POC01_SPLIT_v0.01
+          path: artifacts/CuteyHoneyFX_KR_POC01_SPLIT_v0.01.zip
+          retention-days: 7
+      - name: Commit package to temporary branch
+        run: |
+          git config user.name 'Cutey POC Builder'
+          git config user.email 'actions@users.noreply.github.com'
+          git add artifacts/CuteyHoneyFX_KR_POC01_SPLIT_v0.01.zip
+          git commit -m 'artifact: Cutey Honey FX split-track POC01 [skip ci]'
+          git push origin HEAD:tmp-cutey-poc01
