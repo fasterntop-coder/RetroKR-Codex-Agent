@@ -1,0 +1,60 @@
+name: Cutey Honey FX Voice Script Static Probe
+permissions:
+  contents: write
+on:
+  push:
+    branches: [tmp-cutey-poc01]
+    paths: ['.github/workflows/cutey_voice_static_probe.yml']
+  workflow_dispatch:
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with: {ref: tmp-cutey-poc01}
+      - run: sudo apt-get update -qq && sudo apt-get install -y -qq p7zip-full curl python3
+      - name: Download and probe
+        run: |
+          set -euxo pipefail
+          curl -L --retry 3 --fail -o /tmp/c.7z 'https://archive.org/download/noaen-redump-nec-pc-fx-pc-fxga/Cutey%20Honey%20FX%20%28Japan%29.7z'
+          mkdir -p /tmp/g analysis/cutey_full;7z x -y /tmp/c.7z -o/tmp/g >/dev/null
+          T2=$(find /tmp/g -maxdepth 1 -name '*Track 2*.bin' | head -1);echo '1dd574364e40cb90dd0ff25940fe8df9e6793edf  '"$T2" | sha1sum -c -
+          T2="$T2" python3 - <<'PY'
+          import os,re,json
+          from pathlib import Path
+          raw=Path(os.environ['T2']).read_bytes();base=0x81330
+          n=(len(raw)-base)//2352;L=bytearray(n*2048)
+          for s in range(n):L[s*2048:(s+1)*2048]=raw[base+s*2352+16:base+s*2352+2064]
+          L=bytes(L)
+          targets={'TRANSFORM':'キューティーハニーに変身！'.encode('shift_jis'),'HONEY':'如月ハニー'.encode('shift_jis')}
+          out=[]
+          for name,pat in targets.items():
+              p=0;idx=0
+              while True:
+                  q=L.find(pat,p)
+                  if q<0:break
+                  idx+=1;sec=q//2048;ins=q%2048;ro=base+sec*2352+16+ins
+                  a=max(0,q-256);b=min(len(L),q+len(pat)+512);w=L[a:b]
+                  # hexdump lines with logical offsets
+                  h=[]
+                  for off in range(0,len(w),16):
+                      z=w[off:off+16];asc=''.join(chr(x) if 32<=x<127 else '.' for x in z);h.append(f'{a+off:08X}: '+z.hex(' ')+'  '+asc)
+                  # SJIS runs around it for context
+                  runs=[]
+                  for m in re.finditer(rb'(?:[\x81-\x9f\xe0-\xef][\x40-\x7e\x80-\xfc]){2,}',w):
+                      try:t=m.group().decode('shift_jis')
+                      except:continue
+                      runs.append({'off':f'0x{a+m.start():X}','text':t,'hex':m.group().hex()})
+                  out.append({'name':name,'occurrence':idx,'logical_offset':f'0x{q:X}','track2_raw_offset':f'0x{ro:X}','sector':sec,'in_payload':f'0x{ins:X}','context_sjis':runs,'hexdump':'\n'.join(h)})
+                  p=q+len(pat)
+          # Compare first two transform contexts at equal relative offsets around the text.
+          ts=[x for x in out if x['name']=='TRANSFORM']
+          summary={'transform_count':len(ts),'honey_count':sum(x['name']=='HONEY' for x in out),'records':out}
+          Path('analysis/cutey_full/VOICE_SCRIPT_STATIC_PROBE.json').write_text(json.dumps(summary,ensure_ascii=False,indent=2),encoding='utf-8')
+          print('transform',len(ts),'honey',summary['honey_count'])
+          for x in out:print(x['name'],x['logical_offset'],x['track2_raw_offset'],[(r['off'],r['text']) for r in x['context_sjis']])
+          PY
+      - name: Commit report
+        run: |
+          git config user.name 'Cutey voice probe';git config user.email 'actions@users.noreply.github.com';git add analysis/cutey_full/VOICE_SCRIPT_STATIC_PROBE.json;git commit -m 'analysis: Cutey voice script static probe [skip ci]' || true;git push origin HEAD:tmp-cutey-poc01
