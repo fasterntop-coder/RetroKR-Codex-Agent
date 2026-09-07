@@ -1,0 +1,124 @@
+name: Cutey Honey FX v0.23 First Story ISO Owner
+permissions:
+  contents: write
+on:
+  push:
+    branches: [tmp-cutey-poc01]
+    paths: ['.github/workflows/cutey_v023_first_story_iso_owner.yml']
+  workflow_dispatch:
+jobs:
+  map-owner:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with: {ref: tmp-cutey-poc01}
+      - name: Prepare exact CLEAN Track2
+        run: |
+          set -euxo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq p7zip-full curl python3
+          curl -L --retry 3 --fail -o /tmp/cutey.7z 'https://archive.org/download/noaen-redump-nec-pc-fx-pc-fxga/Cutey%20Honey%20FX%20%28Japan%29.7z'
+          mkdir -p /tmp/game /tmp/v023 analysis/cutey_full/v023_first_story_iso_owner
+          7z x -y /tmp/cutey.7z -o/tmp/game >/dev/null
+          T2=$(find /tmp/game -maxdepth 1 -type f -name '*Track 2*.bin' | head -1)
+          echo '1dd574364e40cb90dd0ff25940fe8df9e6793edf  '"$T2" | sha1sum -c -
+          echo "$T2" >/tmp/v023/t2path
+      - name: Map exact story occurrences to ISO9660 owning files
+        run: |
+          python3 - <<'PY'
+          import json,struct,hashlib
+          from pathlib import Path
+          p=Path(Path('/tmp/v023/t2path').read_text().strip())
+          raw=p.read_bytes(); SS=2352; UOFF=16; US=2048
+          texts=['船の乗客で混雑している。','正面に見えるのが、ゲスト登録の','受け付けみたいだ。']
+          # Locate PVD in raw MODE1 sectors; Track2 includes its pregap before ISO LBA 0.
+          pvd_raw=None
+          for sec in range(min(len(raw)//SS,2000)):
+              u=raw[sec*SS+UOFF:sec*SS+UOFF+US]
+              if len(u)>=7 and u[0]==1 and u[1:6]==b'CD001' and u[6]==1:
+                  pvd_raw=sec; break
+          if pvd_raw is None: raise SystemExit('ISO9660 PVD not found')
+          iso_base_raw_sector=pvd_raw-16
+          def user_sector(iso_lba):
+              rs=iso_base_raw_sector+iso_lba
+              return raw[rs*SS+UOFF:rs*SS+UOFF+US]
+          pvd=user_sector(16)
+          root=pvd[156:190]
+          root_extent=struct.unpack_from('<I',root,2)[0]
+          root_size=struct.unpack_from('<I',root,10)[0]
+          files=[]; seen=set()
+          def read_extent(ext,size):
+              out=bytearray(); n=(size+US-1)//US
+              for i in range(n): out+=user_sector(ext+i)
+              return bytes(out[:size])
+          def walk_dir(ext,size,prefix=''):
+              key=(ext,size)
+              if key in seen:return
+              seen.add(key); data=read_extent(ext,size); pos=0
+              while pos < len(data):
+                  ln=data[pos]
+                  if ln==0:
+                      pos=((pos//US)+1)*US; continue
+                  rec=data[pos:pos+ln]
+                  if len(rec)<34: break
+                  rext=struct.unpack_from('<I',rec,2)[0]; rsize=struct.unpack_from('<I',rec,10)[0]
+                  flags=rec[25]; nlen=rec[32]; nameb=rec[33:33+nlen]
+                  if nameb in (b'\x00',b'\x01'):
+                      pos+=ln; continue
+                  name=nameb.decode('ascii','replace').split(';')[0]
+                  full=(prefix+'/'+name).replace('//','/')
+                  if flags & 2: walk_dir(rext,rsize,full)
+                  else: files.append({'path':full,'iso_extent_lba':rext,'size':rsize,'raw_start_sector':iso_base_raw_sector+rext,'raw_end_sector':iso_base_raw_sector+rext+(rsize+US-1)//US-1})
+                  pos+=ln
+          walk_dir(root_extent,root_size,'')
+          groups={}
+          occurrence_rows=[]
+          for text in texts:
+              b=text.encode('shift_jis'); start=0
+              while True:
+                  i=raw.find(b,start)
+                  if i<0:break
+                  sec=i//SS; inso=i%SS
+                  owner=None; file_off=None
+                  for f in files:
+                      if f['raw_start_sector']<=sec<=f['raw_end_sector'] and UOFF<=inso<UOFF+US:
+                          owner=f
+                          file_off=(sec-f['raw_start_sector'])*US+(inso-UOFF)
+                          if file_off>=f['size']: owner=None; file_off=None
+                          break
+                  row={'text':text,'raw_offset':i,'raw_hex':hex(i),'raw_sector':sec,'in_sector':inso,'owner_path':owner['path'] if owner else None,'owner_file_offset':file_off,'owner_extent_lba':owner['iso_extent_lba'] if owner else None}
+                  occurrence_rows.append(row)
+                  if owner:
+                      k=owner['path']; groups.setdefault(k,{'extent_lba':owner['iso_extent_lba'],'size':owner['size'],'occurrences':[]})['occurrences'].append(row)
+                  start=i+1
+          # Require an owner mapping for every occurrence whose bytes lie in user data.
+          user_occ=[r for r in occurrence_rows if UOFF<=r['in_sector']<UOFF+US]
+          unmapped=[r for r in user_occ if r['owner_path'] is None]
+          out={'clean_track2_sha1':hashlib.sha1(raw).hexdigest(),'pvd_raw_sector':pvd_raw,'iso_base_raw_sector':iso_base_raw_sector,'root_extent_lba':root_extent,'file_count':len(files),'occurrences':occurrence_rows,'owners':groups,'unmapped_user_occurrences':unmapped}
+          Path('/tmp/v023/ISO_OWNER_MAP.json').write_text(json.dumps(out,ensure_ascii=False,indent=2),encoding='utf-8')
+          summary=[]
+          for path,g in sorted(groups.items()):
+              summary.append({'path':path,'extent_lba':g['extent_lba'],'size':g['size'],'hit_count':len(g['occurrences']),'file_offsets':sorted({x['owner_file_offset'] for x in g['occurrences']})})
+          Path('/tmp/v023/OWNER_SUMMARY.json').write_text(json.dumps(summary,ensure_ascii=False,indent=2),encoding='utf-8')
+          print(json.dumps({'pvd_raw_sector':pvd_raw,'iso_base_raw_sector':iso_base_raw_sector,'owners':summary,'unmapped_user_occurrences':len(unmapped)},ensure_ascii=False,indent=2))
+          if not groups: raise SystemExit('no ISO file owner mapped for story occurrences')
+          if unmapped: raise SystemExit('some user-data story occurrences could not be mapped')
+          PY
+      - name: Stage evidence
+        if: always()
+        run: |
+          cp /tmp/v023/ISO_OWNER_MAP.json analysis/cutey_full/v023_first_story_iso_owner/ 2>/dev/null || true
+          cp /tmp/v023/OWNER_SUMMARY.json analysis/cutey_full/v023_first_story_iso_owner/ 2>/dev/null || true
+          git config user.name 'Cutey v0.23 ISO owner mapper'
+          git config user.email 'actions@users.noreply.github.com'
+          git add analysis/cutey_full/v023_first_story_iso_owner
+          git diff --cached --quiet || git commit -m 'analysis: add v0.23 first story ISO ownership evidence [skip ci]'
+          git pull --rebase origin tmp-cutey-poc01 || true
+          git push origin HEAD:tmp-cutey-poc01 || true
+      - name: Upload evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: CuteyHoneyFX_v023_first_story_iso_owner
+          path: analysis/cutey_full/v023_first_story_iso_owner
