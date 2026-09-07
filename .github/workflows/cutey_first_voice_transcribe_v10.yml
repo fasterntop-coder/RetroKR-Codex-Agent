@@ -1,4 +1,4 @@
-name: Cutey Honey FX First Voice Capture Transcribe v10
+name: Cutey Honey FX First Voice Capture Transcribe v10 SDL FIX
 permissions:
   contents: write
 on:
@@ -19,7 +19,18 @@ jobs:
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y -qq build-essential cmake autoconf automake pkg-config libsdl2-dev libflac-dev libsndfile1-dev liblzo2-dev libmpcdec-dev libzstd-dev zlib1g-dev gettext p7zip-full curl python3 git ffmpeg lsof
-      - name: capture and transcribe
+      - name: force Mednafen SDL dummy sound backend for WAV recording
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('scripts/cutey_fx/first_voice_v10.sh')
+          s=p.read_text()
+          old="s=s.replace(needle, needle+'\\nARGS+=(-soundrecord \"/tmp/v10/full.wav\")',1)"
+          new="s=s.replace(needle, needle+'\\nARGS+=(-soundrecord \"/tmp/v10/full.wav\" -sound.driver sdl)',1)"
+          if old not in s: raise SystemExit('soundrecord launch patch anchor not found')
+          p.write_text(s.replace(old,new,1))
+          PY
+      - name: capture and transcribe first voiced window
         run: bash scripts/cutey_fx/first_voice_v10.sh
       - name: commit verified capture evidence
         if: always()
@@ -27,14 +38,14 @@ jobs:
           git config user.name 'Cutey first voice transcriber'
           git config user.email 'actions@users.noreply.github.com'
           git add analysis/cutey_full/first_voice_v10 2>/dev/null || true
-          git diff --cached --quiet || git commit -m 'analysis: Cutey first voice capture v10 [skip ci]'
+          git diff --cached --quiet || git commit -m 'analysis: Cutey first voice capture v10 SDL fix [skip ci]'
           git pull --rebase origin tmp-cutey-poc01 || true
           git push origin HEAD:tmp-cutey-poc01 || true
       - name: artifact
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: CuteyHoneyFX_FIRST_VOICE_v10
+          name: CuteyHoneyFX_FIRST_VOICE_v10_SDL_FIX
           path: |
             analysis/cutey_full/first_voice_v10
             /tmp/v10/full.wav
