@@ -1,0 +1,183 @@
+{
+  "clean_track2_sha1": "1dd574364e40cb90dd0ff25940fe8df9e6793edf",
+  "texts": [
+    {
+      "text": "船の乗客で混雑している。",
+      "byte_len": 24,
+      "occurrences": [
+        {
+          "track2_raw_offset": 391134482,
+          "raw_hex": "0x17503d12",
+          "raw_sector": 166298,
+          "in_sector": 1586,
+          "logical_user_offset": 340579874,
+          "sjis_hex": "914482cc8fe68b7182c58dac8e4782b582c482a282e98142"
+        },
+        {
+          "track2_raw_offset": 391135702,
+          "raw_hex": "0x175041d6",
+          "raw_sector": 166299,
+          "in_sector": 454,
+          "logical_user_offset": 340580790,
+          "sjis_hex": "914482cc8fe68b7182c58dac8e4782b582c482a282e98142"
+        },
+        {
+          "track2_raw_offset": 391553072,
+          "raw_hex": "0x1756a030",
+          "raw_sector": 166476,
+          "in_sector": 1520,
+          "logical_user_offset": 340944352,
+          "sjis_hex": "914482cc8fe68b7182c58dac8e4782b582c482a282e98142"
+        },
+        {
+          "track2_raw_offset": 391554292,
+          "raw_hex": "0x1756a4f4",
+          "raw_sector": 166477,
+          "in_sector": 388,
+          "logical_user_offset": 340945268,
+          "sjis_hex": "914482cc8fe68b7182c58dac8e4782b582c482a282e98142"
+        },
+        {
+          "track2_raw_offset": 391627992,
+          "raw_hex": "0x1757c4d8",
+          "raw_sector": 166508,
+          "in_sector": 1176,
+          "logical_user_offset": 341009544,
+          "sjis_hex": "914482cc8fe68b7182c58dac8e4782b582c482a282e98142"
+        },
+        {
+          "track2_raw_offset": 391629212,
+          "raw_hex": "0x1757c99c",
+          "raw_sector": 166509,
+          "in_sector": 44,
+          "logical_user_offset": 341010460,
+          "sjis_hex": "914482cc8fe68b7182c58dac8e4782b582c482a282e98142"
+        },
+        {
+          "track2_raw_offset": 391704624,
+          "raw_hex": "0x1758f030",
+          "raw_sector": 166541,
+          "in_sector": 192,
+          "logical_user_offset": 341076144,
+          "sjis_hex": "914482cc8fe68b7182c58dac8e4782b582c482a282e98142"
+        },
+        {
+          "track2_raw_offset": 391705540,
+          "raw_hex": "0x1758f3c4",
+          "raw_sector": 166541,
+          "in_sector": 1108,
+          "logical_user_offset": 341077060,
+          "sjis_hex": "914482cc8fe68b7182c58dac8e4782b582c482a282e98142"
+        },
+        {
+          "track2_raw_offset": 391778216,
+          "raw_hex": "0x175a0fa8",
+          "raw_sector": 166572,
+          "in_sector": 872,
+          "logical_user_offset": 341140312,
+          "sjis_hex": "914482cc8fe68b7182c58dac8e4782b582c482a282e98142"
+        },
+        {
+          "track2_raw_offset": 391779132,
+          "raw_hex": "0x175a133c",
+          "raw_sector": 166572,
+          "in_sector": 1788,
+          "logical_user_offset": 341141228,
+          "sjis_hex": "914482cc8fe68b7182c58dac8e4782b582c482a282e98142"
+        }
+      ]
+    },
+    {
+      "text": "正面に見えるのが、ゲスト登録の",
+      "byte_len": 30,
+      "occurrences": [
+        {
+          "track2_raw_offset": 391135727,
+          "raw_hex": "0x175041ef",
+          "raw_sector": 166299,
+          "in_sector": 479,
+          "logical_user_offset": 340580815,
+          "sjis_hex": "90b396ca82c98ca982a682e982cc82aa8141835183588367936f985e82cc"
+        },
+        {
+          "track2_raw_offset": 391554317,
+          "raw_hex": "0x1756a50d",
+          "raw_sector": 166477,
+          "in_sector": 413,
+          "logical_user_offset": 340945293,
+          "sjis_hex": "90b396ca82c98ca982a682e982cc82aa8141835183588367936f985e82cc"
+        },
+        {
+          "track2_raw_offset": 391629237,
+          "raw_hex": "0x1757c9b5",
+          "raw_sector": 166509,
+          "in_sector": 69,
+          "logical_user_offset": 341010485,
+          "sjis_hex": "90b396ca82c98ca982a682e982cc82aa8141835183588367936f985e82cc"
+        },
+        {
+          "track2_raw_offset": 391705565,
+          "raw_hex": "0x1758f3dd",
+          "raw_sector": 166541,
+          "in_sector": 1133,
+          "logical_user_offset": 341077085,
+          "sjis_hex": "90b396ca82c98ca982a682e982cc82aa8141835183588367936f985e82cc"
+        },
+        {
+          "track2_raw_offset": 391779157,
+          "raw_hex": "0x175a1355",
+          "raw_sector": 166572,
+          "in_sector": 1813,
+          "logical_user_offset": 341141253,
+          "sjis_hex": "90b396ca82c98ca982a682e982cc82aa8141835183588367936f985e82cc"
+        }
+      ]
+    },
+    {
+      "text": "受け付けみたいだ。",
+      "byte_len": 18,
+      "occurrences": [
+        {
+          "track2_raw_offset": 391135758,
+          "raw_hex": "0x1750420e",
+          "raw_sector": 166299,
+          "in_sector": 510,
+          "logical_user_offset": 340580846,
+          "sjis_hex": "8ef382af957482af82dd82bd82a282be8142"
+        },
+        {
+          "track2_raw_offset": 391554348,
+          "raw_hex": "0x1756a52c",
+          "raw_sector": 166477,
+          "in_sector": 444,
+          "logical_user_offset": 340945324,
+          "sjis_hex": "8ef382af957482af82dd82bd82a282be8142"
+        },
+        {
+          "track2_raw_offset": 391629268,
+          "raw_hex": "0x1757c9d4",
+          "raw_sector": 166509,
+          "in_sector": 100,
+          "logical_user_offset": 341010516,
+          "sjis_hex": "8ef382af957482af82dd82bd82a282be8142"
+        },
+        {
+          "track2_raw_offset": 391705596,
+          "raw_hex": "0x1758f3fc",
+          "raw_sector": 166541,
+          "in_sector": 1164,
+          "logical_user_offset": 341077116,
+          "sjis_hex": "8ef382af957482af82dd82bd82a282be8142"
+        },
+        {
+          "track2_raw_offset": 391779188,
+          "raw_hex": "0x175a1374",
+          "raw_sector": 166572,
+          "in_sector": 1844,
+          "logical_user_offset": 341141284,
+          "sjis_hex": "8ef382af957482af82dd82bd82a282be8142"
+        }
+      ]
+    }
+  ]
+}

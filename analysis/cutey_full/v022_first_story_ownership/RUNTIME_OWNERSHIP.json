@@ -1,0 +1,137 @@
+{
+  "path": "boot720 -> RUN3 -> release2 -> +300 -> I3 -> release2",
+  "frames_after_I": [
+    0,
+    1200,
+    2200,
+    2220,
+    2235,
+    2340,
+    2400
+  ],
+  "identity": {
+    "build": "3887f9e@mednafen-1.32.1",
+    "system": "pcfx"
+  },
+  "snapshots": [
+    {
+      "frame_after_i": 0,
+      "hits": [
+        {
+          "text": "船の乗客で混雑している。",
+          "ram_addresses": []
+        },
+        {
+          "text": "正面に見えるのが、ゲスト登録の",
+          "ram_addresses": []
+        },
+        {
+          "text": "受け付けみたいだ。",
+          "ram_addresses": []
+        }
+      ]
+    },
+    {
+      "frame_after_i": 1200,
+      "hits": [
+        {
+          "text": "船の乗客で混雑している。",
+          "ram_addresses": []
+        },
+        {
+          "text": "正面に見えるのが、ゲスト登録の",
+          "ram_addresses": []
+        },
+        {
+          "text": "受け付けみたいだ。",
+          "ram_addresses": []
+        }
+      ]
+    },
+    {
+      "frame_after_i": 2200,
+      "hits": [
+        {
+          "text": "船の乗客で混雑している。",
+          "ram_addresses": []
+        },
+        {
+          "text": "正面に見えるのが、ゲスト登録の",
+          "ram_addresses": []
+        },
+        {
+          "text": "受け付けみたいだ。",
+          "ram_addresses": []
+        }
+      ]
+    },
+    {
+      "frame_after_i": 2220,
+      "hits": [
+        {
+          "text": "船の乗客で混雑している。",
+          "ram_addresses": []
+        },
+        {
+          "text": "正面に見えるのが、ゲスト登録の",
+          "ram_addresses": []
+        },
+        {
+          "text": "受け付けみたいだ。",
+          "ram_addresses": []
+        }
+      ]
+    },
+    {
+      "frame_after_i": 2235,
+      "hits": [
+        {
+          "text": "船の乗客で混雑している。",
+          "ram_addresses": []
+        },
+        {
+          "text": "正面に見えるのが、ゲスト登録の",
+          "ram_addresses": []
+        },
+        {
+          "text": "受け付けみたいだ。",
+          "ram_addresses": []
+        }
+      ]
+    },
+    {
+      "frame_after_i": 2340,
+      "hits": [
+        {
+          "text": "船の乗客で混雑している。",
+          "ram_addresses": []
+        },
+        {
+          "text": "正面に見えるのが、ゲスト登録の",
+          "ram_addresses": []
+        },
+        {
+          "text": "受け付けみたいだ。",
+          "ram_addresses": []
+        }
+      ]
+    },
+    {
+      "frame_after_i": 2400,
+      "hits": [
+        {
+          "text": "船の乗客で混雑している。",
+          "ram_addresses": []
+        },
+        {
+          "text": "正面に見えるのが、ゲスト登録の",
+          "ram_addresses": []
+        },
+        {
+          "text": "受け付けみたいだ。",
+          "ram_addresses": []
+        }
+      ]
+    }
+  ]
+}
