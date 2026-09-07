@@ -1,39 +1,141 @@
-name: Cutey Honey FX KR ALPHA v0.16 Runner
+name: Cutey Honey FX KR v0.17 Early Story Voice Probe Runner
 permissions:
   contents: write
 on:
   push:
     branches: [tmp-cutey-poc01]
-    paths:
-      - '.github/workflows/cutey_full_alpha_v016_runner.yml'
-      - 'scripts/cutey_fx/build_alpha_v016.sh'
+    paths: ['.github/workflows/cutey_full_alpha_v016_runner.yml']
   workflow_dispatch:
 jobs:
-  build:
+  probe:
     runs-on: ubuntu-latest
-    timeout-minutes: 40
+    timeout-minutes: 90
     steps:
       - uses: actions/checkout@v4
-        with:
-          ref: tmp-cutey-poc01
-      - name: Build package
-        run: bash scripts/cutey_fx/build_alpha_v016.sh
-      - name: Upload package
+        with: {ref: tmp-cutey-poc01}
+      - name: Dependencies
+        run: |
+          set -euxo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq build-essential autoconf automake pkg-config libsdl2-dev libflac-dev libsndfile1-dev liblzo2-dev libmpcdec-dev libzstd-dev zlib1g-dev gettext p7zip-full curl python3 git
+      - name: Build pinned emucap PC-FX adapter
+        run: |
+          set -euxo pipefail
+          git clone -q https://github.com/mcpads/emucap.git /tmp/emucap
+          cd /tmp/emucap
+          git checkout -q 3887f9e9de7525087c30ca4434d9cb8c3ff15103
+          adapters/mednafen/build.sh
+          test -x adapters/mednafen/work/mednafen/src/mednafen
+      - name: Prepare CLEAN game and BIOS
+        run: |
+          set -euxo pipefail
+          curl -L --retry 3 --fail -o /tmp/cutey.7z 'https://archive.org/download/noaen-redump-nec-pc-fx-pc-fxga/Cutey%20Honey%20FX%20%28Japan%29.7z'
+          mkdir -p /tmp/game /tmp/v017 analysis/cutey_full/v017_early_story_probe
+          7z x -y /tmp/cutey.7z -o/tmp/game >/dev/null
+          T1=$(find /tmp/game -maxdepth 1 -type f -name '*Track 1*.bin' | head -1)
+          T2=$(find /tmp/game -maxdepth 1 -type f -name '*Track 2*.bin' | head -1)
+          echo 'ffae85763f581d312abb6b5096f6f7d62e771aae  '"$T1" | sha1sum -c -
+          echo '1dd574364e40cb90dd0ff25940fe8df9e6793edf  '"$T2" | sha1sum -c -
+          B1=$(basename "$T1"); B2=$(basename "$T2")
+          printf 'FILE "%s" BINARY\n  TRACK 01 AUDIO\n    INDEX 01 00:00:00\nFILE "%s" BINARY\n  TRACK 02 MODE1/2352\n    INDEX 00 00:00:00\n    INDEX 01 00:03:00\n' "$B1" "$B2" >/tmp/game/game.cue
+          curl -L --retry 3 --fail -o /tmp/pcfx.rom https://raw.githubusercontent.com/Abdess/retrobios/master/bios/NEC/PC-FX/pcfx.rom
+          echo '4b44ccf5d84cc83daa2e6a2bee00fdafa14eb58bdf5859e96d8861a891675417  /tmp/pcfx.rom' | sha256sum -c -
+      - name: Capture earliest story route and ADPCM transitions
+        run: |
+          cat >/tmp/v017/probe.py <<'PY'
+          import socket,subprocess,os,json,time,base64,traceback
+          from pathlib import Path
+          ROOT='/tmp/emucap'; CUE='/tmp/game/game.cue'; OUT=Path('/tmp/v017'); OUT.mkdir(exist_ok=True)
+          port=47800
+          srv=socket.socket(); srv.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEADDR,1); srv.bind(('127.0.0.1',port)); srv.listen(1); srv.settimeout(120)
+          env=os.environ.copy(); env.update({'EMUCAP_PCFX_BIOS':'/tmp/pcfx.rom','MEDNAFEN_FORCE_MODULE':'pcfx','EMUCAP_HEADLESS':'1','EMUCAP_START_FROZEN':'1','SDL_VIDEODRIVER':'dummy','SDL_AUDIODRIVER':'dummy'})
+          log=open(OUT/'mednafen.log','w')
+          proc=subprocess.Popen([ROOT+'/adapters/mednafen/launch.sh',CUE,str(port)],cwd=ROOT+'/adapters/mednafen',env=env,stdout=log,stderr=subprocess.STDOUT)
+          summary={'captures':[],'audio_transitions':[],'input_sequence':[]}
+          conn=None
+          try:
+            conn,_=srv.accept(); conn.settimeout(90); f=conn.makefile('rwb',buffering=0); rid=[0]; frame=[0]
+            def req(method,params=None):
+              rid[0]+=1; i=rid[0]
+              f.write((json.dumps({'v':1,'id':i,'method':method,'params':params or {}},separators=(',',':'))+'\n').encode())
+              while True:
+                line=f.readline()
+                if not line: raise RuntimeError('adapter EOF')
+                v=json.loads(line)
+                if v.get('id')!=i: continue
+                if not v.get('ok'): raise RuntimeError(method+': '+json.dumps(v))
+                return v.get('result')
+            def waitfreeze():
+              for _ in range(800):
+                s=req('status',{})
+                if str(s.get('state','')).lower() in ('frozen','paused','stopped'): return s
+                time.sleep(.01)
+              raise TimeoutError('freeze')
+            def frames(n):
+              req('step',{'frames':n}); s=waitfreeze(); frame[0]+=n; return s
+            def tap(button,n=3):
+              summary['input_sequence'].append({'frame':frame[0],'button':button,'hold':n})
+              req('set_input',{'port':0,'buttons':[button]}); frames(n); req('set_input',{'port':0,'buttons':[]})
+            def audio():
+              r=req('get_state',{'groups':['g4','SndBox']}); st=r.get('state',r)
+              return {k:st.get(k) for k in ['g4.ADPCMCTRL','g4.ADPCMPA0','g4.ADPCMEA0','g4.ADPCMStat','SndBox.CH0LVol','SndBox.CH0RVol']}
+            def shot(label):
+              r=req('screenshot',{})
+              b64=None
+              if isinstance(r,dict): b64=r.get('png_base64') or r.get('data_base64') or r.get('png') or r.get('data')
+              if isinstance(b64,str):
+                try: data=base64.b64decode(b64)
+                except: data=b''
+                if data.startswith(b'\x89PNG'):
+                  p=OUT/(f'{frame[0]:05d}_{label}.png'); p.write_bytes(data); fn=p.name
+                else: fn=None
+              else: fn=None
+              summary['captures'].append({'frame':frame[0],'label':label,'file':fn,'audio':audio()})
+            hello=req('hello',{}); summary['hello']=hello
+            frames(720); shot('boot720')
+            tap('run',3); frames(241); shot('after_run')
+            # Start/confirm with I, then capture densely around known first ADPCM window.
+            tap('i',3); shot('after_i')
+            last=audio(); rel=0
+            checkpoints={30,60,90,120,150,180,240,300,360,420,480,510,530,540,546,550,560,580,600,630,660,720,840,960,1080,1200,1440,1680,1920,2160,2400}
+            for rel in range(10,2401,10):
+              frames(10); cur=audio()
+              if cur!=last:
+                summary['audio_transitions'].append({'rel':rel,'abs':frame[0],'before':last,'after':cur}); last=cur
+              if rel in checkpoints: shot('rel_%04d'%rel)
+              # Dialogue may wait for confirm. Give I periodically only after the first known voice window.
+              if rel in (900,1260,1620,1980): tap('i',2); shot('tap_%04d'%rel)
+          except Exception as e:
+            summary['fatal']=repr(e); summary['traceback']=traceback.format_exc(); raise
+          finally:
+            (OUT/'SUMMARY.json').write_text(json.dumps(summary,ensure_ascii=False,indent=2),encoding='utf-8')
+            try:
+              if conn: conn.close()
+              srv.close()
+            except: pass
+            try: proc.terminate(); proc.wait(timeout=5)
+            except:
+              try: proc.kill()
+              except: pass
+            log.close()
+          PY
+          python3 /tmp/v017/probe.py
+      - name: Stage evidence
+        if: always()
+        run: |
+          set +e
+          cp /tmp/v017/SUMMARY.json analysis/cutey_full/v017_early_story_probe/
+          cp /tmp/v017/*.png analysis/cutey_full/v017_early_story_probe/ 2>/dev/null
+          tail -400 /tmp/v017/mednafen.log > analysis/cutey_full/v017_early_story_probe/MEDNAFEN_LOG.txt 2>/dev/null
+          git config user.name 'Cutey v0.17 story tracer'
+          git config user.email 'actions@users.noreply.github.com'
+          git add analysis/cutey_full/v017_early_story_probe
+          git diff --cached --quiet || git commit -m 'analysis: capture v0.17 earliest story and voice [skip ci]'
+          git pull --rebase origin tmp-cutey-poc01 || true
+          git push origin HEAD:tmp-cutey-poc01 || true
+      - name: Upload evidence
+        if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: CuteyHoneyFX_KR_ALPHA_v0.16
-          path: /tmp/CuteyHoneyFX_KR_ALPHA_v0.16.zip
-          compression-level: 0
-      - name: Commit extraction and build summaries
-        run: |
-          mkdir -p analysis/cutey_full
-          cp /tmp/pkg/EXTRACTION_SUMMARY.json analysis/cutey_full/EXTRACTION_CONTROL_v016.json
-          cp /tmp/pkg/BUILD_INFO.json analysis/cutey_full/BUILD_INFO_v016.json
-          cp /tmp/pkg/TRANSLATION_PROGRESS.csv analysis/cutey_full/TRANSLATION_PROGRESS_v016.csv
-          cp /tmp/pkg/TEXT_CONTROL_UNIQUE.csv analysis/cutey_full/TEXT_CONTROL_UNIQUE_v016.csv
-          cp /tmp/pkg/TEXT_CONTROL_INVENTORY.csv analysis/cutey_full/TEXT_CONTROL_INVENTORY_v016.csv
-          git config user.name 'Cutey full builder'
-          git config user.email 'actions@users.noreply.github.com'
-          git add analysis/cutey_full
-          git diff --cached --quiet || git commit -m 'analysis: Cutey KR alpha v0.16 full control-block localization [skip ci]'
-          git push origin HEAD:tmp-cutey-poc01
+          name: CuteyHoneyFX_v017_EarlyStoryVoiceProbe
+          path: analysis/cutey_full/v017_early_story_probe
