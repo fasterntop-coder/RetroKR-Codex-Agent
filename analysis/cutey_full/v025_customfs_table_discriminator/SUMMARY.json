@@ -1,0 +1,111 @@
+{
+  "checkpoint": "v0.25",
+  "parent_checkpoint": "v0.24",
+  "clean_track2_sha1": "1dd574364e40cb90dd0ff25940fe8df9e6793edf",
+  "verified_story_sectors": [
+    166299,
+    166477,
+    166509,
+    166541,
+    166572
+  ],
+  "v024_candidate_xref_sectors": [
+    190701,
+    6495
+  ],
+  "exact_candidate_hit_count": 5,
+  "candidate_metrics": [
+    {
+      "sector": 190701,
+      "sha256": "9d786d40d62434b6600138626b4e2259d61ae785ca0bb789704b24790bf5ad87",
+      "first128_hex": "1180a89daa0010848908742200da9bab1020820b08771280caba9b014191092a671180dbb90a0023a988711701b8acab1031818a18671280bccb091012a888702611d9ba9a1121a18a287711a0bcaa2812829a186712a0bcbb183201ca08721780babb093212ba88722780da9a082200b988721680caaa091311b980730680cb",
+      "alignment_metrics": [
+        {
+          "width": 4,
+          "endian": "little",
+          "plausible_value_count": 1,
+          "nondecreasing_pairs": 0,
+          "small_delta_pairs": 0
+        },
+        {
+          "width": 4,
+          "endian": "big",
+          "plausible_value_count": 0,
+          "nondecreasing_pairs": 0,
+          "small_delta_pairs": 0
+        }
+      ],
+      "exact_hit_count": 3,
+      "distinct_targets": [
+        166299,
+        166572
+      ]
+    },
+    {
+      "sector": 6495,
+      "sha256": "589b82cf3a47ee7d4b91b9f5da7062af846663827eb05289d2b796aea5742a18",
+      "first128_hex": "9a88acaaac8888aaf8ce8aa00b30772700898888a9aa283402011082dbbd898108681400900990da9d8988b89bcadd8a018a10772780808098b99b101110521100babb08bf289828260042a09cb8bdabca8adcad188018624634911881c9ab991990104682081088da9a90ad383103118100fbbd8aa9ddac9a89082877241300",
+      "alignment_metrics": [
+        {
+          "width": 4,
+          "endian": "little",
+          "plausible_value_count": 0,
+          "nondecreasing_pairs": 0,
+          "small_delta_pairs": 0
+        },
+        {
+          "width": 4,
+          "endian": "big",
+          "plausible_value_count": 0,
+          "nondecreasing_pairs": 0,
+          "small_delta_pairs": 0
+        }
+      ],
+      "exact_hit_count": 2,
+      "distinct_targets": [
+        166299,
+        166572
+      ]
+    }
+  ],
+  "local_candidate_map": [
+    {
+      "sector": 190701,
+      "hits": [
+        {
+          "target_sector": 166299,
+          "encoding": "sector_le32",
+          "offset": 404
+        },
+        {
+          "target_sector": 166299,
+          "encoding": "sector_le24",
+          "offset": 404
+        },
+        {
+          "target_sector": 166572,
+          "encoding": "sector_le24",
+          "offset": 206
+        }
+      ]
+    },
+    {
+      "sector": 6495,
+      "hits": [
+        {
+          "target_sector": 166299,
+          "encoding": "sector_be24",
+          "offset": 1079
+        },
+        {
+          "target_sector": 166572,
+          "encoding": "sector_le24",
+          "offset": 1020
+        }
+      ]
+    }
+  ],
+  "ownership_status": "CANDIDATE_TABLE_DISCRIMINATION_ONLY_NO_PATCH",
+  "lock_540_546": "FMV_AUDIO_NOT_STORY",
+  "patch_records_created": 0
+}

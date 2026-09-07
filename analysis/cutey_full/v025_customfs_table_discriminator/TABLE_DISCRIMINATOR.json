@@ -1,0 +1,315 @@
+{
+  "summary": {
+    "checkpoint": "v0.25",
+    "parent_checkpoint": "v0.24",
+    "clean_track2_sha1": "1dd574364e40cb90dd0ff25940fe8df9e6793edf",
+    "verified_story_sectors": [
+      166299,
+      166477,
+      166509,
+      166541,
+      166572
+    ],
+    "v024_candidate_xref_sectors": [
+      190701,
+      6495
+    ],
+    "exact_candidate_hit_count": 5,
+    "candidate_metrics": [
+      {
+        "sector": 190701,
+        "sha256": "9d786d40d62434b6600138626b4e2259d61ae785ca0bb789704b24790bf5ad87",
+        "first128_hex": "1180a89daa0010848908742200da9bab1020820b08771280caba9b014191092a671180dbb90a0023a988711701b8acab1031818a18671280bccb091012a888702611d9ba9a1121a18a287711a0bcaa2812829a186712a0bcbb183201ca08721780babb093212ba88722780da9a082200b988721680caaa091311b980730680cb",
+        "alignment_metrics": [
+          {
+            "width": 4,
+            "endian": "little",
+            "plausible_value_count": 1,
+            "nondecreasing_pairs": 0,
+            "small_delta_pairs": 0
+          },
+          {
+            "width": 4,
+            "endian": "big",
+            "plausible_value_count": 0,
+            "nondecreasing_pairs": 0,
+            "small_delta_pairs": 0
+          }
+        ],
+        "exact_hit_count": 3,
+        "distinct_targets": [
+          166299,
+          166572
+        ]
+      },
+      {
+        "sector": 6495,
+        "sha256": "589b82cf3a47ee7d4b91b9f5da7062af846663827eb05289d2b796aea5742a18",
+        "first128_hex": "9a88acaaac8888aaf8ce8aa00b30772700898888a9aa283402011082dbbd898108681400900990da9d8988b89bcadd8a018a10772780808098b99b101110521100babb08bf289828260042a09cb8bdabca8adcad188018624634911881c9ab991990104682081088da9a90ad383103118100fbbd8aa9ddac9a89082877241300",
+        "alignment_metrics": [
+          {
+            "width": 4,
+            "endian": "little",
+            "plausible_value_count": 0,
+            "nondecreasing_pairs": 0,
+            "small_delta_pairs": 0
+          },
+          {
+            "width": 4,
+            "endian": "big",
+            "plausible_value_count": 0,
+            "nondecreasing_pairs": 0,
+            "small_delta_pairs": 0
+          }
+        ],
+        "exact_hit_count": 2,
+        "distinct_targets": [
+          166299,
+          166572
+        ]
+      }
+    ],
+    "local_candidate_map": [
+      {
+        "sector": 190701,
+        "hits": [
+          {
+            "target_sector": 166299,
+            "encoding": "sector_le32",
+            "offset": 404
+          },
+          {
+            "target_sector": 166299,
+            "encoding": "sector_le24",
+            "offset": 404
+          },
+          {
+            "target_sector": 166572,
+            "encoding": "sector_le24",
+            "offset": 206
+          }
+        ]
+      },
+      {
+        "sector": 6495,
+        "hits": [
+          {
+            "target_sector": 166299,
+            "encoding": "sector_be24",
+            "offset": 1079
+          },
+          {
+            "target_sector": 166572,
+            "encoding": "sector_le24",
+            "offset": 1020
+          }
+        ]
+      }
+    ],
+    "ownership_status": "CANDIDATE_TABLE_DISCRIMINATION_ONLY_NO_PATCH",
+    "lock_540_546": "FMV_AUDIO_NOT_STORY",
+    "patch_records_created": 0
+  },
+  "exact_hits": [
+    {
+      "xref_sector": 190701,
+      "xref_in_user": 404,
+      "target_sector": 166299,
+      "encoding": "sector_le32",
+      "needle_hex": "9b890200"
+    },
+    {
+      "xref_sector": 190701,
+      "xref_in_user": 404,
+      "target_sector": 166299,
+      "encoding": "sector_le24",
+      "needle_hex": "9b8902"
+    },
+    {
+      "xref_sector": 190701,
+      "xref_in_user": 206,
+      "target_sector": 166572,
+      "encoding": "sector_le24",
+      "needle_hex": "ac8a02"
+    },
+    {
+      "xref_sector": 6495,
+      "xref_in_user": 1079,
+      "target_sector": 166299,
+      "encoding": "sector_be24",
+      "needle_hex": "02899b"
+    },
+    {
+      "xref_sector": 6495,
+      "xref_in_user": 1020,
+      "target_sector": 166572,
+      "encoding": "sector_le24",
+      "needle_hex": "ac8a02"
+    }
+  ],
+  "hit_neighborhoods": [
+    {
+      "xref_sector": 190701,
+      "xref_in_user": 404,
+      "target_sector": 166299,
+      "encoding": "sector_le32",
+      "needle_hex": "9b890200",
+      "window_start": 340,
+      "window_hex": "09100088624303d9ac8b0110a841718500ad881980008a353581ebaa09018098623582caad88218198294712a8ae99200088184415a0eb89080188a0723282ea9b89020089315701b8bc9910009020561398cd9919818118643291dbac88008100413701d9ab8a1188a8485712a0ad9a28818009722481acab1800a80b603701d89a8a020899482604a8ca0a0880aa38721700cb9919819189703303ccca1800",
+      "nearby_verified_target_values": [
+        {
+          "offset": 404,
+          "width": 3,
+          "endian": "little",
+          "value": 166299,
+          "maps": [
+            {
+              "target_sector": 166299,
+              "base": 0
+            }
+          ]
+        },
+        {
+          "offset": 404,
+          "width": 4,
+          "endian": "little",
+          "value": 166299,
+          "maps": [
+            {
+              "target_sector": 166299,
+              "base": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "xref_sector": 190701,
+      "xref_in_user": 404,
+      "target_sector": 166299,
+      "encoding": "sector_le24",
+      "needle_hex": "9b8902",
+      "window_start": 340,
+      "window_hex": "09100088624303d9ac8b0110a841718500ad881980008a353581ebaa09018098623582caad88218198294712a8ae99200088184415a0eb89080188a0723282ea9b89020089315701b8bc9910009020561398cd9919818118643291dbac88008100413701d9ab8a1188a8485712a0ad9a28818009722481acab1800a80b603701d89a8a020899482604a8ca0a0880aa38721700cb9919819189703303ccca1800",
+      "nearby_verified_target_values": [
+        {
+          "offset": 404,
+          "width": 3,
+          "endian": "little",
+          "value": 166299,
+          "maps": [
+            {
+              "target_sector": 166299,
+              "base": 0
+            }
+          ]
+        },
+        {
+          "offset": 404,
+          "width": 4,
+          "endian": "little",
+          "value": 166299,
+          "maps": [
+            {
+              "target_sector": 166299,
+              "base": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "xref_sector": 190701,
+      "xref_in_user": 206,
+      "target_sector": 166572,
+      "encoding": "sector_le24",
+      "needle_hex": "ac8a02",
+      "window_start": 142,
+      "window_hex": "9a186702b0ad9a2812810a106700b8bc892111b009612600ea9a0a20109800721490eb9a0811008820730488bd9a18118108412701d8bb9a20109020732580cbac8a022188127502a0adab19010228424601cabc9a10208011730600bcaa0b011080635202b8cd9908000820452480eb9b8a010100403513b9beab89802125440390bcacab8828733413a0cbabaaaa9b48674380b89c8880b89b28772480bb9d",
+      "nearby_verified_target_values": [
+        {
+          "offset": 206,
+          "width": 3,
+          "endian": "little",
+          "value": 166572,
+          "maps": [
+            {
+              "target_sector": 166572,
+              "base": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "xref_sector": 6495,
+      "xref_in_user": 1079,
+      "target_sector": 166299,
+      "encoding": "sector_be24",
+      "needle_hex": "02899b",
+      "window_start": 1015,
+      "window_hex": "20a08a00b0ac8a02888a47bc08a889eaab9808bd027092579842a21a11a9bb30c39f31908b01a8af31d909019c2031052a47900921a9b948c09960918b00e88c02899b23d88b051b844511080418c90089b870a808809c008be00b928c8881bd88478b278822128a8239d01810bd80aa99a20ec858c29b31bbb30c0018678821120933870b94098a88f02902af20e00901890a01a11f838a24b24920a20f2301",
+      "nearby_verified_target_values": [
+        {
+          "offset": 1020,
+          "width": 3,
+          "endian": "little",
+          "value": 166572,
+          "maps": [
+            {
+              "target_sector": 166572,
+              "base": 0
+            }
+          ]
+        },
+        {
+          "offset": 1079,
+          "width": 3,
+          "endian": "big",
+          "value": 166299,
+          "maps": [
+            {
+              "target_sector": 166299,
+              "base": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "xref_sector": 6495,
+      "xref_in_user": 1020,
+      "target_sector": 166572,
+      "encoding": "sector_le24",
+      "needle_hex": "ac8a02",
+      "window_start": 956,
+      "window_hex": "88aa989e3083998000cf2801992881fb9d98bd8a02aeaa21085545012812a00b0182bf33b9ac20a88871b00089fb08ae8808c889ab73232847081020a08a00b0ac8a02888a47bc08a889eaab9808bd027092579842a21a11a9bb30c39f31908b01a8af31d909019c2031052a47900921a9b948c09960918b00e88c02899b23d88b051b844511080418c90089b870a808809c008be00b928c8881bd88478b2788",
+      "nearby_verified_target_values": [
+        {
+          "offset": 1020,
+          "width": 3,
+          "endian": "little",
+          "value": 166572,
+          "maps": [
+            {
+              "target_sector": 166572,
+              "base": 0
+            }
+          ]
+        },
+        {
+          "offset": 1079,
+          "width": 3,
+          "endian": "big",
+          "value": 166299,
+          "maps": [
+            {
+              "target_sector": 166299,
+              "base": 0
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
