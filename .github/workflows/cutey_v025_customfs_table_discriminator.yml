@@ -1,0 +1,156 @@
+name: Cutey Honey FX v0.25 CustomFS Table Discriminator
+permissions:
+  contents: write
+on:
+  push:
+    branches: [tmp-cutey-poc01]
+    paths: ['.github/workflows/cutey_v025_customfs_table_discriminator.yml']
+  workflow_dispatch:
+jobs:
+  discriminate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with: {ref: tmp-cutey-poc01}
+      - name: Prepare exact CLEAN Track2
+        run: |
+          set -euxo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq p7zip-full curl python3
+          curl -L --retry 3 --fail -o /tmp/cutey.7z 'https://archive.org/download/noaen-redump-nec-pc-fx-pc-fxga/Cutey%20Honey%20FX%20%28Japan%29.7z'
+          mkdir -p /tmp/game /tmp/v025 analysis/cutey_full/v025_customfs_table_discriminator
+          7z x -y /tmp/cutey.7z -o/tmp/game >/dev/null
+          T2=$(find /tmp/game -maxdepth 1 -type f -name '*Track 2*.bin' | head -1)
+          echo '1dd574364e40cb90dd0ff25940fe8df9e6793edf  '"$T2" | sha1sum -c -
+          echo "$T2" >/tmp/v025/t2path
+      - name: Discriminate v0.24 multi-target xrefs
+        run: |
+          set -euxo pipefail
+          python3 - <<'PY'
+          import json,struct,hashlib
+          from pathlib import Path
+          p=Path(Path('/tmp/v025/t2path').read_text().strip())
+          raw=p.read_bytes(); SS=2352; UO=16; US=2048; nsec=len(raw)//SS
+          targets=[166299,166477,166509,166541,166572]
+          candidates=[190701,6495]
+          story=['船の乗客で混雑している。','正面に見えるのが、ゲスト登録の','受け付けみたいだ。']
+          for sec in targets:
+              blob=raw[sec*SS:(sec+2)*SS]
+              if not all(s.encode('shift_jis') in blob for s in story):
+                  raise SystemExit(f'story target drift at sector {sec}')
+          def user(sec): return raw[sec*SS+UO:sec*SS+UO+US]
+          ustream=b''.join(user(s) for s in range(nsec))
+
+          # Reproduce only exact v0.24 target encodings, then inspect candidate-local neighborhoods.
+          def encs(sec):
+              vals=[('sector_le32',struct.pack('<I',sec)),('sector_be32',struct.pack('>I',sec)),
+                    ('sector_le24',sec.to_bytes(3,'little')),('sector_be24',sec.to_bytes(3,'big'))]
+              for base in (0,75,150):
+                  v=sec-base
+                  if v>=0:
+                      vals += [(f'sector_minus_{base}_le32',struct.pack('<I',v)),(f'sector_minus_{base}_be32',struct.pack('>I',v))]
+              vals += [('raw_offset_le32',struct.pack('<I',sec*SS)),('raw_offset_be32',struct.pack('>I',sec*SS)),
+                       ('userstream_offset_le32',struct.pack('<I',sec*US)),('userstream_offset_be32',struct.pack('>I',sec*US))]
+              seen=[]; out=[]
+              for name,b in vals:
+                  if b not in seen: seen.append(b); out.append((name,b))
+              return out
+
+          exact_hits=[]
+          for csec in candidates:
+              cblob=user(csec)
+              for t in targets:
+                  for name,needle in encs(t):
+                      start=0
+                      while True:
+                          q=cblob.find(needle,start)
+                          if q<0: break
+                          exact_hits.append({'xref_sector':csec,'xref_in_user':q,'target_sector':t,'encoding':name,'needle_hex':needle.hex()})
+                          start=q+1
+
+          # Parse dense 24/32-bit integer streams around each exact hit and see whether nearby words
+          # map to other verified story sectors. This distinguishes table-like structure from coincidence.
+          neighborhoods=[]
+          bases=(0,75,150)
+          for h in exact_hits:
+              csec=h['xref_sector']; q=h['xref_in_user']; blob=user(csec)
+              lo=max(0,q-64); hi=min(US,q+96)
+              window=blob[lo:hi]
+              decoded=[]
+              for off in range(lo,hi):
+                  for width,endian in ((3,'little'),(3,'big'),(4,'little'),(4,'big')):
+                      if off+width>hi: continue
+                      v=int.from_bytes(blob[off:off+width],endian)
+                      mapped=[]
+                      for base in bases:
+                          if v+base in targets: mapped.append({'target_sector':v+base,'base':base})
+                      if mapped:
+                          decoded.append({'offset':off,'width':width,'endian':endian,'value':v,'maps':mapped})
+              neighborhoods.append({**h,'window_start':lo,'window_hex':window.hex(),'nearby_verified_target_values':decoded})
+
+          # Candidate sector structure metrics. True index/table sectors should usually have repeated
+          # aligned values/strides rather than isolated byte coincidences.
+          metrics=[]
+          for csec in candidates:
+              blob=user(csec)
+              align=[]
+              for width,endian in ((4,'little'),(4,'big')):
+                  vals=[]
+                  for off in range(0,US-width+1,width):
+                      v=int.from_bytes(blob[off:off+width],endian)
+                      if 0 < v < nsec+200000:
+                          vals.append((off,v))
+                  monotonic=sum(1 for i in range(1,len(vals)) if vals[i][1]>=vals[i-1][1])
+                  deltas=[vals[i][1]-vals[i-1][1] for i in range(1,len(vals))]
+                  small_delta=sum(1 for d in deltas if -4096<=d<=4096)
+                  align.append({'width':width,'endian':endian,'plausible_value_count':len(vals),'nondecreasing_pairs':monotonic,'small_delta_pairs':small_delta})
+              metrics.append({'sector':csec,'sha256':hashlib.sha256(blob).hexdigest(),'first128_hex':blob[:128].hex(),'alignment_metrics':align,'exact_hit_count':sum(x['xref_sector']==csec for x in exact_hits),'distinct_targets':sorted({x['target_sector'] for x in exact_hits if x['xref_sector']==csec})})
+
+          # Check nearby sectors +/-4 for the five verified targets using exact encodings.
+          local_map=[]
+          for csec in candidates:
+              for s in range(max(0,csec-4),min(nsec,csec+5)):
+                  blob=user(s)
+                  hits=[]
+                  for t in targets:
+                      for name,needle in encs(t):
+                          pos=blob.find(needle)
+                          if pos>=0: hits.append({'target_sector':t,'encoding':name,'offset':pos})
+                  if hits: local_map.append({'sector':s,'hits':hits})
+
+          summary={
+              'checkpoint':'v0.25',
+              'parent_checkpoint':'v0.24',
+              'clean_track2_sha1':hashlib.sha1(raw).hexdigest(),
+              'verified_story_sectors':targets,
+              'v024_candidate_xref_sectors':candidates,
+              'exact_candidate_hit_count':len(exact_hits),
+              'candidate_metrics':metrics,
+              'local_candidate_map':local_map,
+              'ownership_status':'CANDIDATE_TABLE_DISCRIMINATION_ONLY_NO_PATCH',
+              'lock_540_546':'FMV_AUDIO_NOT_STORY',
+              'patch_records_created':0
+          }
+          detail={'summary':summary,'exact_hits':exact_hits,'hit_neighborhoods':neighborhoods}
+          Path('/tmp/v025/SUMMARY.json').write_text(json.dumps(summary,ensure_ascii=False,indent=2),encoding='utf-8')
+          Path('/tmp/v025/TABLE_DISCRIMINATOR.json').write_text(json.dumps(detail,ensure_ascii=False,indent=2),encoding='utf-8')
+          print(json.dumps(summary,ensure_ascii=False,indent=2))
+          PY
+      - name: Stage evidence
+        if: always()
+        run: |
+          cp /tmp/v025/SUMMARY.json analysis/cutey_full/v025_customfs_table_discriminator/ 2>/dev/null || true
+          cp /tmp/v025/TABLE_DISCRIMINATOR.json analysis/cutey_full/v025_customfs_table_discriminator/ 2>/dev/null || true
+          git config user.name 'Cutey v0.25 customfs discriminator'
+          git config user.email 'actions@users.noreply.github.com'
+          git add analysis/cutey_full/v025_customfs_table_discriminator
+          git diff --cached --quiet || git commit -m 'analysis: add v0.25 customfs table discriminator evidence [skip ci]'
+          git pull --rebase origin tmp-cutey-poc01 || true
+          git push origin HEAD:tmp-cutey-poc01 || true
+      - name: Upload evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: CuteyHoneyFX_v025_customfs_table_discriminator
+          path: analysis/cutey_full/v025_customfs_table_discriminator
