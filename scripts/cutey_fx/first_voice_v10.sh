@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 set -euxo pipefail
+# v10: keep the emucap protocol stream alive until Mednafen soundrecord closes.
 
 EMUCAP_COMMIT=3887f9e9de7525087c30ca4434d9cb8c3ff15103
 PORT=47800
@@ -109,8 +110,6 @@ try:
     step(1200); meta['end_frame']=req('status',{}).get('frame')
     meta['wav_bytes_before_shutdown']=wav_size()
 
-    # v9 closed the emucap socket first. v10 keeps it open while Mednafen receives
-    # a graceful interrupt, so -soundrecord can run its normal close/flush path.
     os.kill(emu_pid,signal.SIGINT)
     meta['signal']='SIGINT'
     deadline=time.time()+30
@@ -129,7 +128,6 @@ try:
     if alive_non_zombie(emu_pid):
         os.kill(emu_pid,signal.SIGKILL); meta['signal_fallback2']='SIGKILL'; time.sleep(1)
     open(out+'/WAV_SIZE_TRACE.txt','w').write('\n'.join(json.dumps(x,sort_keys=True) for x in trace)+'\n')
-    # Wait for file metadata to settle after process exit.
     sizes=[]
     for _ in range(20):
         sizes.append(wav_size()); time.sleep(.1)
@@ -137,7 +135,6 @@ try:
 finally:
     meta['wav_bytes_final']=wav_size()
     open(out+'/CAPTURE_META.json','w').write(json.dumps(meta,indent=2,sort_keys=True))
-    # Only now close the protocol stream/server.
     try:
         if f: f.close()
     except Exception: pass
