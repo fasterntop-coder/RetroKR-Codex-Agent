@@ -1,0 +1,116 @@
+name: Cutey Honey FX First Voice Capture Transcribe v8
+permissions:
+  contents: write
+on:
+  push:
+    branches: [tmp-cutey-poc01]
+    paths: ['.github/workflows/cutey_first_voice_transcribe_v8.yml']
+  workflow_dispatch:
+jobs:
+  transcribe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with: {ref: tmp-cutey-poc01}
+      - name: deps
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq build-essential cmake autoconf automake pkg-config libsdl2-dev libflac-dev libsndfile1-dev liblzo2-dev libmpcdec-dev libzstd-dev zlib1g-dev gettext p7zip-full curl python3 git ffmpeg
+      - name: build emucap with WAV logging
+        run: |
+          set -euxo pipefail
+          git clone -q https://github.com/mcpads/emucap.git /tmp/emucap
+          cd /tmp/emucap && git checkout -q 3887f9e9de7525087c30ca4434d9cb8c3ff15103
+          adapters/mednafen/build.sh
+          mkdir -p /tmp/v8
+          python3 - <<'PY'
+          p='/tmp/emucap/adapters/mednafen/launch.sh'
+          s=open(p).read()
+          needle='ARGS=(-sound "${MEDNAFEN_SOUND:-0}")'
+          assert needle in s
+          s=s.replace(needle, needle+'\nARGS+=(-soundrecord "/tmp/v8/full.wav")',1)
+          open(p,'w').write(s)
+          PY
+      - name: clean media
+        run: |
+          set -euxo pipefail
+          curl -L --retry 3 --fail -o /tmp/cutey.7z 'https://archive.org/download/noaen-redump-nec-pc-fx-pc-fxga/Cutey%20Honey%20FX%20%28Japan%29.7z'
+          mkdir -p /tmp/game analysis/cutey_full/first_voice_v8
+          7z x -y /tmp/cutey.7z -o/tmp/game >/dev/null
+          T1=$(find /tmp/game -maxdepth 1 -type f -name '*Track 1*.bin' | head -1); T2=$(find /tmp/game -maxdepth 1 -type f -name '*Track 2*.bin' | head -1)
+          echo 'ffae85763f581d312abb6b5096f6f7d62e771aae  '"$T1" | sha1sum -c -
+          echo '1dd574364e40cb90dd0ff25940fe8df9e6793edf  '"$T2" | sha1sum -c -
+          B1=$(basename "$T1"); B2=$(basename "$T2")
+          printf 'FILE "%s" BINARY\n  TRACK 01 AUDIO\n    INDEX 01 00:00:00\nFILE "%s" BINARY\n  TRACK 02 MODE1/2352\n    INDEX 00 00:00:00\n    INDEX 01 00:03:00\n' "$B1" "$B2" >/tmp/game/game.cue
+          curl -L --retry 3 --fail -o /tmp/pcfx.rom https://raw.githubusercontent.com/Abdess/retrobios/master/bios/NEC/PC-FX/pcfx.rom
+          echo '4b44ccf5d84cc83daa2e6a2bee00fdafa14eb58bdf5859e96d8861a891675417  /tmp/pcfx.rom' | sha256sum -c -
+      - name: capture deterministic run-only audio
+        run: |
+          cat >/tmp/v8/cap.py <<'PY'
+          import socket,subprocess,os,json,time,traceback
+          root='/tmp/emucap';cue='/tmp/game/game.cue';port=47800
+          srv=socket.socket();srv.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEADDR,1);srv.bind(('127.0.0.1',port));srv.listen(1);srv.settimeout(120)
+          env=os.environ.copy();env.update({'EMUCAP_PCFX_BIOS':'/tmp/pcfx.rom','MEDNAFEN_FORCE_MODULE':'pcfx','MEDNAFEN_SOUND':'1','EMUCAP_HEADLESS':'1','EMUCAP_START_FROZEN':'1','SDL_VIDEODRIVER':'dummy','SDL_AUDIODRIVER':'dummy'})
+          log=open('/tmp/v8/mednafen.log','w');p=subprocess.Popen([root+'/adapters/mednafen/launch.sh',cue,str(port)],cwd=root+'/adapters/mednafen',env=env,stdout=log,stderr=subprocess.STDOUT)
+          meta={}
+          try:
+            c,_=srv.accept();c.settimeout(90);f=c.makefile('rwb',buffering=0);rid=[0]
+            def req(m,pa=None):
+              rid[0]+=1;i=rid[0];f.write((json.dumps({'v':1,'id':i,'method':m,'params':pa or {}},separators=(',',':'))+'\n').encode())
+              while True:
+                v=json.loads(f.readline())
+                if v.get('id')!=i: continue
+                if not v.get('ok'): raise RuntimeError(json.dumps(v))
+                return v.get('result')
+            def wait():
+              for _ in range(1000):
+                s=req('status',{})
+                if str(s.get('state','')).lower() in ('frozen','paused','stopped'): return s
+                time.sleep(.01)
+            def step(n): req('step',{'frames':n});return wait()
+            h=req('hello',{});meta['build']=h.get('build')
+            step(720);meta['run_press_abs_frame']=req('status',{}).get('frame')
+            req('set_input',{'port':0,'buttons':['run']});step(3);req('set_input',{'port':0,'buttons':[]});step(2)
+            step(1200);meta['end_frame']=req('status',{}).get('frame')
+          finally:
+            open('/tmp/v8/CAPTURE_META.json','w').write(json.dumps(meta,indent=2))
+            try:c.close();srv.close()
+            except:pass
+            try:p.terminate();p.wait(timeout=10)
+            except:
+              try:p.kill()
+              except:pass
+            log.close()
+          PY
+          python3 /tmp/v8/cap.py
+          test -s /tmp/v8/full.wav
+          ffprobe -v error -show_entries format=duration -of default=nw=1:nk=1 /tmp/v8/full.wav | tee /tmp/v8/WAV_DURATION.txt
+      - name: whisper.cpp Japanese transcript
+        run: |
+          set -euxo pipefail
+          git clone -q --depth 1 https://github.com/ggerganov/whisper.cpp.git /tmp/whisper
+          cmake -S /tmp/whisper -B /tmp/whisper/build -DWHISPER_BUILD_TESTS=OFF -DWHISPER_BUILD_EXAMPLES=ON >/dev/null
+          cmake --build /tmp/whisper/build -j2 >/dev/null
+          bash /tmp/whisper/models/download-ggml-model.sh base /tmp/whisper/models >/dev/null
+          ffmpeg -y -loglevel error -i /tmp/v8/full.wav -ar 16000 -ac 1 /tmp/v8/mono.wav
+          /tmp/whisper/build/bin/whisper-cli -m /tmp/whisper/models/ggml-base.bin -f /tmp/v8/mono.wav -l ja -otxt -osrt -of /tmp/v8/FIRST_VOICE 2>&1 | tee /tmp/v8/WHISPER_LOG.txt
+      - name: stage and commit
+        if: always()
+        run: |
+          mkdir -p analysis/cutey_full/first_voice_v8
+          cp /tmp/v8/CAPTURE_META.json /tmp/v8/WAV_DURATION.txt /tmp/v8/FIRST_VOICE.txt /tmp/v8/FIRST_VOICE.srt /tmp/v8/WHISPER_LOG.txt analysis/cutey_full/first_voice_v8/ 2>/dev/null || true
+          tail -200 /tmp/v8/mednafen.log > analysis/cutey_full/first_voice_v8/MEDNAFEN_LOG.txt 2>/dev/null || true
+          git config user.name 'Cutey first voice transcriber'; git config user.email 'actions@users.noreply.github.com'
+          git add analysis/cutey_full/first_voice_v8/* 2>/dev/null || true
+          git diff --cached --quiet || git commit -m 'analysis: capture first Cutey voice transcript v8 [skip ci]'
+          git pull --rebase origin tmp-cutey-poc01 || true; git push origin HEAD:tmp-cutey-poc01 || true
+      - name: artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: CuteyHoneyFX_FIRST_VOICE_v8
+          path: |
+            analysis/cutey_full/first_voice_v8
+            /tmp/v8/full.wav
+          compression-level: 6
