@@ -1,0 +1,42 @@
+{
+  "complete_story_sectors": [
+    166299,
+    166477,
+    166509,
+    166541,
+    166572
+  ],
+  "xref_hit_count": 567,
+  "multi_target_xref_sector_count": 2,
+  "top_multi_target_xrefs": [
+    {
+      "xref_sector": 190701,
+      "target_count": 2,
+      "targets": [
+        166299,
+        166572
+      ],
+      "hits": 4,
+      "encodings": [
+        "sector_le24",
+        "sector_le32",
+        "sector_minus_0_le32"
+      ]
+    },
+    {
+      "xref_sector": 6495,
+      "target_count": 2,
+      "targets": [
+        166299,
+        166572
+      ],
+      "hits": 2,
+      "encodings": [
+        "sector_be24",
+        "sector_le24"
+      ]
+    }
+  ],
+  "lock_540_546": "FMV_AUDIO_NOT_STORY",
+  "patch_records_created": 0
+}
