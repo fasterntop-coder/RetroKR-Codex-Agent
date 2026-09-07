@@ -1,0 +1,151 @@
+name: Cutey Honey FX v0.24 First Story CustomFS Xref
+permissions:
+  contents: write
+on:
+  push:
+    branches: [tmp-cutey-poc01]
+    paths: ['.github/workflows/cutey_v024_first_story_customfs_xref.yml']
+  workflow_dispatch:
+jobs:
+  xref:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with: {ref: tmp-cutey-poc01}
+      - name: Prepare exact CLEAN Track2
+        run: |
+          set -euxo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq p7zip-full curl python3
+          curl -L --retry 3 --fail -o /tmp/cutey.7z 'https://archive.org/download/noaen-redump-nec-pc-fx-pc-fxga/Cutey%20Honey%20FX%20%28Japan%29.7z'
+          mkdir -p /tmp/game /tmp/v024 analysis/cutey_full/v024_first_story_customfs_xref
+          7z x -y /tmp/cutey.7z -o/tmp/game >/dev/null
+          T2=$(find /tmp/game -maxdepth 1 -type f -name '*Track 2*.bin' | head -1)
+          echo '1dd574364e40cb90dd0ff25940fe8df9e6793edf  '"$T2" | sha1sum -c -
+          echo "$T2" >/tmp/v024/t2path
+      - name: Cross-reference verified story sectors against custom-FS metadata candidates
+        run: |
+          python3 - <<'PY'
+          import json,struct,hashlib
+          from pathlib import Path
+          p=Path(Path('/tmp/v024/t2path').read_text().strip())
+          raw=p.read_bytes(); SS=2352; UO=16; US=2048
+          nsec=len(raw)//SS
+          story=['船の乗客で混雑している。','正面に見えるのが、ゲスト登録の','受け付けみたいだ。']
+          # Only the five complete 3-line copies are owner candidates. Single first-line duplicates remain diagnostics.
+          complete=[]
+          b2=story[1].encode('shift_jis'); b3=story[2].encode('shift_jis')
+          pos=0
+          while True:
+              i=raw.find(story[0].encode('shift_jis'),pos)
+              if i<0: break
+              sec=i//SS; ins=i%SS
+              window=raw[i:i+160]
+              if b2 in window and b3 in window:
+                  complete.append({'raw_offset':i,'raw_sector':sec,'in_sector':ins})
+              pos=i+1
+          target_secs=sorted({x['raw_sector'] for x in complete})
+          expected=[166299,166477,166509,166541,166572]
+          if target_secs != expected:
+              raise SystemExit(f'complete-copy sector drift: {target_secs} != {expected}')
+
+          def user(sec):
+              return raw[sec*SS+UO:sec*SS+UO+US]
+          # Reconstruct MODE1 user-data stream for metadata/xref search.
+          ustream=b''.join(user(s) for s in range(nsec))
+
+          xrefs=[]
+          # Search common table encodings: raw sector, sector relative to data-track start candidates,
+          # and raw byte offset. Record context only; do not infer ownership from a hit alone.
+          bases=[0,75,150]
+          for sec in target_secs:
+              vals=[]
+              vals.append(('sector_le32',struct.pack('<I',sec),sec))
+              vals.append(('sector_be32',struct.pack('>I',sec),sec))
+              vals.append(('sector_le24',sec.to_bytes(3,'little'),sec))
+              vals.append(('sector_be24',sec.to_bytes(3,'big'),sec))
+              for base in bases:
+                  v=sec-base
+                  if v>=0:
+                      vals.append((f'sector_minus_{base}_le32',struct.pack('<I',v),v))
+                      vals.append((f'sector_minus_{base}_be32',struct.pack('>I',v),v))
+              ro=sec*SS
+              vals.append(('raw_offset_le32',struct.pack('<I',ro),ro))
+              vals.append(('raw_offset_be32',struct.pack('>I',ro),ro))
+              uo=sec*US
+              vals.append(('userstream_offset_le32',struct.pack('<I',uo),uo))
+              vals.append(('userstream_offset_be32',struct.pack('>I',uo),uo))
+              seen=set()
+              for enc,needle,val in vals:
+                  key=(enc,needle)
+                  if key in seen: continue
+                  seen.add(key)
+                  start=0; count=0
+                  while True:
+                      q=ustream.find(needle,start)
+                      if q<0: break
+                      usec=q//US; inuser=q%US; rawq=usec*SS+UO+inuser
+                      # suppress the target data region itself; metadata xrefs should be elsewhere
+                      if abs(usec-sec)>2:
+                          ctx=ustream[max(0,q-24):q+len(needle)+40]
+                          xrefs.append({'target_sector':sec,'encoding':enc,'encoded_value':val,'xref_userstream_offset':q,'xref_sector':usec,'xref_in_user':inuser,'xref_raw_offset':rawq,'context_hex':ctx.hex()})
+                      count+=1; start=q+1
+                      if count>2000: break
+
+          # Compare neighborhoods around the five complete copies. Shared headers/trailers can reveal record boundaries.
+          neighborhoods=[]
+          for sec in target_secs:
+              start=max(0,sec-2); end=min(nsec,sec+3)
+              blob=b''.join(user(s) for s in range(start,end))
+              neighborhoods.append({'target_sector':sec,'start_sector':start,'sha256':hashlib.sha256(blob).hexdigest(),'first128_hex':blob[:128].hex(),'last128_hex':blob[-128:].hex()})
+
+          # Longest common prefix/suffix between the 2048-byte sectors containing each complete copy.
+          sector_blobs={s:user(s) for s in target_secs}
+          pairwise=[]
+          for ai,a in enumerate(target_secs):
+              for b in target_secs[ai+1:]:
+                  A=sector_blobs[a]; B=sector_blobs[b]
+                  pre=0
+                  while pre<US and A[pre]==B[pre]: pre+=1
+                  suf=0
+                  while suf<US-pre and A[-1-suf]==B[-1-suf]: suf+=1
+                  # count equal bytes and equal 16-byte blocks to characterize replicated records
+                  eq=sum(x==y for x,y in zip(A,B))
+                  eq16=sum(A[i:i+16]==B[i:i+16] for i in range(0,US,16))
+                  pairwise.append({'a':a,'b':b,'common_prefix':pre,'common_suffix':suf,'equal_bytes':eq,'equal_16byte_blocks':eq16})
+
+          # Rank xref sectors that reference multiple different story copies: likely index/table candidates.
+          bysec={}
+          for x in xrefs:
+              d=bysec.setdefault(x['xref_sector'],{'targets':set(),'hits':0,'encodings':set()})
+              d['targets'].add(x['target_sector']); d['hits']+=1; d['encodings'].add(x['encoding'])
+          ranked=[]
+          for s,d in bysec.items():
+              if len(d['targets'])>=2:
+                  ranked.append({'xref_sector':s,'target_count':len(d['targets']),'targets':sorted(d['targets']),'hits':d['hits'],'encodings':sorted(d['encodings'])})
+          ranked.sort(key=lambda z:(-z['target_count'],-z['hits'],z['xref_sector']))
+
+          out={'clean_track2_sha1':hashlib.sha1(raw).hexdigest(),'checkpoint':'v0.24','ownership_model':'CUSTOM_FS_XREF_ONLY_NO_PATCH','complete_story_sectors':target_secs,'complete_story_hits':complete,'xref_hits':xrefs,'ranked_multi_target_xref_sectors':ranked[:200],'pairwise_sector_similarity':pairwise,'neighborhoods':neighborhoods,'lock_540_546':'FMV_AUDIO_NOT_STORY'}
+          Path('/tmp/v024/CUSTOMFS_XREF.json').write_text(json.dumps(out,ensure_ascii=False,indent=2),encoding='utf-8')
+          summary={'complete_story_sectors':target_secs,'xref_hit_count':len(xrefs),'multi_target_xref_sector_count':len(ranked),'top_multi_target_xrefs':ranked[:30],'lock_540_546':'FMV_AUDIO_NOT_STORY','patch_records_created':0}
+          Path('/tmp/v024/SUMMARY.json').write_text(json.dumps(summary,ensure_ascii=False,indent=2),encoding='utf-8')
+          print(json.dumps(summary,ensure_ascii=False,indent=2))
+          PY
+      - name: Stage evidence
+        if: always()
+        run: |
+          cp /tmp/v024/CUSTOMFS_XREF.json analysis/cutey_full/v024_first_story_customfs_xref/ 2>/dev/null || true
+          cp /tmp/v024/SUMMARY.json analysis/cutey_full/v024_first_story_customfs_xref/ 2>/dev/null || true
+          git config user.name 'Cutey v0.24 customfs xref'
+          git config user.email 'actions@users.noreply.github.com'
+          git add analysis/cutey_full/v024_first_story_customfs_xref
+          git diff --cached --quiet || git commit -m 'analysis: add v0.24 first-story customfs xref evidence [skip ci]'
+          git pull --rebase origin tmp-cutey-poc01 || true
+          git push origin HEAD:tmp-cutey-poc01 || true
+      - name: Upload evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: CuteyHoneyFX_v024_first_story_customfs_xref
+          path: analysis/cutey_full/v024_first_story_customfs_xref
