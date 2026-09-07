@@ -1,0 +1,1 @@
+Mednafen 연결됨: pid=15040 port=47800 log=/home/runner/.local/share/emucap/mednafen/47800/mednafen.log content=/tmp/game/game.cue module=pcfx

@@ -1,0 +1,6349 @@
+{
+  "captures": [
+    {
+      "abs_frame": 720,
+      "label": "boot720",
+      "file": "00720_boot720.png",
+      "audio": {
+        "g4.ADPCMCTRL": 0,
+        "g4.ADPCMPA0": 57224,
+        "g4.ADPCMEA0": 57223,
+        "g4.ADPCMStat": 5,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 0
+      },
+      "status": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 721,
+        "state": "frozen",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    },
+    {
+      "abs_frame": 964,
+      "label": "menu_after_run",
+      "file": "00964_menu_after_run.png",
+      "audio": {
+        "g4.ADPCMCTRL": 4,
+        "g4.ADPCMPA0": 57224,
+        "g4.ADPCMEA0": 0,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 0,
+        "SndBox.CH0RVol": 0
+      },
+      "status": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 967,
+        "state": "frozen",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    },
+    {
+      "abs_frame": 967,
+      "label": "after_i_select",
+      "file": "00967_after_i_select.png",
+      "audio": {
+        "g4.ADPCMCTRL": 4,
+        "g4.ADPCMPA0": 57224,
+        "g4.ADPCMEA0": 0,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 0,
+        "SndBox.CH0RVol": 0
+      },
+      "status": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 971,
+        "state": "frozen",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    },
+    {
+      "abs_frame": 997,
+      "label": "A_rel_0030",
+      "file": "00997_A_rel_0030.png",
+      "audio": {
+        "g4.ADPCMCTRL": 4,
+        "g4.ADPCMPA0": 57224,
+        "g4.ADPCMEA0": 0,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 0,
+        "SndBox.CH0RVol": 0
+      },
+      "status": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 1004,
+        "state": "frozen",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    },
+    {
+      "abs_frame": 1027,
+      "label": "A_rel_0060",
+      "file": "01027_A_rel_0060.png",
+      "audio": {
+        "g4.ADPCMCTRL": 4,
+        "g4.ADPCMPA0": 57224,
+        "g4.ADPCMEA0": 0,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 0,
+        "SndBox.CH0RVol": 0
+      },
+      "status": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 1037,
+        "state": "frozen",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    },
+    {
+      "abs_frame": 1087,
+      "label": "A_rel_0120",
+      "file": "01087_A_rel_0120.png",
+      "audio": {
+        "g4.ADPCMCTRL": 4,
+        "g4.ADPCMPA0": 57224,
+        "g4.ADPCMEA0": 0,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 0,
+        "SndBox.CH0RVol": 0
+      },
+      "status": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 1103,
+        "state": "frozen",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    },
+    {
+      "abs_frame": 1147,
+      "label": "A_rel_0180",
+      "file": "01147_A_rel_0180.png",
+      "audio": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 2367,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "status": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 1169,
+        "state": "frozen",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    },
+    {
+      "abs_frame": 1207,
+      "label": "A_rel_0240",
+      "file": "01207_A_rel_0240.png",
+      "audio": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 6706,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "status": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 1235,
+        "state": "frozen",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    },
+    {
+      "abs_frame": 1267,
+      "label": "A_rel_0300",
+      "file": "01267_A_rel_0300.png",
+      "audio": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 11046,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "status": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 1301,
+        "state": "frozen",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    },
+    {
+      "abs_frame": 1327,
+      "label": "A_rel_0360",
+      "file": "01327_A_rel_0360.png",
+      "audio": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 15385,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "status": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 1367,
+        "state": "frozen",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    },
+    {
+      "abs_frame": 1387,
+      "label": "A_rel_0420",
+      "file": "01387_A_rel_0420.png",
+      "audio": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 19725,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "status": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 1433,
+        "state": "frozen",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    },
+    {
+      "abs_frame": 1447,
+      "label": "A_rel_0480",
+      "file": "01447_A_rel_0480.png",
+      "audio": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 24064,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "status": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 1499,
+        "state": "frozen",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    },
+    {
+      "abs_frame": 1487,
+      "label": "A_rel_0520",
+      "file": "01487_A_rel_0520.png",
+      "audio": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 26957,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "status": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 1543,
+        "state": "frozen",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    },
+    {
+      "abs_frame": 1507,
+      "label": "A_rel_0540",
+      "file": "01507_A_rel_0540.png",
+      "audio": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 28404,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "status": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 1565,
+        "state": "frozen",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    },
+    {
+      "abs_frame": 1513,
+      "label": "A_rel_0546",
+      "file": "01513_A_rel_0546.png",
+      "audio": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 28864,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "status": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 1572,
+        "state": "frozen",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    },
+    {
+      "abs_frame": 1527,
+      "label": "A_rel_0560",
+      "file": "01527_A_rel_0560.png",
+      "audio": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 29916,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "status": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 1588,
+        "state": "frozen",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    },
+    {
+      "abs_frame": 1567,
+      "label": "A_rel_0600",
+      "file": "01567_A_rel_0600.png",
+      "audio": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 41,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 1,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "status": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 1632,
+        "state": "frozen",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    },
+    {
+      "abs_frame": 1627,
+      "label": "A_rel_0660",
+      "file": "01627_A_rel_0660.png",
+      "audio": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 4381,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "status": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 1698,
+        "state": "frozen",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    },
+    {
+      "abs_frame": 1687,
+      "label": "A_rel_0720",
+      "file": "01687_A_rel_0720.png",
+      "audio": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 8720,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "status": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 1764,
+        "state": "frozen",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    },
+    {
+      "abs_frame": 1807,
+      "label": "A_rel_0840",
+      "file": "01807_A_rel_0840.png",
+      "audio": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 17399,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "status": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 1896,
+        "state": "frozen",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    },
+    {
+      "abs_frame": 1927,
+      "label": "A_rel_0960",
+      "file": "01927_A_rel_0960.png",
+      "audio": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 26078,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "status": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 2028,
+        "state": "frozen",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    },
+    {
+      "abs_frame": 2047,
+      "label": "A_rel_1080",
+      "file": "02047_A_rel_1080.png",
+      "audio": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 1989,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "status": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 2160,
+        "state": "frozen",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    },
+    {
+      "abs_frame": 2167,
+      "label": "A_rel_1200",
+      "file": "02167_A_rel_1200.png",
+      "audio": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 10668,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "status": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 2292,
+        "state": "frozen",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    },
+    {
+      "abs_frame": 2407,
+      "label": "A_rel_1440",
+      "file": "02407_A_rel_1440.png",
+      "audio": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 28026,
+        "g4.ADPCMEA0": 46137,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "status": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 2556,
+        "state": "frozen",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    },
+    {
+      "abs_frame": 2647,
+      "label": "A_rel_1680",
+      "file": "02647_A_rel_1680.png",
+      "audio": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 45384,
+        "g4.ADPCMEA0": 46137,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "status": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 2820,
+        "state": "frozen",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    },
+    {
+      "abs_frame": 2887,
+      "label": "A_rel_1920",
+      "file": "02887_A_rel_1920.png",
+      "audio": {
+        "g4.ADPCMCTRL": 4,
+        "g4.ADPCMPA0": 46138,
+        "g4.ADPCMEA0": 46137,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 0,
+        "SndBox.CH0RVol": 0
+      },
+      "status": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 3084,
+        "state": "frozen",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    },
+    {
+      "abs_frame": 964,
+      "label": "B_menu_restore",
+      "file": "00964_B_menu_restore.png",
+      "audio": {
+        "g4.ADPCMCTRL": 4,
+        "g4.ADPCMPA0": 57224,
+        "g4.ADPCMEA0": 0,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 0,
+        "SndBox.CH0RVol": 0
+      },
+      "status": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 3084,
+        "state": "frozen",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    },
+    {
+      "abs_frame": 967,
+      "label": "B_start",
+      "file": "00967_B_start.png",
+      "audio": {
+        "g4.ADPCMCTRL": 4,
+        "g4.ADPCMPA0": 57224,
+        "g4.ADPCMEA0": 0,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 0,
+        "SndBox.CH0RVol": 0
+      },
+      "status": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 3088,
+        "state": "frozen",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    },
+    {
+      "abs_frame": 1147,
+      "label": "B_before_tap_01",
+      "file": "01147_B_before_tap_01.png",
+      "audio": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 1249,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "status": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 3269,
+        "state": "frozen",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    },
+    {
+      "abs_frame": 1149,
+      "label": "B_after_tap_01",
+      "file": "01149_B_after_tap_01.png",
+      "audio": {
+        "g4.ADPCMCTRL": 7,
+        "g4.ADPCMPA0": 1446,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "status": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 3272,
+        "state": "frozen",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    },
+    {
+      "abs_frame": 1329,
+      "label": "B_before_tap_02",
+      "file": "01329_B_before_tap_02.png",
+      "audio": {
+        "g4.ADPCMCTRL": 6,
+        "g4.ADPCMPA0": 6381,
+        "g4.ADPCMEA0": 0,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 0,
+        "SndBox.CH0RVol": 0
+      },
+      "status": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 3453,
+        "state": "frozen",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    },
+    {
+      "abs_frame": 1331,
+      "label": "B_after_tap_02",
+      "file": "01331_B_after_tap_02.png",
+      "audio": {
+        "g4.ADPCMCTRL": 6,
+        "g4.ADPCMPA0": 6381,
+        "g4.ADPCMEA0": 0,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 0,
+        "SndBox.CH0RVol": 0
+      },
+      "status": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 3456,
+        "state": "frozen",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    },
+    {
+      "abs_frame": 1511,
+      "label": "B_before_tap_03",
+      "file": "01511_B_before_tap_03.png",
+      "audio": {
+        "g4.ADPCMCTRL": 6,
+        "g4.ADPCMPA0": 6381,
+        "g4.ADPCMEA0": 0,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 0,
+        "SndBox.CH0RVol": 0
+      },
+      "status": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 3637,
+        "state": "frozen",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    },
+    {
+      "abs_frame": 1513,
+      "label": "B_after_tap_03",
+      "file": "01513_B_after_tap_03.png",
+      "audio": {
+        "g4.ADPCMCTRL": 6,
+        "g4.ADPCMPA0": 6381,
+        "g4.ADPCMEA0": 0,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 0,
+        "SndBox.CH0RVol": 0
+      },
+      "status": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 3640,
+        "state": "frozen",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    },
+    {
+      "abs_frame": 1693,
+      "label": "B_before_tap_04",
+      "file": "01693_B_before_tap_04.png",
+      "audio": {
+        "g4.ADPCMCTRL": 6,
+        "g4.ADPCMPA0": 6381,
+        "g4.ADPCMEA0": 0,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 0,
+        "SndBox.CH0RVol": 0
+      },
+      "status": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 3821,
+        "state": "frozen",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    },
+    {
+      "abs_frame": 1695,
+      "label": "B_after_tap_04",
+      "file": "01695_B_after_tap_04.png",
+      "audio": {
+        "g4.ADPCMCTRL": 6,
+        "g4.ADPCMPA0": 6381,
+        "g4.ADPCMEA0": 0,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 0,
+        "SndBox.CH0RVol": 0
+      },
+      "status": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 3824,
+        "state": "frozen",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    },
+    {
+      "abs_frame": 1875,
+      "label": "B_before_tap_05",
+      "file": "01875_B_before_tap_05.png",
+      "audio": {
+        "g4.ADPCMCTRL": 6,
+        "g4.ADPCMPA0": 6381,
+        "g4.ADPCMEA0": 0,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 0,
+        "SndBox.CH0RVol": 0
+      },
+      "status": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 4005,
+        "state": "frozen",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    },
+    {
+      "abs_frame": 1877,
+      "label": "B_after_tap_05",
+      "file": "01877_B_after_tap_05.png",
+      "audio": {
+        "g4.ADPCMCTRL": 6,
+        "g4.ADPCMPA0": 6381,
+        "g4.ADPCMEA0": 0,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 0,
+        "SndBox.CH0RVol": 0
+      },
+      "status": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 4008,
+        "state": "frozen",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    },
+    {
+      "abs_frame": 2057,
+      "label": "B_before_tap_06",
+      "file": "02057_B_before_tap_06.png",
+      "audio": {
+        "g4.ADPCMCTRL": 6,
+        "g4.ADPCMPA0": 6381,
+        "g4.ADPCMEA0": 0,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 0,
+        "SndBox.CH0RVol": 0
+      },
+      "status": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 4189,
+        "state": "frozen",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    },
+    {
+      "abs_frame": 2059,
+      "label": "B_after_tap_06",
+      "file": "02059_B_after_tap_06.png",
+      "audio": {
+        "g4.ADPCMCTRL": 4,
+        "g4.ADPCMPA0": 6381,
+        "g4.ADPCMEA0": 0,
+        "g4.ADPCMStat": 4,
+        "SndBox.CH0LVol": 0,
+        "SndBox.CH0RVol": 0
+      },
+      "status": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 4192,
+        "state": "frozen",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    },
+    {
+      "abs_frame": 2239,
+      "label": "B_before_tap_07",
+      "file": "02239_B_before_tap_07.png",
+      "audio": {
+        "g4.ADPCMCTRL": 7,
+        "g4.ADPCMPA0": 5720,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 58,
+        "SndBox.CH0RVol": 58
+      },
+      "status": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 4373,
+        "state": "frozen",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    },
+    {
+      "abs_frame": 2241,
+      "label": "B_after_tap_07",
+      "file": "02241_B_after_tap_07.png",
+      "audio": {
+        "g4.ADPCMCTRL": 7,
+        "g4.ADPCMPA0": 5917,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 58,
+        "SndBox.CH0RVol": 58
+      },
+      "status": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 4376,
+        "state": "frozen",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    },
+    {
+      "abs_frame": 2421,
+      "label": "B_before_tap_08",
+      "file": "02421_B_before_tap_08.png",
+      "audio": {
+        "g4.ADPCMCTRL": 7,
+        "g4.ADPCMPA0": 17818,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 58,
+        "SndBox.CH0RVol": 58
+      },
+      "status": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 4557,
+        "state": "frozen",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    },
+    {
+      "abs_frame": 2423,
+      "label": "B_after_tap_08",
+      "file": "02423_B_after_tap_08.png",
+      "audio": {
+        "g4.ADPCMCTRL": 7,
+        "g4.ADPCMPA0": 18015,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 58,
+        "SndBox.CH0RVol": 58
+      },
+      "status": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 4560,
+        "state": "frozen",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    },
+    {
+      "abs_frame": 2603,
+      "label": "B_before_tap_09",
+      "file": "02603_B_before_tap_09.png",
+      "audio": {
+        "g4.ADPCMCTRL": 7,
+        "g4.ADPCMPA0": 29916,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 58,
+        "SndBox.CH0RVol": 58
+      },
+      "status": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 4741,
+        "state": "frozen",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    },
+    {
+      "abs_frame": 2605,
+      "label": "B_after_tap_09",
+      "file": "02605_B_after_tap_09.png",
+      "audio": {
+        "g4.ADPCMCTRL": 7,
+        "g4.ADPCMPA0": 30113,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 58,
+        "SndBox.CH0RVol": 58
+      },
+      "status": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 4744,
+        "state": "frozen",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    },
+    {
+      "abs_frame": 2785,
+      "label": "B_before_tap_10",
+      "file": "02785_B_before_tap_10.png",
+      "audio": {
+        "g4.ADPCMCTRL": 7,
+        "g4.ADPCMPA0": 9246,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 58,
+        "SndBox.CH0RVol": 58
+      },
+      "status": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 4925,
+        "state": "frozen",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    },
+    {
+      "abs_frame": 2787,
+      "label": "B_after_tap_10",
+      "file": "02787_B_after_tap_10.png",
+      "audio": {
+        "g4.ADPCMCTRL": 7,
+        "g4.ADPCMPA0": 9443,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 58,
+        "SndBox.CH0RVol": 58
+      },
+      "status": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 4928,
+        "state": "frozen",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    },
+    {
+      "abs_frame": 2967,
+      "label": "B_before_tap_11",
+      "file": "02967_B_before_tap_11.png",
+      "audio": {
+        "g4.ADPCMCTRL": 7,
+        "g4.ADPCMPA0": 21344,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 58,
+        "SndBox.CH0RVol": 58
+      },
+      "status": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 5109,
+        "state": "frozen",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    },
+    {
+      "abs_frame": 2969,
+      "label": "B_after_tap_11",
+      "file": "02969_B_after_tap_11.png",
+      "audio": {
+        "g4.ADPCMCTRL": 7,
+        "g4.ADPCMPA0": 21541,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 58,
+        "SndBox.CH0RVol": 58
+      },
+      "status": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 5112,
+        "state": "frozen",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    },
+    {
+      "abs_frame": 3149,
+      "label": "B_before_tap_12",
+      "file": "03149_B_before_tap_12.png",
+      "audio": {
+        "g4.ADPCMCTRL": 7,
+        "g4.ADPCMPA0": 674,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 58,
+        "SndBox.CH0RVol": 58
+      },
+      "status": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 5293,
+        "state": "frozen",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    },
+    {
+      "abs_frame": 3151,
+      "label": "B_after_tap_12",
+      "file": "03151_B_after_tap_12.png",
+      "audio": {
+        "g4.ADPCMCTRL": 7,
+        "g4.ADPCMPA0": 871,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 58,
+        "SndBox.CH0RVol": 58
+      },
+      "status": {
+        "connected": true,
+        "system": "pcfx",
+        "debugger": true,
+        "frame": 5296,
+        "state": "frozen",
+        "last_game_input": "0x0000",
+        "last_game_buttons": [],
+        "input_override": {
+          "observable": true,
+          "engaged": false,
+          "mode": "native",
+          "pressed_mask": 0
+        },
+        "execution_limits": {
+          "max_sync_advance_count": 5000
+        },
+        "state_groups": [
+          "g0",
+          "g1",
+          "g2",
+          "g3",
+          "g4",
+          "SndBox"
+        ],
+        "cpu_targets": [
+          {
+            "id": "main",
+            "aliases": [
+              "v810"
+            ],
+            "default": true,
+            "disassembly_modes": [
+              "auto",
+              "v810"
+            ]
+          }
+        ],
+        "launch_start": {
+          "requested_frozen": true,
+          "controlled": true,
+          "boundary": "pre_first_instruction"
+        }
+      }
+    }
+  ],
+  "audio_transitions": [
+    {
+      "scenario": "A",
+      "rel_after_i": 150,
+      "abs_frame": 1117,
+      "before": {
+        "g4.ADPCMCTRL": 4,
+        "g4.ADPCMPA0": 57224,
+        "g4.ADPCMEA0": 0,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 0,
+        "SndBox.CH0RVol": 0
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 197,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 160,
+      "abs_frame": 1127,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 197,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 920,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 170,
+      "abs_frame": 1137,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 920,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 1644,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 180,
+      "abs_frame": 1147,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 1644,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 2367,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 190,
+      "abs_frame": 1157,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 2367,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 3090,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 200,
+      "abs_frame": 1167,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 3090,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 3813,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 210,
+      "abs_frame": 1177,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 3813,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 4537,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 220,
+      "abs_frame": 1187,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 4537,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 5260,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 230,
+      "abs_frame": 1197,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 5260,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 5983,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 240,
+      "abs_frame": 1207,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 5983,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 6706,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 250,
+      "abs_frame": 1217,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 6706,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 7430,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 260,
+      "abs_frame": 1227,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 7430,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 8153,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 270,
+      "abs_frame": 1237,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 8153,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 8876,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 280,
+      "abs_frame": 1247,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 8876,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 9599,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 290,
+      "abs_frame": 1257,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 9599,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 10323,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 300,
+      "abs_frame": 1267,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 10323,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 11046,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 310,
+      "abs_frame": 1277,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 11046,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 11769,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 320,
+      "abs_frame": 1287,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 11769,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 12492,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 330,
+      "abs_frame": 1297,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 12492,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 13216,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 340,
+      "abs_frame": 1307,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 13216,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 13939,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 350,
+      "abs_frame": 1317,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 13939,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 14662,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 360,
+      "abs_frame": 1327,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 14662,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 15385,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 370,
+      "abs_frame": 1337,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 15385,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 16109,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 380,
+      "abs_frame": 1347,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 16109,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 16832,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 390,
+      "abs_frame": 1357,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 16832,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 17555,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 400,
+      "abs_frame": 1367,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 17555,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 18278,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 410,
+      "abs_frame": 1377,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 18278,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 19002,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 420,
+      "abs_frame": 1387,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 19002,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 19725,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 430,
+      "abs_frame": 1397,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 19725,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 20448,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 440,
+      "abs_frame": 1407,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 20448,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 21171,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 450,
+      "abs_frame": 1417,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 21171,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 21895,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 460,
+      "abs_frame": 1427,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 21895,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 22618,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 470,
+      "abs_frame": 1437,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 22618,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 23341,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 480,
+      "abs_frame": 1447,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 23341,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 24064,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 490,
+      "abs_frame": 1457,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 24064,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 24788,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 500,
+      "abs_frame": 1467,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 24788,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 25511,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 510,
+      "abs_frame": 1477,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 25511,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 26234,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 520,
+      "abs_frame": 1487,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 26234,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 26957,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 530,
+      "abs_frame": 1497,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 26957,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 27681,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 540,
+      "abs_frame": 1507,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 27681,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 28404,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 546,
+      "abs_frame": 1513,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 28404,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 28864,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 556,
+      "abs_frame": 1523,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 28864,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 29587,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 560,
+      "abs_frame": 1527,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 29587,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 29916,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 570,
+      "abs_frame": 1537,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 29916,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 30639,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 580,
+      "abs_frame": 1547,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 30639,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 31363,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 590,
+      "abs_frame": 1557,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 31363,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 32086,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 600,
+      "abs_frame": 1567,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 32086,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 41,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 1,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 610,
+      "abs_frame": 1577,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 41,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 1,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 764,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 620,
+      "abs_frame": 1587,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 764,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 1488,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 630,
+      "abs_frame": 1597,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 1488,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 2211,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 640,
+      "abs_frame": 1607,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 2211,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 2934,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 650,
+      "abs_frame": 1617,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 2934,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 3657,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 660,
+      "abs_frame": 1627,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 3657,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 4381,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 670,
+      "abs_frame": 1637,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 4381,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 5104,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 680,
+      "abs_frame": 1647,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 5104,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 5827,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 690,
+      "abs_frame": 1657,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 5827,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 6550,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 700,
+      "abs_frame": 1667,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 6550,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 7274,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 710,
+      "abs_frame": 1677,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 7274,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 7997,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 720,
+      "abs_frame": 1687,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 7997,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 8720,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 730,
+      "abs_frame": 1697,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 8720,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 9443,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 740,
+      "abs_frame": 1707,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 9443,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 10167,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 750,
+      "abs_frame": 1717,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 10167,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 10890,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 760,
+      "abs_frame": 1727,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 10890,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 11613,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 770,
+      "abs_frame": 1737,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 11613,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 12336,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 780,
+      "abs_frame": 1747,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 12336,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 13060,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 790,
+      "abs_frame": 1757,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 13060,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 13783,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 800,
+      "abs_frame": 1767,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 13783,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 14506,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 810,
+      "abs_frame": 1777,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 14506,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 15229,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 820,
+      "abs_frame": 1787,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 15229,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 15953,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 830,
+      "abs_frame": 1797,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 15953,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 16676,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 840,
+      "abs_frame": 1807,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 16676,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 17399,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 850,
+      "abs_frame": 1817,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 17399,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 18122,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 860,
+      "abs_frame": 1827,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 18122,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 18846,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 870,
+      "abs_frame": 1837,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 18846,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 19569,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 880,
+      "abs_frame": 1847,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 19569,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 20292,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 890,
+      "abs_frame": 1857,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 20292,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 21015,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 900,
+      "abs_frame": 1867,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 21015,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 21739,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 910,
+      "abs_frame": 1877,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 21739,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 22462,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 920,
+      "abs_frame": 1887,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 22462,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 23185,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 930,
+      "abs_frame": 1897,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 23185,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 23908,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 940,
+      "abs_frame": 1907,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 23908,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 24632,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 950,
+      "abs_frame": 1917,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 24632,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 25355,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 960,
+      "abs_frame": 1927,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 25355,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 26078,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 970,
+      "abs_frame": 1937,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 26078,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 26801,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 980,
+      "abs_frame": 1947,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 26801,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 27525,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 990,
+      "abs_frame": 1957,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 27525,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 28248,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 1000,
+      "abs_frame": 1967,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 28248,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 28971,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 1010,
+      "abs_frame": 1977,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 28971,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 29694,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 1020,
+      "abs_frame": 1987,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 29694,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 30418,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 1030,
+      "abs_frame": 1997,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 30418,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 31141,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 1040,
+      "abs_frame": 2007,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 31141,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 31864,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 1050,
+      "abs_frame": 2017,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 31864,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 32587,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 1060,
+      "abs_frame": 2027,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 32587,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 543,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 1070,
+      "abs_frame": 2037,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 543,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 1266,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 1080,
+      "abs_frame": 2047,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 1266,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 1989,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 1090,
+      "abs_frame": 2057,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 1989,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 2712,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 1100,
+      "abs_frame": 2067,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 2712,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 3436,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 1110,
+      "abs_frame": 2077,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 3436,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 4159,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 1120,
+      "abs_frame": 2087,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 4159,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 4882,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 1130,
+      "abs_frame": 2097,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 4882,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 5605,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 1140,
+      "abs_frame": 2107,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 5605,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 6329,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 1150,
+      "abs_frame": 2117,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 6329,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 7052,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 1160,
+      "abs_frame": 2127,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 7052,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 7775,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 1170,
+      "abs_frame": 2137,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 7775,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 8498,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 1180,
+      "abs_frame": 2147,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 8498,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 9222,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 1190,
+      "abs_frame": 2157,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 9222,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 9945,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 1200,
+      "abs_frame": 2167,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 9945,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 10668,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 1210,
+      "abs_frame": 2177,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 10668,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 11391,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 1220,
+      "abs_frame": 2187,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 11391,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 12115,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 1230,
+      "abs_frame": 2197,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 12115,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 12838,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 1240,
+      "abs_frame": 2207,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 12838,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 13561,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 1250,
+      "abs_frame": 2217,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 13561,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 14284,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 1260,
+      "abs_frame": 2227,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 14284,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 15008,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 1270,
+      "abs_frame": 2237,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 15008,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 15731,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 1280,
+      "abs_frame": 2247,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 15731,
+        "g4.ADPCMEA0": 32767,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 16454,
+        "g4.ADPCMEA0": 46137,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 1290,
+      "abs_frame": 2257,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 16454,
+        "g4.ADPCMEA0": 46137,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 17177,
+        "g4.ADPCMEA0": 46137,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 1300,
+      "abs_frame": 2267,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 17177,
+        "g4.ADPCMEA0": 46137,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 17901,
+        "g4.ADPCMEA0": 46137,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 1310,
+      "abs_frame": 2277,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 17901,
+        "g4.ADPCMEA0": 46137,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 18624,
+        "g4.ADPCMEA0": 46137,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 1320,
+      "abs_frame": 2287,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 18624,
+        "g4.ADPCMEA0": 46137,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 19347,
+        "g4.ADPCMEA0": 46137,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 1330,
+      "abs_frame": 2297,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 19347,
+        "g4.ADPCMEA0": 46137,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 20070,
+        "g4.ADPCMEA0": 46137,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 1340,
+      "abs_frame": 2307,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 20070,
+        "g4.ADPCMEA0": 46137,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 20794,
+        "g4.ADPCMEA0": 46137,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 1350,
+      "abs_frame": 2317,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 20794,
+        "g4.ADPCMEA0": 46137,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 21517,
+        "g4.ADPCMEA0": 46137,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 1360,
+      "abs_frame": 2327,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 21517,
+        "g4.ADPCMEA0": 46137,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 22240,
+        "g4.ADPCMEA0": 46137,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 1370,
+      "abs_frame": 2337,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 22240,
+        "g4.ADPCMEA0": 46137,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 22963,
+        "g4.ADPCMEA0": 46137,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 1380,
+      "abs_frame": 2347,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 22963,
+        "g4.ADPCMEA0": 46137,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 23687,
+        "g4.ADPCMEA0": 46137,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 1390,
+      "abs_frame": 2357,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 23687,
+        "g4.ADPCMEA0": 46137,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 24410,
+        "g4.ADPCMEA0": 46137,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 1400,
+      "abs_frame": 2367,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 24410,
+        "g4.ADPCMEA0": 46137,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 25133,
+        "g4.ADPCMEA0": 46137,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 1410,
+      "abs_frame": 2377,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 25133,
+        "g4.ADPCMEA0": 46137,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 25856,
+        "g4.ADPCMEA0": 46137,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 1420,
+      "abs_frame": 2387,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 25856,
+        "g4.ADPCMEA0": 46137,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 26580,
+        "g4.ADPCMEA0": 46137,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 1430,
+      "abs_frame": 2397,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 26580,
+        "g4.ADPCMEA0": 46137,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 27303,
+        "g4.ADPCMEA0": 46137,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 1440,
+      "abs_frame": 2407,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 27303,
+        "g4.ADPCMEA0": 46137,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 28026,
+        "g4.ADPCMEA0": 46137,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 1450,
+      "abs_frame": 2417,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 28026,
+        "g4.ADPCMEA0": 46137,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 28749,
+        "g4.ADPCMEA0": 46137,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 1460,
+      "abs_frame": 2427,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 28749,
+        "g4.ADPCMEA0": 46137,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 29473,
+        "g4.ADPCMEA0": 46137,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 1470,
+      "abs_frame": 2437,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 29473,
+        "g4.ADPCMEA0": 46137,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 30196,
+        "g4.ADPCMEA0": 46137,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 1480,
+      "abs_frame": 2447,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 30196,
+        "g4.ADPCMEA0": 46137,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 30919,
+        "g4.ADPCMEA0": 46137,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 1490,
+      "abs_frame": 2457,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 30919,
+        "g4.ADPCMEA0": 46137,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 31642,
+        "g4.ADPCMEA0": 46137,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 1500,
+      "abs_frame": 2467,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 31642,
+        "g4.ADPCMEA0": 46137,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 32366,
+        "g4.ADPCMEA0": 46137,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 1510,
+      "abs_frame": 2477,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 32366,
+        "g4.ADPCMEA0": 46137,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 33089,
+        "g4.ADPCMEA0": 46137,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 1520,
+      "abs_frame": 2487,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 33089,
+        "g4.ADPCMEA0": 46137,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 33812,
+        "g4.ADPCMEA0": 46137,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 1530,
+      "abs_frame": 2497,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 33812,
+        "g4.ADPCMEA0": 46137,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 34535,
+        "g4.ADPCMEA0": 46137,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 1540,
+      "abs_frame": 2507,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 34535,
+        "g4.ADPCMEA0": 46137,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 35259,
+        "g4.ADPCMEA0": 46137,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 1550,
+      "abs_frame": 2517,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 35259,
+        "g4.ADPCMEA0": 46137,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 35982,
+        "g4.ADPCMEA0": 46137,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 1560,
+      "abs_frame": 2527,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 35982,
+        "g4.ADPCMEA0": 46137,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 36705,
+        "g4.ADPCMEA0": 46137,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 1570,
+      "abs_frame": 2537,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 36705,
+        "g4.ADPCMEA0": 46137,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 37428,
+        "g4.ADPCMEA0": 46137,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 1580,
+      "abs_frame": 2547,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 37428,
+        "g4.ADPCMEA0": 46137,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 38152,
+        "g4.ADPCMEA0": 46137,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 1590,
+      "abs_frame": 2557,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 38152,
+        "g4.ADPCMEA0": 46137,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 38875,
+        "g4.ADPCMEA0": 46137,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 1600,
+      "abs_frame": 2567,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 38875,
+        "g4.ADPCMEA0": 46137,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 39598,
+        "g4.ADPCMEA0": 46137,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 1610,
+      "abs_frame": 2577,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 39598,
+        "g4.ADPCMEA0": 46137,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 40321,
+        "g4.ADPCMEA0": 46137,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 1620,
+      "abs_frame": 2587,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 40321,
+        "g4.ADPCMEA0": 46137,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 41045,
+        "g4.ADPCMEA0": 46137,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 1630,
+      "abs_frame": 2597,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 41045,
+        "g4.ADPCMEA0": 46137,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 41768,
+        "g4.ADPCMEA0": 46137,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 1640,
+      "abs_frame": 2607,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 41768,
+        "g4.ADPCMEA0": 46137,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 42491,
+        "g4.ADPCMEA0": 46137,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 1650,
+      "abs_frame": 2617,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 42491,
+        "g4.ADPCMEA0": 46137,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 43214,
+        "g4.ADPCMEA0": 46137,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 1660,
+      "abs_frame": 2627,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 43214,
+        "g4.ADPCMEA0": 46137,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 43938,
+        "g4.ADPCMEA0": 46137,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 1670,
+      "abs_frame": 2637,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 43938,
+        "g4.ADPCMEA0": 46137,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 44661,
+        "g4.ADPCMEA0": 46137,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 1680,
+      "abs_frame": 2647,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 44661,
+        "g4.ADPCMEA0": 46137,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 45384,
+        "g4.ADPCMEA0": 46137,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 1690,
+      "abs_frame": 2657,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 45384,
+        "g4.ADPCMEA0": 46137,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 46107,
+        "g4.ADPCMEA0": 46137,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      }
+    },
+    {
+      "scenario": "A",
+      "rel_after_i": 1700,
+      "abs_frame": 2667,
+      "before": {
+        "g4.ADPCMCTRL": 5,
+        "g4.ADPCMPA0": 46107,
+        "g4.ADPCMEA0": 46137,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 63,
+        "SndBox.CH0RVol": 63
+      },
+      "after": {
+        "g4.ADPCMCTRL": 4,
+        "g4.ADPCMPA0": 46138,
+        "g4.ADPCMEA0": 46137,
+        "g4.ADPCMStat": 0,
+        "SndBox.CH0LVol": 0,
+        "SndBox.CH0RVol": 0
+      }
+    }
+  ],
+  "input_sequence": [
+    {
+      "abs_frame": 720,
+      "button": "run",
+      "hold_frames": 3
+    },
+    {
+      "abs_frame": 964,
+      "button": "i",
+      "hold_frames": 3
+    },
+    {
+      "abs_frame": 964,
+      "button": "i",
+      "hold_frames": 3
+    },
+    {
+      "abs_frame": 1147,
+      "button": "i",
+      "hold_frames": 2
+    },
+    {
+      "abs_frame": 1329,
+      "button": "i",
+      "hold_frames": 2
+    },
+    {
+      "abs_frame": 1511,
+      "button": "i",
+      "hold_frames": 2
+    },
+    {
+      "abs_frame": 1693,
+      "button": "i",
+      "hold_frames": 2
+    },
+    {
+      "abs_frame": 1875,
+      "button": "i",
+      "hold_frames": 2
+    },
+    {
+      "abs_frame": 2057,
+      "button": "i",
+      "hold_frames": 2
+    },
+    {
+      "abs_frame": 2239,
+      "button": "i",
+      "hold_frames": 2
+    },
+    {
+      "abs_frame": 2421,
+      "button": "i",
+      "hold_frames": 2
+    },
+    {
+      "abs_frame": 2603,
+      "button": "i",
+      "hold_frames": 2
+    },
+    {
+      "abs_frame": 2785,
+      "button": "i",
+      "hold_frames": 2
+    },
+    {
+      "abs_frame": 2967,
+      "button": "i",
+      "hold_frames": 2
+    },
+    {
+      "abs_frame": 3149,
+      "button": "i",
+      "hold_frames": 2
+    }
+  ],
+  "identity": {
+    "build": "3887f9e@mednafen-1.32.1",
+    "system": "pcfx",
+    "has_screenshot": true
+  }
+}
