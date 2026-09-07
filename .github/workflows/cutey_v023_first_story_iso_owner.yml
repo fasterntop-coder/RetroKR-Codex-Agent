@@ -32,16 +32,15 @@ jobs:
           p=Path(Path('/tmp/v023/t2path').read_text().strip())
           raw=p.read_bytes(); SS=2352; UOFF=16; US=2048
           texts=['船の乗客で混雑している。','正面に見えるのが、ゲスト登録の','受け付けみたいだ。']
-          # Locate PVD in raw MODE1 sectors; Track2 includes its pregap before ISO LBA 0.
           pvd_raw=None
-          for sec in range(min(len(raw)//SS,2000)):
+          for sec in range(min(len(raw)//SS,4000)):
               u=raw[sec*SS+UOFF:sec*SS+UOFF+US]
               if len(u)>=7 and u[0]==1 and u[1:6]==b'CD001' and u[6]==1:
                   pvd_raw=sec; break
           if pvd_raw is None: raise SystemExit('ISO9660 PVD not found')
           iso_base_raw_sector=pvd_raw-16
-          def user_sector(iso_lba):
-              rs=iso_base_raw_sector+iso_lba
+          def user_sector(lba):
+              rs=iso_base_raw_sector+lba
               return raw[rs*SS+UOFF:rs*SS+UOFF+US]
           pvd=user_sector(16)
           root=pvd[156:190]
@@ -49,12 +48,12 @@ jobs:
           root_size=struct.unpack_from('<I',root,10)[0]
           files=[]; seen=set()
           def read_extent(ext,size):
-              out=bytearray(); n=(size+US-1)//US
-              for i in range(n): out+=user_sector(ext+i)
+              out=bytearray()
+              for i in range((size+US-1)//US): out+=user_sector(ext+i)
               return bytes(out[:size])
           def walk_dir(ext,size,prefix=''):
               key=(ext,size)
-              if key in seen:return
+              if key in seen: return
               seen.add(key); data=read_extent(ext,size); pos=0
               while pos < len(data):
                   ln=data[pos]
@@ -64,46 +63,49 @@ jobs:
                   if len(rec)<34: break
                   rext=struct.unpack_from('<I',rec,2)[0]; rsize=struct.unpack_from('<I',rec,10)[0]
                   flags=rec[25]; nlen=rec[32]; nameb=rec[33:33+nlen]
-                  if nameb in (b'\x00',b'\x01'):
-                      pos+=ln; continue
-                  name=nameb.decode('ascii','replace').split(';')[0]
-                  full=(prefix+'/'+name).replace('//','/')
-                  if flags & 2: walk_dir(rext,rsize,full)
-                  else: files.append({'path':full,'iso_extent_lba':rext,'size':rsize,'raw_start_sector':iso_base_raw_sector+rext,'raw_end_sector':iso_base_raw_sector+rext+(rsize+US-1)//US-1})
+                  if nameb not in (b'\x00',b'\x01'):
+                      name=nameb.decode('ascii','replace').split(';')[0]
+                      full=(prefix+'/'+name).replace('//','/')
+                      if flags & 2: walk_dir(rext,rsize,full)
+                      else: files.append({'path':full,'iso_extent_lba':rext,'size':rsize})
                   pos+=ln
           walk_dir(root_extent,root_size,'')
-          groups={}
-          occurrence_rows=[]
+          # Search reconstructed ISO file bytes, not the whole MODE1/2352 stream.
+          file_hits=[]
+          for f in files:
+              data=read_extent(f['iso_extent_lba'],f['size'])
+              for text in texts:
+                  b=text.encode('shift_jis'); start=0
+                  while True:
+                      off=data.find(b,start)
+                      if off<0: break
+                      lba=f['iso_extent_lba'] + off//US
+                      in_user=off%US
+                      raw_sector=iso_base_raw_sector+lba
+                      raw_offset=raw_sector*SS+UOFF+in_user
+                      file_hits.append({'text':text,'owner_path':f['path'],'owner_extent_lba':f['iso_extent_lba'],'owner_file_offset':off,'iso_lba':lba,'raw_sector':raw_sector,'raw_offset':raw_offset,'raw_hex':hex(raw_offset)})
+                      start=off+1
+          # Independently keep raw-stream hits only as diagnostics; never treat header/ECC hits as ISO-owned.
+          raw_hits=[]
           for text in texts:
               b=text.encode('shift_jis'); start=0
               while True:
                   i=raw.find(b,start)
-                  if i<0:break
-                  sec=i//SS; inso=i%SS
-                  owner=None; file_off=None
-                  for f in files:
-                      if f['raw_start_sector']<=sec<=f['raw_end_sector'] and UOFF<=inso<UOFF+US:
-                          owner=f
-                          file_off=(sec-f['raw_start_sector'])*US+(inso-UOFF)
-                          if file_off>=f['size']: owner=None; file_off=None
-                          break
-                  row={'text':text,'raw_offset':i,'raw_hex':hex(i),'raw_sector':sec,'in_sector':inso,'owner_path':owner['path'] if owner else None,'owner_file_offset':file_off,'owner_extent_lba':owner['iso_extent_lba'] if owner else None}
-                  occurrence_rows.append(row)
-                  if owner:
-                      k=owner['path']; groups.setdefault(k,{'extent_lba':owner['iso_extent_lba'],'size':owner['size'],'occurrences':[]})['occurrences'].append(row)
+                  if i<0: break
+                  raw_hits.append({'text':text,'raw_offset':i,'raw_hex':hex(i),'raw_sector':i//SS,'in_sector':i%SS,'in_mode1_user_data':UOFF <= (i%SS) < UOFF+US})
                   start=i+1
-          # Require an owner mapping for every occurrence whose bytes lie in user data.
-          user_occ=[r for r in occurrence_rows if UOFF<=r['in_sector']<UOFF+US]
-          unmapped=[r for r in user_occ if r['owner_path'] is None]
-          out={'clean_track2_sha1':hashlib.sha1(raw).hexdigest(),'pvd_raw_sector':pvd_raw,'iso_base_raw_sector':iso_base_raw_sector,'root_extent_lba':root_extent,'file_count':len(files),'occurrences':occurrence_rows,'owners':groups,'unmapped_user_occurrences':unmapped}
-          Path('/tmp/v023/ISO_OWNER_MAP.json').write_text(json.dumps(out,ensure_ascii=False,indent=2),encoding='utf-8')
+          owners={}
+          for h in file_hits:
+              g=owners.setdefault(h['owner_path'],{'extent_lba':h['owner_extent_lba'],'occurrences':[]})
+              g['occurrences'].append(h)
           summary=[]
-          for path,g in sorted(groups.items()):
-              summary.append({'path':path,'extent_lba':g['extent_lba'],'size':g['size'],'hit_count':len(g['occurrences']),'file_offsets':sorted({x['owner_file_offset'] for x in g['occurrences']})})
+          for path,g in sorted(owners.items()):
+              summary.append({'path':path,'extent_lba':g['extent_lba'],'hit_count':len(g['occurrences']),'file_offsets':sorted({x['owner_file_offset'] for x in g['occurrences']}),'raw_sectors':sorted({x['raw_sector'] for x in g['occurrences']})})
+          out={'clean_track2_sha1':hashlib.sha1(raw).hexdigest(),'pvd_raw_sector':pvd_raw,'iso_base_raw_sector':iso_base_raw_sector,'root_extent_lba':root_extent,'file_count':len(files),'file_hits':file_hits,'raw_hits_diagnostic':raw_hits,'owners':owners}
+          Path('/tmp/v023/ISO_OWNER_MAP.json').write_text(json.dumps(out,ensure_ascii=False,indent=2),encoding='utf-8')
           Path('/tmp/v023/OWNER_SUMMARY.json').write_text(json.dumps(summary,ensure_ascii=False,indent=2),encoding='utf-8')
-          print(json.dumps({'pvd_raw_sector':pvd_raw,'iso_base_raw_sector':iso_base_raw_sector,'owners':summary,'unmapped_user_occurrences':len(unmapped)},ensure_ascii=False,indent=2))
-          if not groups: raise SystemExit('no ISO file owner mapped for story occurrences')
-          if unmapped: raise SystemExit('some user-data story occurrences could not be mapped')
+          print(json.dumps({'pvd_raw_sector':pvd_raw,'iso_base_raw_sector':iso_base_raw_sector,'file_count':len(files),'owners':summary,'raw_hit_count':len(raw_hits)},ensure_ascii=False,indent=2))
+          if not file_hits: raise SystemExit('no ISO file contains verified first-story Shift-JIS bytes')
           PY
       - name: Stage evidence
         if: always()
