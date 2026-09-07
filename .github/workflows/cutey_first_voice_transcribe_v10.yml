@@ -1,0 +1,44 @@
+name: Cutey Honey FX First Voice Capture Transcribe v10
+permissions:
+  contents: write
+on:
+  push:
+    branches: [tmp-cutey-poc01]
+    paths:
+      - '.github/workflows/cutey_first_voice_transcribe_v10.yml'
+      - 'scripts/cutey_fx/first_voice_v10.sh'
+  workflow_dispatch:
+jobs:
+  transcribe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with: {ref: tmp-cutey-poc01}
+      - name: deps
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq build-essential cmake autoconf automake pkg-config libsdl2-dev libflac-dev libsndfile1-dev liblzo2-dev libmpcdec-dev libzstd-dev zlib1g-dev gettext p7zip-full curl python3 git ffmpeg lsof
+      - name: capture and transcribe
+        run: bash scripts/cutey_fx/first_voice_v10.sh
+      - name: commit verified capture evidence
+        if: always()
+        run: |
+          git config user.name 'Cutey first voice transcriber'
+          git config user.email 'actions@users.noreply.github.com'
+          git add analysis/cutey_full/first_voice_v10 2>/dev/null || true
+          git diff --cached --quiet || git commit -m 'analysis: Cutey first voice capture v10 [skip ci]'
+          git pull --rebase origin tmp-cutey-poc01 || true
+          git push origin HEAD:tmp-cutey-poc01 || true
+      - name: artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: CuteyHoneyFX_FIRST_VOICE_v10
+          path: |
+            analysis/cutey_full/first_voice_v10
+            /tmp/v10/full.wav
+            /tmp/v10/CAPTURE_META.json
+            /tmp/v10/WAV_SIZE_TRACE.txt
+            /tmp/v10/launcher.log
+          compression-level: 6
