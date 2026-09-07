@@ -1,4 +1,4 @@
-name: Cutey Honey FX Early Voice Subtitle Probe v6
+name: Cutey Honey FX v0.17 Early Story SJIS Scan
 permissions:
   contents: write
 on:
@@ -7,172 +7,112 @@ on:
     paths: ['.github/workflows/cutey_early_voice_probe_v6.yml']
   workflow_dispatch:
 jobs:
-  probe:
+  scan:
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
         with: {ref: tmp-cutey-poc01}
-      - name: Install build dependencies
+      - name: Download canonical CLEAN Track 2
         run: |
+          set -euxo pipefail
           sudo apt-get update -qq
-          sudo apt-get install -y -qq build-essential autoconf automake pkg-config libsdl2-dev libflac-dev libsndfile1-dev liblzo2-dev libmpcdec-dev libzstd-dev zlib1g-dev gettext p7zip-full curl python3 git
-      - name: Build pinned emucap PC-FX adapter
-        run: |
-          set -euxo pipefail
-          git clone -q https://github.com/mcpads/emucap.git /tmp/emucap
-          cd /tmp/emucap
-          git checkout -q 3887f9e9de7525087c30ca4434d9cb8c3ff15103
-          adapters/mednafen/build.sh
-          test -x adapters/mednafen/work/mednafen/src/mednafen
-          git rev-parse HEAD >/tmp/emucap_commit.txt
-      - name: Prepare exact CLEAN game and BIOS
-        run: |
-          set -euxo pipefail
+          sudo apt-get install -y -qq p7zip-full curl python3
           curl -L --retry 3 --fail -o /tmp/cutey.7z 'https://archive.org/download/noaen-redump-nec-pc-fx-pc-fxga/Cutey%20Honey%20FX%20%28Japan%29.7z'
-          mkdir -p /tmp/game /tmp/early/screens analysis/cutey_full
+          mkdir -p /tmp/game analysis/cutey_full/v017_story_scan
           7z x -y /tmp/cutey.7z -o/tmp/game >/dev/null
-          T1=$(find /tmp/game -maxdepth 1 -type f -name '*Track 1*.bin' | head -1)
           T2=$(find /tmp/game -maxdepth 1 -type f -name '*Track 2*.bin' | head -1)
-          echo 'ffae85763f581d312abb6b5096f6f7d62e771aae  '"$T1" | sha1sum -c -
           echo '1dd574364e40cb90dd0ff25940fe8df9e6793edf  '"$T2" | sha1sum -c -
-          B1=$(basename "$T1"); B2=$(basename "$T2")
-          cat >/tmp/game/game.cue <<EOF
-          FILE "$B1" BINARY
-            TRACK 01 AUDIO
-              INDEX 01 00:00:00
-          FILE "$B2" BINARY
-            TRACK 02 MODE1/2352
-              INDEX 00 00:00:00
-              INDEX 01 00:03:00
-          EOF
-          curl -L --retry 3 --fail -o /tmp/pcfx.rom https://raw.githubusercontent.com/Abdess/retrobios/master/bios/NEC/PC-FX/pcfx.rom
-          echo '4b44ccf5d84cc83daa2e6a2bee00fdafa14eb58bdf5859e96d8861a891675417  /tmp/pcfx.rom' | sha256sum -c -
-      - name: Probe first-minute input branches and ADPCM events
+          cp "$T2" /tmp/t2.bin
+      - name: Extract plausible Japanese script strings near early story banks
         run: |
-          set -euxo pipefail
-          cat >/tmp/early/probe.py <<'PY'
-          import socket,subprocess,os,json,time,base64,hashlib,traceback
+          python3 - <<'PY'
           from pathlib import Path
-
-          ROOT='/tmp/emucap'; CUE='/tmp/game/game.cue'; OUT=Path('/tmp/early'); SC=OUT/'screens'; SC.mkdir(parents=True,exist_ok=True)
-          port=47800; events=[]; rpc_log=[]
-          srv=socket.socket();srv.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEADDR,1);srv.bind(('127.0.0.1',port));srv.listen(1);srv.settimeout(120)
-          env=os.environ.copy();env.update({'EMUCAP_PCFX_BIOS':'/tmp/pcfx.rom','MEDNAFEN_FORCE_MODULE':'pcfx','EMUCAP_HEADLESS':'1','EMUCAP_START_FROZEN':'1','SDL_VIDEODRIVER':'dummy','SDL_AUDIODRIVER':'dummy'})
-          medlog=open(OUT/'mednafen.log','w')
-          p=subprocess.Popen([ROOT+'/adapters/mednafen/launch.sh',CUE,str(port)],cwd=ROOT+'/adapters/mednafen',env=env,stdout=medlog,stderr=subprocess.STDOUT)
-          conn=None
-          try:
-            conn,_=srv.accept();conn.settimeout(90);f=conn.makefile('rwb',buffering=0);rid=[0]
-            def req(method,params=None):
-              rid[0]+=1;i=rid[0];q={'v':1,'id':i,'method':method,'params':params or {}};f.write((json.dumps(q,separators=(',',':'))+'\n').encode())
-              deadline=time.time()+90
-              while time.time()<deadline:
-                line=f.readline()
-                if not line: raise RuntimeError('adapter EOF')
-                v=json.loads(line)
-                if v.get('id')!=i: continue
-                rpc_log.append({'id':i,'method':method,'ok':v.get('ok'),'error':v.get('error')})
-                if not v.get('ok',False): raise RuntimeError(method+': '+json.dumps(v))
-                return v.get('result')
-              raise TimeoutError(method)
-            def wait_frozen(limit=20):
-              end=time.time()+limit; last=None
-              while time.time()<end:
-                last=req('status',{})
-                if str(last.get('state','')).lower() in ('frozen','paused','stopped'): return last
-                time.sleep(.05)
-              return last
-            def step(n):
-              req('step',{'frames':n}); return wait_frozen()
-            def pulse(button,frames=3):
-              req('set_input',{'port':0,'buttons':[button]});step(frames);req('set_input',{'port':0,'buttons':[]});step(2)
-            def state():
-              r=req('get_state',{'groups':['g4','SndBox']}); return r.get('state',r) if isinstance(r,dict) else {}
-            AUDIO_KEYS=['g4.ADPCMCTRL','g4.ADPCMBM0','g4.ADPCMBM1','g4.ADPCMPA0','g4.ADPCMPA1','g4.ADPCMSA0','g4.ADPCMSA1','g4.ADPCMIA0','g4.ADPCMIA1','g4.ADPCMEA0','g4.ADPCMEA1','g4.ADPCMStat','SndBox.CH0LVol','SndBox.CH0RVol','SndBox.CH1LVol','SndBox.CH1RVol','SndBox.CH0Prc','SndBox.CH1Prc']
-            def afp(st): return {k:st.get(k) for k in AUDIO_KEYS}
-            def shot(name):
-              try:
-                r=req('screenshot',{})
-                b64=r.get('png_base64') if isinstance(r,dict) else None
-                if not b64: return {'error':'no png_base64'}
-                raw=base64.b64decode(b64);path=SC/(name+'.png');path.write_bytes(raw)
-                return {'file':path.name,'sha256':hashlib.sha256(raw).hexdigest(),'width':r.get('width'),'height':r.get('height')}
-              except Exception as e: return {'error':repr(e)}
-            def sample_branch(name,sequence,frames=1500):
-              base='/tmp/early/base.mcstate'
-              req('load_state',{'path':base});wait_frozen();step(2)
-              for b,gap in sequence:
-                if gap: step(gap)
-                pulse(b)
-              start=afp(state()); row={'branch':name,'sequence':sequence,'start_audio':start,'start_screen':shot(name+'_start'),'transitions':[],'periodic':[]}
-              last=start
-              for fr in range(30,frames+1,30):
-                step(30); cur=afp(state())
-                if cur!=last:
-                  changed={k:[last.get(k),cur.get(k)] for k in AUDIO_KEYS if last.get(k)!=cur.get(k)}
-                  rec={'frame':fr,'changed':changed,'audio':cur,'screen':shot(f'{name}_audio_{fr:04d}')}
-                  row['transitions'].append(rec);last=cur
-                if fr%300==0:
-                  row['periodic'].append({'frame':fr,'audio':cur,'screen':shot(f'{name}_{fr:04d}')})
-              events.append(row)
-            hello=req('hello',{}); events.append({'identity':{'system':hello.get('system'),'build':hello.get('build'),'methods':hello.get('methods'),'state_groups':hello.get('state_groups')}})
-            step(720)
-            events.append({'boot720':{'audio':afp(state()),'screen':shot('boot_0720')}})
-            req('save_state',{'path':'/tmp/early/base.mcstate'});wait_frozen()
-            # Four short deterministic paths. PC-FX I=confirm, RUN=start/menu.
-            sample_branch('run_only',[('run',0)],1500)
-            sample_branch('run_then_i',[('run',0),('i',240)],1500)
-            sample_branch('run_down_i',[('run',0),('down',240),('i',5)],1500)
-            sample_branch('run_right_i',[('run',0),('right',240),('i',5)],1500)
-            # compact candidate list: branches/frames where ADPCM control/stat/play/end changed.
-            cands=[]
-            for r in events:
-              if not isinstance(r,dict) or 'branch' not in r: continue
-              for t in r['transitions']:
-                if any(k.startswith('g4.ADPCM') for k in t['changed']): cands.append({'branch':r['branch'],'frame':t['frame'],'changed':t['changed'],'screen':t['screen']})
-            summary={'status':'DYNAMIC_TRACE_COMPLETE','parent':'Redump Track1+Track2 CLEAN','emucap_commit':'3887f9e9de7525087c30ca4434d9cb8c3ff15103','candidate_adpcm_events':cands,'branch_count':4,'probe_window_frames_each':1500}
-            (OUT/'EARLY_VOICE_SUMMARY.json').write_text(json.dumps(summary,ensure_ascii=False,indent=2),encoding='utf-8')
-          except Exception as e:
-            events.append({'fatal':repr(e),'traceback':traceback.format_exc()});raise
-          finally:
-            (OUT/'EARLY_VOICE_TRACE.json').write_text(json.dumps(events,ensure_ascii=False,indent=2),encoding='utf-8')
-            (OUT/'RPC_SUMMARY.json').write_text(json.dumps(rpc_log,ensure_ascii=False,indent=2),encoding='utf-8')
-            try:
-              if conn: conn.close()
-              srv.close()
-            except: pass
-            try:p.terminate();p.wait(timeout=5)
-            except:
-              try:p.kill()
-              except:pass
-            medlog.close()
+          import csv,json,re,hashlib
+          R=Path('/tmp/t2.bin').read_bytes(); base=0x81330
+          n=(len(R)-base)//2352
+          L=bytearray(n*2048)
+          for s in range(n):
+              ro=base+s*2352
+              L[s*2048:(s+1)*2048]=R[ro+16:ro+2064]
+          L=bytes(L)
+          assert L.startswith(b'PC-FX:Hu_CD-ROM')
+          # Banks bracketing all currently verified story/transformation text.
+          ranges=[(0x14300000,0x14680000),(0x14700000,0x14B00000),(0x1DF00000,0x1E100000)]
+          def jp_score(t):
+              hira=sum(0x3040<=ord(c)<=0x309f for c in t)
+              kata=sum(0x30a0<=ord(c)<=0x30ff for c in t)
+              kanji=sum(0x3400<=ord(c)<=0x9fff for c in t)
+              jp=hira+kata+kanji
+              return jp,hira,kata,kanji
+          # Parse byte runs terminated by binary/control delimiters; accept SJIS Japanese strings.
+          rows=[]; seen=set()
+          for rs,re_ in ranges:
+              rs=max(0,rs); re_=min(len(L),re_)
+              i=rs
+              while i<re_:
+                  # candidate starts on normal ASCII/SJIS lead/punctuation bytes
+                  if L[i] in (0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31):
+                      i+=1; continue
+                  best=None
+                  # Grow up to 160 bytes, tracking last decodable prefix with Japanese content.
+                  for ln in range(2,min(160,re_-i)+1):
+                      b=L[i:i+ln]
+                      if any(x in b for x in (b'\x00',b'\x0a',b'\x0d',b'\x1b')): break
+                      try: t=b.decode('shift_jis')
+                      except UnicodeDecodeError: continue
+                      jp,h,k,ka=jp_score(t)
+                      if jp>=3 and len(t)>=3:
+                          # reject noisy strings dominated by control-like ASCII
+                          printable=sum(c.isprintable() for c in t)
+                          if printable==len(t): best=(ln,t,jp,h,k,ka)
+                  if best:
+                      ln,t,jp,h,k,ka=best
+                      key=(i,t)
+                      if key not in seen:
+                          seen.add(key)
+                          sec=i//2048; ins=i%2048; raw=base+sec*2352+16+ins
+                          rows.append({'logical':i,'raw':raw,'bytes':ln,'text':t,'jp':jp,'hira':h,'kata':k,'kanji':ka})
+                      i+=ln
+                  else:i+=1
+          # Stronger story-oriented subset: readable length, kana or sentence punctuation, not mostly mojibake.
+          strong=[]
+          for r in rows:
+              t=r['text']
+              if len(t)>80: continue
+              if r['hira']+r['kata']>=2 or any(p in t for p in '。！？・・・…「」'):
+                  strong.append(r)
+          strong.sort(key=lambda r:r['logical'])
+          out=Path('analysis/cutey_full/v017_story_scan')
+          with (out/'SJIS_STORY_CANDIDATES.csv').open('w',encoding='utf-8-sig',newline='') as f:
+              w=csv.writer(f); w.writerow(['logical_offset','track2_raw_offset','byte_len','text','jp_chars','hiragana','katakana','kanji'])
+              for r in strong:w.writerow([f"0x{r['logical']:X}",f"0x{r['raw']:X}",r['bytes'],r['text'],r['jp'],r['hira'],r['kata'],r['kanji']])
+          # Also write compact neighborhood groups around known v0.16 story lines.
+          known=['この島から去れ。','私は無事です。','警告は無視された。','ゆり子・・・','キューティーハニーに変身！']
+          anchors=[]
+          for s in known:
+              b=s.encode('shift_jis'); p=0
+              while True:
+                  q=L.find(b,p)
+                  if q<0: break
+                  near=[r for r in strong if abs(r['logical']-q)<=0x4000]
+                  anchors.append({'anchor':s,'offset':f'0x{q:X}','nearby':[{'offset':f"0x{x['logical']:X}",'text':x['text']} for x in near]})
+                  p=q+len(b)
+          meta={'track2_sha1':hashlib.sha1(R).hexdigest(),'scanned_ranges':[[hex(a),hex(b)] for a,b in ranges],'all_candidates':len(rows),'strong_candidates':len(strong),'anchors':anchors}
+          (out/'STORY_NEIGHBORHOODS.json').write_text(json.dumps(meta,ensure_ascii=False,indent=2),encoding='utf-8')
+          print('all',len(rows),'strong',len(strong))
+          for r in strong[:80]: print(hex(r['logical']),r['text'])
           PY
-          python3 /tmp/early/probe.py
-      - name: Stage evidence
-        if: always()
+      - name: Commit scan
         run: |
-          mkdir -p analysis/cutey_full/early_voice_v6
-          cp /tmp/early/EARLY_VOICE_SUMMARY.json analysis/cutey_full/early_voice_v6/ 2>/dev/null || true
-          cp /tmp/early/EARLY_VOICE_TRACE.json analysis/cutey_full/early_voice_v6/ 2>/dev/null || true
-          cp /tmp/early/RPC_SUMMARY.json analysis/cutey_full/early_voice_v6/ 2>/dev/null || true
-          cp /tmp/emucap_commit.txt analysis/cutey_full/early_voice_v6/EMUCAP_COMMIT.txt 2>/dev/null || true
-          tail -500 /tmp/early/mednafen.log > analysis/cutey_full/early_voice_v6/MEDNAFEN_LOG_TAIL.txt 2>/dev/null || true
-          mkdir -p analysis/cutey_full/early_voice_v6/screens
-          cp /tmp/early/screens/*.png analysis/cutey_full/early_voice_v6/screens/ 2>/dev/null || true
-      - name: Upload early voice evidence
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: CuteyHoneyFX_EARLY_VOICE_PROBE_v6
-          path: analysis/cutey_full/early_voice_v6
-          compression-level: 0
-      - name: Commit compact evidence
-        if: always()
-        run: |
-          git config user.name 'Cutey early voice tracer'
+          git config user.name 'Cutey v0.17 story scanner'
           git config user.email 'actions@users.noreply.github.com'
-          git add analysis/cutey_full/early_voice_v6/*.json analysis/cutey_full/early_voice_v6/*.txt 2>/dev/null || true
-          git diff --cached --quiet || git commit -m 'analysis: Cutey extreme-early voice probe v6 [skip ci]'
+          git add analysis/cutey_full/v017_story_scan
+          git diff --cached --quiet || git commit -m 'analysis: add v0.17 early story SJIS candidates [skip ci]'
           git pull --rebase origin tmp-cutey-poc01 || true
           git push origin HEAD:tmp-cutey-poc01 || true
+      - name: Upload scan
+        uses: actions/upload-artifact@v4
+        with:
+          name: CuteyHoneyFX_v017_StorySJISScan
+          path: analysis/cutey_full/v017_story_scan
