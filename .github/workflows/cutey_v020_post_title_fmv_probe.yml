@@ -53,14 +53,24 @@ jobs:
           set -euxo pipefail
           python3 - <<'PY'
           from pathlib import Path
+          import textwrap
           src=Path('.github/workflows/cutey_v019_title_story_probe.yml').read_text()
           a="cat >/tmp/probe/probe.py <<'PY'\n"
           b="\n          PY\n          python3 /tmp/probe/probe.py"
-          code=src.split(a,1)[1].split(b,1)[0]
-          code=code.replace("branches=[('title_run',[('run',0)]),('title_i',[('i',0)]),('title_run_then_i',[('run',0),('i',180)]),('title_run_then_run',[('run',0),('run',180)])]", "branches=[('title_run_long',[('run',0)]),('title_run_i_300',[('run',0),('i',300)]),('title_run_i_900',[('run',0),('i',900)]),('title_run_i_1500',[('run',0),('i',1500)])]")
-          code=code.replace('for fr in range(15,1501,15):','for fr in range(15,3601,15):')
-          code=code.replace('if fr % 60 == 0:','if fr % 120 == 0:')
-          code=code.replace("'status':'TITLE_TO_STORY_TRACE_COMPLETE'", "'status':'POST_TITLE_FMV_TRACE_COMPLETE'")
+          if a not in src or b not in src:
+              raise SystemExit('v0.19 embedded probe markers not found')
+          code=textwrap.dedent(src.split(a,1)[1].split(b,1)[0])
+          old_branches="branches=[('title_run',[('run',0)]),('title_i',[('i',0)]),('title_run_then_i',[('run',0),('i',180)]),('title_run_then_run',[('run',0),('run',180)])]"
+          new_branches="branches=[('title_run_long',[('run',0)]),('title_run_i_300',[('run',0),('i',300)]),('title_run_i_900',[('run',0),('i',900)]),('title_run_i_1500',[('run',0),('i',1500)])]"
+          required=[old_branches,'for fr in range(15,1501,15):','if fr % 60 == 0:',"'status':'TITLE_TO_STORY_TRACE_COMPLETE'"]
+          missing=[x for x in required if x not in code]
+          if missing:
+              raise SystemExit('v0.19 derivation anchors missing: '+repr(missing))
+          code=code.replace(old_branches,new_branches,1)
+          code=code.replace('for fr in range(15,1501,15):','for fr in range(15,3601,15):',1)
+          code=code.replace('if fr % 60 == 0:','if fr % 120 == 0:',1)
+          code=code.replace("'status':'TITLE_TO_STORY_TRACE_COMPLETE'", "'status':'POST_TITLE_FMV_TRACE_COMPLETE'",1)
+          compile(code,'/tmp/probe/probe.py','exec')
           Path('/tmp/probe/probe.py').write_text(code)
           PY
           python3 /tmp/probe/probe.py
