@@ -1,0 +1,89 @@
+name: Cutey Honey FX v0.20 Post-Title FMV emucap Probe
+permissions:
+  contents: write
+on:
+  push:
+    branches: [tmp-cutey-poc01]
+    paths: ['.github/workflows/cutey_v020_post_title_fmv_probe.yml']
+  workflow_dispatch:
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with: {ref: tmp-cutey-poc01}
+      - name: Install dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq build-essential autoconf automake pkg-config libsdl2-dev libflac-dev libsndfile1-dev liblzo2-dev libmpcdec-dev libzstd-dev zlib1g-dev gettext p7zip-full curl python3 git
+      - name: Build pinned emucap PC-FX adapter
+        run: |
+          set -euxo pipefail
+          git clone -q https://github.com/mcpads/emucap.git /tmp/emucap
+          cd /tmp/emucap
+          git checkout -q 3887f9e9de7525087c30ca4434d9cb8c3ff15103
+          adapters/mednafen/build.sh
+          test -x adapters/mednafen/work/mednafen/src/mednafen
+          git rev-parse HEAD >/tmp/emucap_commit.txt
+      - name: Prepare exact CLEAN game and BIOS
+        run: |
+          set -euxo pipefail
+          curl -L --retry 3 --fail -o /tmp/cutey.7z 'https://archive.org/download/noaen-redump-nec-pc-fx-pc-fxga/Cutey%20Honey%20FX%20%28Japan%29.7z'
+          mkdir -p /tmp/game /tmp/probe/screens analysis/cutey_full/v020_post_title_fmv
+          7z x -y /tmp/cutey.7z -o/tmp/game >/dev/null
+          T1=$(find /tmp/game -maxdepth 1 -type f -name '*Track 1*.bin' | head -1)
+          T2=$(find /tmp/game -maxdepth 1 -type f -name '*Track 2*.bin' | head -1)
+          echo 'ffae85763f581d312abb6b5096f6f7d62e771aae  '"$T1" | sha1sum -c -
+          echo '1dd574364e40cb90dd0ff25940fe8df9e6793edf  '"$T2" | sha1sum -c -
+          B1=$(basename "$T1"); B2=$(basename "$T2")
+          cat >/tmp/game/game.cue <<EOF
+          FILE "$B1" BINARY
+            TRACK 01 AUDIO
+              INDEX 01 00:00:00
+          FILE "$B2" BINARY
+            TRACK 02 MODE1/2352
+              INDEX 00 00:00:00
+              INDEX 01 00:03:00
+          EOF
+          curl -L --retry 3 --fail -o /tmp/pcfx.rom https://raw.githubusercontent.com/Abdess/retrobios/master/bios/NEC/PC-FX/pcfx.rom
+          echo '4b44ccf5d84cc83daa2e6a2bee00fdafa14eb58bdf5859e96d8861a891675417  /tmp/pcfx.rom' | sha256sum -c -
+      - name: Derive v0.20 probe from verified v0.19 implementation
+        run: |
+          set -euxo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          src=Path('.github/workflows/cutey_v019_title_story_probe.yml').read_text()
+          a="cat >/tmp/probe/probe.py <<'PY'\n"
+          b="\n          PY\n          python3 /tmp/probe/probe.py"
+          code=src.split(a,1)[1].split(b,1)[0]
+          code=code.replace("branches=[('title_run',[('run',0)]),('title_i',[('i',0)]),('title_run_then_i',[('run',0),('i',180)]),('title_run_then_run',[('run',0),('run',180)])]", "branches=[('title_run_long',[('run',0)]),('title_run_i_300',[('run',0),('i',300)]),('title_run_i_900',[('run',0),('i',900)]),('title_run_i_1500',[('run',0),('i',1500)])]")
+          code=code.replace('for fr in range(15,1501,15):','for fr in range(15,3601,15):')
+          code=code.replace('if fr % 60 == 0:','if fr % 120 == 0:')
+          code=code.replace("'status':'TITLE_TO_STORY_TRACE_COMPLETE'", "'status':'POST_TITLE_FMV_TRACE_COMPLETE'")
+          Path('/tmp/probe/probe.py').write_text(code)
+          PY
+          python3 /tmp/probe/probe.py
+      - name: Stage and commit evidence
+        if: always()
+        run: |
+          mkdir -p analysis/cutey_full/v020_post_title_fmv/screens
+          cp /tmp/probe/SUMMARY.json analysis/cutey_full/v020_post_title_fmv/ 2>/dev/null || true
+          cp /tmp/probe/TRACE.json analysis/cutey_full/v020_post_title_fmv/ 2>/dev/null || true
+          cp /tmp/probe/RPC.json analysis/cutey_full/v020_post_title_fmv/ 2>/dev/null || true
+          cp /tmp/emucap_commit.txt analysis/cutey_full/v020_post_title_fmv/EMUCAP_COMMIT.txt 2>/dev/null || true
+          tail -500 /tmp/probe/mednafen.log > analysis/cutey_full/v020_post_title_fmv/MEDNAFEN_LOG_TAIL.txt 2>/dev/null || true
+          cp /tmp/probe/screens/*.png analysis/cutey_full/v020_post_title_fmv/screens/ 2>/dev/null || true
+          git config user.name 'Cutey v0.20 emucap tracer'
+          git config user.email 'actions@users.noreply.github.com'
+          git add analysis/cutey_full/v020_post_title_fmv
+          git diff --cached --quiet || git commit -m 'analysis: add v0.20 post-title FMV runtime evidence [skip ci]'
+          git pull --rebase origin tmp-cutey-poc01 || true
+          git push origin HEAD:tmp-cutey-poc01 || true
+      - name: Upload evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: CuteyHoneyFX_v020_post_title_fmv_probe
+          path: analysis/cutey_full/v020_post_title_fmv
+          compression-level: 0
