@@ -1,0 +1,158 @@
+name: Cutey Honey FX v0.22 First Story Ownership
+permissions:
+  contents: write
+on:
+  push:
+    branches: [tmp-cutey-poc01]
+    paths: ['.github/workflows/cutey_v022_first_story_ownership.yml']
+  workflow_dispatch:
+jobs:
+  ownership:
+    runs-on: ubuntu-latest
+    timeout-minutes: 100
+    steps:
+      - uses: actions/checkout@v4
+        with: {ref: tmp-cutey-poc01}
+      - name: Install dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq build-essential autoconf automake pkg-config libsdl2-dev libflac-dev libsndfile1-dev liblzo2-dev libmpcdec-dev libzstd-dev zlib1g-dev gettext p7zip-full curl python3 git
+      - name: Build pinned emucap
+        run: |
+          set -euxo pipefail
+          git clone -q https://github.com/mcpads/emucap.git /tmp/emucap
+          cd /tmp/emucap
+          git checkout -q 3887f9e9de7525087c30ca4434d9cb8c3ff15103
+          adapters/mednafen/build.sh
+          git rev-parse HEAD >/tmp/emucap_commit.txt
+      - name: Prepare exact CLEAN disc and BIOS
+        run: |
+          set -euxo pipefail
+          curl -L --retry 3 --fail -o /tmp/cutey.7z 'https://archive.org/download/noaen-redump-nec-pc-fx-pc-fxga/Cutey%20Honey%20FX%20%28Japan%29.7z'
+          mkdir -p /tmp/game /tmp/v022 analysis/cutey_full/v022_first_story_ownership
+          7z x -y /tmp/cutey.7z -o/tmp/game >/dev/null
+          T1=$(find /tmp/game -maxdepth 1 -type f -name '*Track 1*.bin' | head -1)
+          T2=$(find /tmp/game -maxdepth 1 -type f -name '*Track 2*.bin' | head -1)
+          echo 'ffae85763f581d312abb6b5096f6f7d62e771aae  '"$T1" | sha1sum -c -
+          echo '1dd574364e40cb90dd0ff25940fe8df9e6793edf  '"$T2" | sha1sum -c -
+          echo "$T2" >/tmp/v022/t2path
+          B1=$(basename "$T1"); B2=$(basename "$T2")
+          printf 'FILE "%s" BINARY\n  TRACK 01 AUDIO\n    INDEX 01 00:00:00\nFILE "%s" BINARY\n  TRACK 02 MODE1/2352\n    INDEX 00 00:00:00\n    INDEX 01 00:03:00\n' "$B1" "$B2" >/tmp/game/game.cue
+          curl -L --retry 3 --fail -o /tmp/pcfx.rom https://raw.githubusercontent.com/Abdess/retrobios/master/bios/NEC/PC-FX/pcfx.rom
+          echo '4b44ccf5d84cc83daa2e6a2bee00fdafa14eb58bdf5859e96d8861a891675417  /tmp/pcfx.rom' | sha256sum -c -
+      - name: Locate exact first story bytes on CLEAN Track2
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          t2=Path(Path('/tmp/v022/t2path').read_text().strip()).read_bytes()
+          texts=['船の乗客で混雑している。','正面に見えるのが、ゲスト登録の','受け付けみたいだ。']
+          out={'clean_track2_sha1':'1dd574364e40cb90dd0ff25940fe8df9e6793edf','texts':[]}
+          for text in texts:
+              b=text.encode('shift_jis'); pos=[]; p=0
+              while True:
+                  i=t2.find(b,p)
+                  if i<0: break
+                  pos.append(i); p=i+1
+              rows=[]
+              for raw in pos:
+                  sec=raw//2352; insec=raw%2352
+                  logical=None
+                  if 16 <= insec < 16+2048: logical=sec*2048+(insec-16)
+                  rows.append({'track2_raw_offset':raw,'raw_hex':hex(raw),'raw_sector':sec,'in_sector':insec,'logical_user_offset':logical,'sjis_hex':b.hex()})
+              out['texts'].append({'text':text,'byte_len':len(b),'occurrences':rows})
+          Path('/tmp/v022/CLEAN_EXACT_LOCATIONS.json').write_text(json.dumps(out,ensure_ascii=False,indent=2),encoding='utf-8')
+          print(json.dumps(out,ensure_ascii=False,indent=2))
+          if not any(x['occurrences'] for x in out['texts']): raise SystemExit('no exact first-story fragment found on CLEAN Track2')
+          PY
+      - name: emucap runtime RAM ownership at verified story frames
+        run: |
+          cat >/tmp/v022/runtime.py <<'PY'
+          import socket,subprocess,os,json,time,re,traceback
+          from pathlib import Path
+          ROOT='/tmp/emucap'; CUE='/tmp/game/game.cue'; OUT=Path('/tmp/v022'); port=47822
+          texts=['船の乗客で混雑している。','正面に見えるのが、ゲスト登録の','受け付けみたいだ。']
+          pats=[x.encode('shift_jis') for x in texts]
+          srv=socket.socket();srv.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEADDR,1);srv.bind(('127.0.0.1',port));srv.listen(1);srv.settimeout(120)
+          env=os.environ.copy();env.update({'EMUCAP_PCFX_BIOS':'/tmp/pcfx.rom','MEDNAFEN_FORCE_MODULE':'pcfx','EMUCAP_HEADLESS':'1','EMUCAP_START_FROZEN':'1','SDL_VIDEODRIVER':'dummy','SDL_AUDIODRIVER':'dummy'})
+          log=open(OUT/'mednafen.log','w');proc=subprocess.Popen([ROOT+'/adapters/mednafen/launch.sh',CUE,str(port)],cwd=ROOT+'/adapters/mednafen',env=env,stdout=log,stderr=subprocess.STDOUT)
+          result={'path':'boot720 -> RUN3 -> release2 -> +300 -> I3 -> release2','frames_after_I':[0,1200,2200,2220,2235,2340,2400]}
+          try:
+              c,_=srv.accept(); c.settimeout(120); f=c.makefile('rwb',buffering=0); rid=0
+              def req(m,p=None):
+                  nonlocal_box=None
+                  global rid
+                  rid+=1; i=rid; f.write((json.dumps({'v':1,'id':i,'method':m,'params':p or {}},separators=(',',':'))+'\n').encode())
+                  while True:
+                      line=f.readline()
+                      if not line: raise EOFError
+                      v=json.loads(line)
+                      if v.get('id')==i:
+                          if not v.get('ok'): raise RuntimeError(v)
+                          return v.get('result')
+              def wait():
+                  for _ in range(600):
+                      st=req('status',{})
+                      if str(st.get('state','')).lower() in ('frozen','paused','stopped'): return
+                      time.sleep(.01)
+                  raise TimeoutError
+              def step(n): req('step',{'frames':n});wait()
+              def dec(r):
+                  if isinstance(r,dict):
+                      for k in ('hex','data','bytes','value'):
+                          v=r.get(k)
+                          if isinstance(v,str):
+                              h=re.sub('[^0-9a-fA-F]','',v)
+                              if h and len(h)%2==0:return bytes.fromhex(h)
+                          if isinstance(v,list):return bytes(v)
+                  if isinstance(r,list):return bytes(r)
+                  if isinstance(r,str):return bytes.fromhex(re.sub('[^0-9a-fA-F]','',r))
+                  raise RuntimeError('read_memory shape '+repr(r)[:200])
+              def ram():
+                  z=bytearray()
+                  for a in range(0,0x200000,0x10000): z+=dec(req('read_memory',{'memory_type':'ram','address':a,'length':0x10000}))
+                  return bytes(z)
+              hello=req('hello',{});result['identity']={'build':hello.get('build'),'system':hello.get('system')}
+              step(720);req('set_input',{'port':0,'buttons':['run']});step(3);req('set_input',{'port':0,'buttons':[]});step(2);step(300);req('set_input',{'port':0,'buttons':['i']});step(3);req('set_input',{'port':0,'buttons':[]});step(2)
+              cur=0; result['snapshots']=[]
+              for target in result['frames_after_I']:
+                  if target>cur:step(target-cur);cur=target
+                  mem=ram(); hits=[]
+                  for text,p in zip(texts,pats):
+                      pp=0; aa=[]
+                      while True:
+                          x=mem.find(p,pp)
+                          if x<0:break
+                          aa.append(hex(x));pp=x+1
+                      hits.append({'text':text,'ram_addresses':aa})
+                  result['snapshots'].append({'frame_after_i':target,'hits':hits})
+          except Exception as e:
+              result['fatal']=repr(e);result['traceback']=traceback.format_exc();raise
+          finally:
+              (OUT/'RUNTIME_OWNERSHIP.json').write_text(json.dumps(result,ensure_ascii=False,indent=2),encoding='utf-8')
+              try:c.close();srv.close()
+              except:pass
+              try:proc.terminate();proc.wait(timeout=5)
+              except:pass
+              log.close()
+          PY
+          python3 /tmp/v022/runtime.py
+      - name: Stage evidence
+        if: always()
+        run: |
+          cp /tmp/v022/CLEAN_EXACT_LOCATIONS.json analysis/cutey_full/v022_first_story_ownership/ 2>/dev/null || true
+          cp /tmp/v022/RUNTIME_OWNERSHIP.json analysis/cutey_full/v022_first_story_ownership/ 2>/dev/null || true
+          cp /tmp/emucap_commit.txt analysis/cutey_full/v022_first_story_ownership/EMUCAP_COMMIT.txt 2>/dev/null || true
+          tail -400 /tmp/v022/mednafen.log > analysis/cutey_full/v022_first_story_ownership/MEDNAFEN_LOG.txt 2>/dev/null || true
+          git config user.name 'Cutey v0.22 ownership tracer'
+          git config user.email 'actions@users.noreply.github.com'
+          git add analysis/cutey_full/v022_first_story_ownership
+          git diff --cached --quiet || git commit -m 'analysis: add first story ownership evidence [skip ci]'
+          git pull --rebase origin tmp-cutey-poc01 || true
+          git push origin HEAD:tmp-cutey-poc01 || true
+      - name: Upload evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: CuteyHoneyFX_v022_first_story_ownership
+          path: analysis/cutey_full/v022_first_story_ownership
