@@ -1,0 +1,68 @@
+emucap Mednafen launch
+  content=/tmp/game/game.cue
+  port=47800
+  name=<none>
+  session_token=
+  token_file=/home/runner/.local/share/emucap/sessions/compatibility/session-token-47800
+  module=pcfx
+  profile=/home/runner/.local/share/emucap/mednafen/47800
+  bin=/home/runner/.local/share/emucap/mednafen/47800/mednafen
+  wait=20s
+  post_connect_grace=3s
+Starting Mednafen 1.32.1
+ Build information:
+   Compiled with gcc 13.3.0
+   Compiled against zlib 1.3, running with zlib 1.3(flags=0x000000a9)
+   Compiled against SDL 2.30.0(SDL-release-2.30.0-0-g859844eae (Ubuntu 2.30.0+dfsg-1ubuntu3.1)), running with SDL 2.30.0(SDL-release-2.30.0-0-g859844eae (Ubuntu 2.30.0+dfsg-1ubuntu3.1))
+   Running with libFLAC 1.4.3
+ Base directory: /home/runner/.local/share/emucap/mednafen/47800
+ Emulation modules: apple2 nes snes gb gba pce lynx md pcfx ngp psx ss ssfplay vb wswan sms gg sasplay snes_faust pce_fast demo cdplay
+ Opening lockfile...
+ Loading settings from "/home/runner/.local/share/emucap/mednafen/47800/mednafen.cfg"...
+  Loaded 0 valid settings and 0 unknown settings.
+ Initializing joysticks...
+WARNING: Failed to open event device "/dev/input/event1": Permission denied --- !!!!! BASE JOYSTICK FUNCTIONALITY WILL BE AVAILABLE, BUT FORCE-FEEDBACK(E.G. RUMBLE) WILL BE UNAVAILABLE, AND THE CALCULATED JOYSTICK ID WILL BE DIFFERENT. !!!!!
+  ID: 0x0006045e062100010002000500000000 - Microsoft Vmbus HID-compliant Mouse
+ Loading "/tmp/game/game.cue"...
+  Loading SBI file "/tmp/game/game.sbi"...
+   Error: Error opening file "/tmp/game/game.sbi" for reading: No such file or directory
+
+   CD 1 TOC:
+    Disc Type: 0x00 (CD-DA or Mode 1)
+    First Track:  1
+    Last Track:   2
+    Track  1, MSF: 00:02:00, LBA:      0  AUDIO
+    Track  2, MSF: 01:00:45, LBA:   4395  DATA
+    Leadout: 283315  DATA
+
+ Using module: pcfx(PC-FX)
+  Loading override settings from "/home/runner/.local/share/emucap/mednafen/47800/pcfx.cfg"...
+   Failed: Error opening file "/home/runner/.local/share/emucap/mednafen/47800/pcfx.cfg" for reading: No such file or directory
+  Loading override settings from "/home/runner/.local/share/emucap/mednafen/47800/pgconfig/game.pcfx.cfg"...
+   Failed: Error opening file "/home/runner/.local/share/emucap/mednafen/47800/pgconfig/game.pcfx.cfg" for reading: No such file or directory
+
+  CD Layout MD5:   0xd4ba9e633b5a02de2d1ca5e4f7a9f895
+  V810 Emulation Mode: Fast
+  Emulated CD-ROM drive speed: 2x
+
+ Loading cheats from "/home/runner/.local/share/emucap/mednafen/47800/cheats/pcfx.cht"...
+  Error opening file "/home/runner/.local/share/emucap/mednafen/47800/cheats/pcfx.cht" for reading: No such file or directory
+
+ Initializing sound...
+  Using "ALSA" audio driver with SexyAL's default device selection.ALSA lib confmisc.c:165:(snd_config_get_card) Cannot get card index for 0
+ALSA Error: snd_pcm_open(&alsa_pcm, id ? id : "hw:0", SND_PCM_STREAM_PLAYBACK, 0) No such file or directory
+Error opening a sound device.
+Initializing video...
+Reverting to soft SDL driver because window is not OpenGL-capable.
+  Driver: Software SDL
+  Display Mode: 1024 x 768 x 24 bpp @ 60Hz  (Window: 864 x 696)
+  Fullscreen: No
+  Special Scaler: None
+  Scanlines: Off
+  Destination Rectangle: X=0, Y=0, W=864, H=696
+
+Signal has been caught and dealt with: SIGINT
+How DARE you interrupt me!
+
+Signal has been caught and dealt with: SIGTERM
+MUST TERMINATE ALL HUMANS
