@@ -24,88 +24,99 @@ jobs:
           T2=$(find /tmp/game -maxdepth 1 -type f -name '*Track 2*.bin' | head -1)
           echo '1dd574364e40cb90dd0ff25940fe8df9e6793edf  '"$T2" | sha1sum -c -
           echo "$T2" >/tmp/v023/t2path
-      - name: Map exact story occurrences to ISO9660 owning files
+      - name: Detect sector layout and map verified story ownership
         run: |
           python3 - <<'PY'
           import json,struct,hashlib
           from pathlib import Path
           p=Path(Path('/tmp/v023/t2path').read_text().strip())
-          raw=p.read_bytes(); SS=2352; UOFF=16; US=2048
+          raw=p.read_bytes(); SS=2352; US=2048
           texts=['船の乗客で混雑している。','正面に見えるのが、ゲスト登録の','受け付けみたいだ。']
-          pvd_raw=None
-          for sec in range(min(len(raw)//SS,4000)):
-              u=raw[sec*SS+UOFF:sec*SS+UOFF+US]
-              if len(u)>=7 and u[0]==1 and u[1:6]==b'CD001' and u[6]==1:
-                  pvd_raw=sec; break
-          if pvd_raw is None: raise SystemExit('ISO9660 PVD not found')
-          iso_base_raw_sector=pvd_raw-16
-          def user_sector(lba):
-              rs=iso_base_raw_sector+lba
-              return raw[rs*SS+UOFF:rs*SS+UOFF+US]
-          pvd=user_sector(16)
-          root=pvd[156:190]
-          root_extent=struct.unpack_from('<I',root,2)[0]
-          root_size=struct.unpack_from('<I',root,10)[0]
-          files=[]; seen=set()
-          def read_extent(ext,size):
-              out=bytearray()
-              for i in range((size+US-1)//US): out+=user_sector(ext+i)
-              return bytes(out[:size])
-          def walk_dir(ext,size,prefix=''):
-              key=(ext,size)
-              if key in seen: return
-              seen.add(key); data=read_extent(ext,size); pos=0
-              while pos < len(data):
-                  ln=data[pos]
-                  if ln==0:
-                      pos=((pos//US)+1)*US; continue
-                  rec=data[pos:pos+ln]
-                  if len(rec)<34: break
-                  rext=struct.unpack_from('<I',rec,2)[0]; rsize=struct.unpack_from('<I',rec,10)[0]
-                  flags=rec[25]; nlen=rec[32]; nameb=rec[33:33+nlen]
-                  if nameb not in (b'\x00',b'\x01'):
-                      name=nameb.decode('ascii','replace').split(';')[0]
-                      full=(prefix+'/'+name).replace('//','/')
-                      if flags & 2: walk_dir(rext,rsize,full)
-                      else: files.append({'path':full,'iso_extent_lba':rext,'size':rsize})
-                  pos+=ln
-          walk_dir(root_extent,root_size,'')
-          # Search reconstructed ISO file bytes, not the whole MODE1/2352 stream.
-          file_hits=[]
-          for f in files:
-              data=read_extent(f['iso_extent_lba'],f['size'])
-              for text in texts:
-                  b=text.encode('shift_jis'); start=0
-                  while True:
-                      off=data.find(b,start)
-                      if off<0: break
-                      lba=f['iso_extent_lba'] + off//US
-                      in_user=off%US
-                      raw_sector=iso_base_raw_sector+lba
-                      raw_offset=raw_sector*SS+UOFF+in_user
-                      file_hits.append({'text':text,'owner_path':f['path'],'owner_extent_lba':f['iso_extent_lba'],'owner_file_offset':off,'iso_lba':lba,'raw_sector':raw_sector,'raw_offset':raw_offset,'raw_hex':hex(raw_offset)})
-                      start=off+1
-          # Independently keep raw-stream hits only as diagnostics; never treat header/ECC hits as ISO-owned.
+
+          # First establish the actual raw-sector layout instead of assuming MODE1.
+          sector_modes={}
+          for s in range(len(raw)//SS):
+              if s*SS+16 <= len(raw):
+                  mode=raw[s*SS+15]
+                  sector_modes[str(mode)]=sector_modes.get(str(mode),0)+1
+
+          cd001=[]; pos=0
+          while True:
+              i=raw.find(b'CD001',pos)
+              if i<0: break
+              sec=i//SS; ins=i%SS
+              cd001.append({'raw_offset':i,'raw_sector':sec,'in_sector':ins,'preceding_byte':raw[i-1] if i else None,'following_byte':raw[i+5] if i+5<len(raw) else None,'sector_mode_byte':raw[sec*SS+15] if sec*SS+15<len(raw) else None})
+              pos=i+1
+
+          # Candidate ISO user-data offsets: MODE1=16, MODE2 Form1=24.
+          pvd_candidates=[]
+          for uoff in (16,24):
+              for sec in range(len(raw)//SS):
+                  b=sec*SS+uoff
+                  u=raw[b:b+US]
+                  if len(u)>=7 and u[0]==1 and u[1:6]==b'CD001' and u[6]==1:
+                      pvd_candidates.append({'uoff':uoff,'pvd_raw_sector':sec})
+
           raw_hits=[]
           for text in texts:
               b=text.encode('shift_jis'); start=0
               while True:
                   i=raw.find(b,start)
                   if i<0: break
-                  raw_hits.append({'text':text,'raw_offset':i,'raw_hex':hex(i),'raw_sector':i//SS,'in_sector':i%SS,'in_mode1_user_data':UOFF <= (i%SS) < UOFF+US})
+                  sec=i//SS; ins=i%SS; mode=raw[sec*SS+15] if sec*SS+15<len(raw) else None
+                  raw_hits.append({'text':text,'raw_offset':i,'raw_hex':hex(i),'raw_sector':sec,'in_sector':ins,'sector_mode_byte':mode,'fits_mode1_user':16<=ins<2064,'fits_mode2_form1_user':24<=ins<2072})
                   start=i+1
-          owners={}
-          for h in file_hits:
-              g=owners.setdefault(h['owner_path'],{'extent_lba':h['owner_extent_lba'],'occurrences':[]})
-              g['occurrences'].append(h)
-          summary=[]
-          for path,g in sorted(owners.items()):
-              summary.append({'path':path,'extent_lba':g['extent_lba'],'hit_count':len(g['occurrences']),'file_offsets':sorted({x['owner_file_offset'] for x in g['occurrences']}),'raw_sectors':sorted({x['raw_sector'] for x in g['occurrences']})})
-          out={'clean_track2_sha1':hashlib.sha1(raw).hexdigest(),'pvd_raw_sector':pvd_raw,'iso_base_raw_sector':iso_base_raw_sector,'root_extent_lba':root_extent,'file_count':len(files),'file_hits':file_hits,'raw_hits_diagnostic':raw_hits,'owners':owners}
+
+          out={'clean_track2_sha1':hashlib.sha1(raw).hexdigest(),'raw_sector_size':SS,'sector_mode_histogram':sector_modes,'cd001_hits':cd001,'pvd_candidates':pvd_candidates,'raw_story_hits':raw_hits,'ownership_status':'UNRESOLVED'}
+
+          # Only parse ISO9660 when a real PVD is proven. Otherwise preserve diagnostic evidence and stop treating Track2 as ISO.
+          owners={}; files=[]
+          if pvd_candidates:
+              cand=pvd_candidates[0]; UOFF=cand['uoff']; pvd_raw=cand['pvd_raw_sector']; iso_base_raw_sector=pvd_raw-16
+              def user_sector(lba):
+                  rs=iso_base_raw_sector+lba
+                  return raw[rs*SS+UOFF:rs*SS+UOFF+US]
+              pvd=user_sector(16); root=pvd[156:190]
+              root_extent=struct.unpack_from('<I',root,2)[0]; root_size=struct.unpack_from('<I',root,10)[0]
+              seen=set()
+              def read_extent(ext,size):
+                  z=bytearray()
+                  for j in range((size+US-1)//US): z+=user_sector(ext+j)
+                  return bytes(z[:size])
+              def walk(ext,size,prefix=''):
+                  key=(ext,size)
+                  if key in seen:return
+                  seen.add(key); data=read_extent(ext,size); q=0
+                  while q<len(data):
+                      ln=data[q]
+                      if ln==0:q=((q//US)+1)*US;continue
+                      rec=data[q:q+ln]
+                      if len(rec)<34:break
+                      rext=struct.unpack_from('<I',rec,2)[0]; rsize=struct.unpack_from('<I',rec,10)[0]; flags=rec[25]; nlen=rec[32]; nameb=rec[33:33+nlen]
+                      if nameb not in (b'\x00',b'\x01'):
+                          name=nameb.decode('ascii','replace').split(';')[0]; full=(prefix+'/'+name).replace('//','/')
+                          if flags&2:walk(rext,rsize,full)
+                          else:files.append({'path':full,'extent_lba':rext,'size':rsize})
+                      q+=ln
+              walk(root_extent,root_size)
+              for f in files:
+                  data=read_extent(f['extent_lba'],f['size'])
+                  for text in texts:
+                      b=text.encode('shift_jis'); st=0
+                      while True:
+                          off=data.find(b,st)
+                          if off<0:break
+                          lba=f['extent_lba']+off//US; rs=iso_base_raw_sector+lba
+                          hit={'text':text,'file_offset':off,'iso_lba':lba,'raw_sector':rs}
+                          owners.setdefault(f['path'],{'extent_lba':f['extent_lba'],'hits':[]})['hits'].append(hit); st=off+1
+              out.update({'ownership_status':'ISO9660_PARSED','uoff':UOFF,'pvd_raw_sector':pvd_raw,'iso_base_raw_sector':iso_base_raw_sector,'file_count':len(files),'owners':owners})
+          else:
+              out['ownership_status']='NO_ISO9660_PVD_TRACK2_CUSTOM_FS_OR_NON_ISO'
+
           Path('/tmp/v023/ISO_OWNER_MAP.json').write_text(json.dumps(out,ensure_ascii=False,indent=2),encoding='utf-8')
-          Path('/tmp/v023/OWNER_SUMMARY.json').write_text(json.dumps(summary,ensure_ascii=False,indent=2),encoding='utf-8')
-          print(json.dumps({'pvd_raw_sector':pvd_raw,'iso_base_raw_sector':iso_base_raw_sector,'file_count':len(files),'owners':summary,'raw_hit_count':len(raw_hits)},ensure_ascii=False,indent=2))
-          if not file_hits: raise SystemExit('no ISO file contains verified first-story Shift-JIS bytes')
+          Path('/tmp/v023/OWNER_SUMMARY.json').write_text(json.dumps({'ownership_status':out['ownership_status'],'pvd_candidates':pvd_candidates,'cd001_hits':cd001,'sector_mode_histogram':sector_modes,'story_raw_sectors':sorted({h['raw_sector'] for h in raw_hits}),'owners':owners},ensure_ascii=False,indent=2),encoding='utf-8')
+          print(json.dumps({'ownership_status':out['ownership_status'],'sector_modes':sector_modes,'cd001_count':len(cd001),'pvd_candidates':pvd_candidates,'story_raw_sectors':sorted({h['raw_sector'] for h in raw_hits}),'owner_paths':list(owners)},ensure_ascii=False,indent=2))
+          if not raw_hits: raise SystemExit('verified first-story Shift-JIS bytes disappeared from CLEAN Track2')
           PY
       - name: Stage evidence
         if: always()
@@ -115,7 +126,7 @@ jobs:
           git config user.name 'Cutey v0.23 ISO owner mapper'
           git config user.email 'actions@users.noreply.github.com'
           git add analysis/cutey_full/v023_first_story_iso_owner
-          git diff --cached --quiet || git commit -m 'analysis: add v0.23 first story ISO ownership evidence [skip ci]'
+          git diff --cached --quiet || git commit -m 'analysis: add v0.23 sector-layout ownership evidence [skip ci]'
           git pull --rebase origin tmp-cutey-poc01 || true
           git push origin HEAD:tmp-cutey-poc01 || true
       - name: Upload evidence
