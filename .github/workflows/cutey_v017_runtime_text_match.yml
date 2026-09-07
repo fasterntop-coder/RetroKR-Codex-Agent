@@ -1,0 +1,240 @@
+name: Cutey Honey FX v0.17 Runtime Text Match
+permissions:
+  contents: write
+on:
+  push:
+    branches: [tmp-cutey-poc01]
+    paths: ['.github/workflows/cutey_v017_runtime_text_match.yml']
+  workflow_dispatch:
+jobs:
+  runtime-match:
+    runs-on: ubuntu-latest
+    timeout-minutes: 100
+    steps:
+      - uses: actions/checkout@v4
+        with: {ref: tmp-cutey-poc01}
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq build-essential autoconf automake pkg-config libsdl2-dev libflac-dev libsndfile1-dev liblzo2-dev libmpcdec-dev libzstd-dev zlib1g-dev gettext p7zip-full curl python3 git
+
+      - name: Build pinned emucap Mednafen
+        run: |
+          set -euxo pipefail
+          git clone -q https://github.com/mcpads/emucap.git /tmp/emucap
+          cd /tmp/emucap
+          git checkout -q 3887f9e9de7525087c30ca4434d9cb8c3ff15103
+          adapters/mednafen/build.sh
+
+      - name: Prepare canonical clean disc and BIOS
+        run: |
+          set -euxo pipefail
+          curl -L --retry 3 --fail -o /tmp/cutey.7z 'https://archive.org/download/noaen-redump-nec-pc-fx-pc-fxga/Cutey%20Honey%20FX%20%28Japan%29.7z'
+          mkdir -p /tmp/game /tmp/v017match analysis/cutey_full/v017_runtime_text_match
+          7z x -y /tmp/cutey.7z -o/tmp/game >/dev/null
+          T1=$(find /tmp/game -maxdepth 1 -type f -name '*Track 1*.bin' | head -1)
+          T2=$(find /tmp/game -maxdepth 1 -type f -name '*Track 2*.bin' | head -1)
+          echo 'ffae85763f581d312abb6b5096f6f7d62e771aae  '"$T1" | sha1sum -c -
+          echo '1dd574364e40cb90dd0ff25940fe8df9e6793edf  '"$T2" | sha1sum -c -
+          B1=$(basename "$T1"); B2=$(basename "$T2")
+          printf 'FILE "%s" BINARY\n  TRACK 01 AUDIO\n    INDEX 01 00:00:00\nFILE "%s" BINARY\n  TRACK 02 MODE1/2352\n    INDEX 00 00:00:00\n    INDEX 01 00:03:00\n' "$B1" "$B2" >/tmp/game/game.cue
+          curl -L --retry 3 --fail -o /tmp/pcfx.rom https://raw.githubusercontent.com/Abdess/retrobios/master/bios/NEC/PC-FX/pcfx.rom
+          echo '4b44ccf5d84cc83daa2e6a2bee00fdafa14eb58bdf5859e96d8861a891675417  /tmp/pcfx.rom' | sha256sum -c -
+
+      - name: Match runtime RAM against Track2 SJIS candidates
+        run: |
+          cat >/tmp/v017match/match.py <<'PY'
+          import socket,subprocess,os,json,time,traceback,csv,re
+          from pathlib import Path
+          from collections import deque,defaultdict
+
+          ROOT='/tmp/emucap'; CUE='/tmp/game/game.cue'; OUT=Path('/tmp/v017match'); port=47800
+          CSV_PATH=Path('analysis/cutey_full/v017_story_scan/SJIS_STORY_CANDIDATES.csv')
+          CHECKPOINTS=[520,540,545,546,547,555,570]
+          RAM_SIZE=2*1024*1024
+          CHUNK=0x10000
+
+          def load_candidates():
+              rows=[]
+              with CSV_PATH.open('r',encoding='utf-8-sig',newline='') as f:
+                  for r in csv.DictReader(f):
+                      t=r['text']
+                      try:b=t.encode('shift_jis')
+                      except UnicodeEncodeError:continue
+                      if len(b)<4:continue
+                      rows.append({
+                          'logical_offset':r['logical_offset'],
+                          'track2_raw_offset':r['track2_raw_offset'],
+                          'byte_len':int(r['byte_len']),
+                          'text':t,
+                          'pattern':b,
+                      })
+              # Deduplicate exact byte patterns while retaining all disc locations.
+              bypat={}
+              for r in rows:
+                  bypat.setdefault(r['pattern'],[]).append(r)
+              pats=list(bypat)
+              return bypat,pats
+
+          def build_ac(patterns):
+              nxt=[{}]; fail=[0]; outs=[[]]
+              for idx,p in enumerate(patterns):
+                  s=0
+                  for ch in p:
+                      if ch not in nxt[s]:
+                          nxt[s][ch]=len(nxt); nxt.append({}); fail.append(0); outs.append([])
+                      s=nxt[s][ch]
+                  outs[s].append(idx)
+              q=deque()
+              for ch,s in nxt[0].items(): q.append(s)
+              while q:
+                  r=q.popleft()
+                  for ch,s in nxt[r].items():
+                      q.append(s); f=fail[r]
+                      while f and ch not in nxt[f]: f=fail[f]
+                      fail[s]=nxt[f].get(ch,0)
+                      if outs[fail[s]]: outs[s].extend(outs[fail[s]])
+              return nxt,fail,outs
+
+          def ac_scan(data,patterns,ac):
+              nxt,fail,outs=ac; s=0; found=defaultdict(list)
+              for pos,ch in enumerate(data):
+                  while s and ch not in nxt[s]: s=fail[s]
+                  s=nxt[s].get(ch,0)
+                  if outs[s]:
+                      for pi in outs[s]:
+                          start=pos-len(patterns[pi])+1
+                          if len(found[pi])<32: found[pi].append(start)
+              return found
+
+          def decode_mem_result(r):
+              if isinstance(r,dict):
+                  vals=[]
+                  for k in ('hex','data','bytes','value'):
+                      if k in r: vals.append(r[k])
+                  for v in vals:
+                      if isinstance(v,str):
+                          h=re.sub(r'[^0-9a-fA-F]','',v)
+                          if h and len(h)%2==0:
+                              try:return bytes.fromhex(h)
+                              except ValueError:pass
+                      if isinstance(v,list) and all(isinstance(x,int) and 0<=x<=255 for x in v):
+                          return bytes(v)
+              if isinstance(r,str):
+                  h=re.sub(r'[^0-9a-fA-F]','',r)
+                  if h and len(h)%2==0:
+                      try:return bytes.fromhex(h)
+                      except ValueError:pass
+              if isinstance(r,list) and all(isinstance(x,int) and 0<=x<=255 for x in r): return bytes(r)
+              raise RuntimeError('unknown read_memory result shape: '+repr(r)[:500])
+
+          bypat,patterns=load_candidates(); ac=build_ac(patterns)
+          result={'checkpoints':CHECKPOINTS,'candidate_patterns':len(patterns),'candidate_rows':sum(map(len,bypat.values())),'ram_size':RAM_SIZE,'chunk':CHUNK}
+          srv=socket.socket();srv.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEADDR,1);srv.bind(('127.0.0.1',port));srv.listen(1);srv.settimeout(120)
+          env=os.environ.copy();env.update({'EMUCAP_PCFX_BIOS':'/tmp/pcfx.rom','MEDNAFEN_FORCE_MODULE':'pcfx','EMUCAP_HEADLESS':'1','EMUCAP_START_FROZEN':'1','SDL_VIDEODRIVER':'dummy','SDL_AUDIODRIVER':'dummy'})
+          log=open(OUT/'mednafen.log','w');proc=subprocess.Popen([ROOT+'/adapters/mednafen/launch.sh',CUE,str(port)],cwd=ROOT+'/adapters/mednafen',env=env,stdout=log,stderr=subprocess.STDOUT)
+          try:
+              c,_=srv.accept(); c.settimeout(120); f=c.makefile('rwb',buffering=0); rid=[0]
+              def req(m,pms=None):
+                  rid[0]+=1; i=rid[0]
+                  f.write((json.dumps({'v':1,'id':i,'method':m,'params':pms or {}},separators=(',',':'))+'\n').encode())
+                  while True:
+                      line=f.readline()
+                      if not line: raise EOFError('emulator connection closed')
+                      v=json.loads(line)
+                      if v.get('id')!=i: continue
+                      if not v.get('ok'): raise RuntimeError(m+':'+json.dumps(v))
+                      return v.get('result')
+              def wait():
+                  for _ in range(600):
+                      st=req('status',{})
+                      if str(st.get('state','')).lower() in ('frozen','paused','stopped'): return st
+                      time.sleep(.01)
+                  raise TimeoutError('freeze')
+              def frames(n): req('step',{'frames':n}); return wait()
+              def dump_ram():
+                  buf=bytearray()
+                  first_shape=None
+                  for a in range(0,RAM_SIZE,CHUNK):
+                      r=req('read_memory',{'memory_type':'ram','address':a,'length':min(CHUNK,RAM_SIZE-a)})
+                      if first_shape is None:first_shape={'type':type(r).__name__,'preview':repr(r)[:300]}
+                      b=decode_mem_result(r)
+                      if len(b)!=min(CHUNK,RAM_SIZE-a):
+                          raise RuntimeError(f'RAM chunk short at {a:#x}: {len(b)}')
+                      buf.extend(b)
+                  return bytes(buf),first_shape
+              def audio_state():
+                  r=req('get_state',{'groups':['g4','SndBox']}); st=r.get('state',r)
+                  return {k:st.get(k) for k in ['g4.ADPCMCTRL','g4.ADPCMPA0','g4.ADPCMEA0','g4.ADPCMStat','SndBox.CH0LVol','SndBox.CH0RVol']}
+
+              hello=req('hello',{}); result['identity']={'build':hello.get('build'),'system':hello.get('system')}
+              frames(720); req('set_input',{'port':0,'buttons':['run']}); frames(3); req('set_input',{'port':0,'buttons':[]}); frames(2)
+
+              current=0; snapshots={}; shapes=[]
+              for target in CHECKPOINTS:
+                  frames(target-current); current=target
+                  ram,shape=dump_ram(); shapes.append({'frame':target,**shape})
+                  matches=ac_scan(ram,patterns,ac)
+                  entries=[]
+                  for pi,addrs in matches.items():
+                      p=patterns[pi]
+                      for row in bypat[p]:
+                          entries.append({
+                              'text':row['text'],
+                              'logical_offset':row['logical_offset'],
+                              'track2_raw_offset':row['track2_raw_offset'],
+                              'byte_len':row['byte_len'],
+                              'ram_addresses':[f'0x{x:X}' for x in addrs],
+                          })
+                  entries.sort(key=lambda x:(x['ram_addresses'][0] if x['ram_addresses'] else '',x['logical_offset']))
+                  snapshots[target]={'audio':audio_state(),'match_count':len(entries),'matches':entries}
+                  print('frame',target,'matched rows',len(entries),'unique patterns',len(matches),'audio',snapshots[target]['audio'])
+
+              result['read_memory_shapes']=shapes
+              result['snapshots']=snapshots
+              # Deltas around exact first strong ADPCM transition: 545 -> 546 -> 547.
+              def keyset(frame):
+                  return {(m['text'],m['logical_offset'],tuple(m['ram_addresses'])) for m in snapshots[frame]['matches']}
+              for a,b in [(520,540),(540,545),(545,546),(546,547),(547,555),(555,570)]:
+                  ka,kb=keyset(a),keyset(b)
+                  result.setdefault('deltas',[]).append({
+                      'from':a,'to':b,
+                      'appeared':[{'text':x[0],'logical_offset':x[1],'ram_addresses':list(x[2])} for x in sorted(kb-ka)][:500],
+                      'disappeared':[{'text':x[0],'logical_offset':x[1],'ram_addresses':list(x[2])} for x in sorted(ka-kb)][:500],
+                  })
+              # Prioritize strings present exactly at voice start and absent at 545.
+              prev={(m['text'],m['logical_offset']) for m in snapshots[545]['matches']}
+              result['voice_start_new_candidates']=[m for m in snapshots[546]['matches'] if (m['text'],m['logical_offset']) not in prev]
+          except Exception as e:
+              result['fatal']=repr(e); result['traceback']=traceback.format_exc(); raise
+          finally:
+              (OUT/'RUNTIME_TEXT_MATCH.json').write_text(json.dumps(result,ensure_ascii=False,indent=2),encoding='utf-8')
+              try:c.close(); srv.close()
+              except:pass
+              try:proc.terminate();proc.wait(timeout=5)
+              except:
+                  try:proc.kill()
+                  except:pass
+              log.close()
+          PY
+          python3 /tmp/v017match/match.py
+
+      - name: Stage evidence
+        if: always()
+        run: |
+          cp /tmp/v017match/RUNTIME_TEXT_MATCH.json analysis/cutey_full/v017_runtime_text_match/ 2>/dev/null || true
+          tail -400 /tmp/v017match/mednafen.log > analysis/cutey_full/v017_runtime_text_match/MEDNAFEN_LOG.txt 2>/dev/null || true
+          git config user.name 'Cutey v0.17 runtime matcher'
+          git config user.email 'actions@users.noreply.github.com'
+          git add analysis/cutey_full/v017_runtime_text_match
+          git diff --cached --quiet || git commit -m 'analysis: match v0.17 runtime text at first voice [skip ci]'
+          git pull --rebase origin tmp-cutey-poc01 || true
+          git push origin HEAD:tmp-cutey-poc01 || true
+
+      - name: Upload evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: CuteyHoneyFX_v017_RuntimeTextMatch
+          path: analysis/cutey_full/v017_runtime_text_match
