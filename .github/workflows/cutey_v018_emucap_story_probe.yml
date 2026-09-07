@@ -1,0 +1,156 @@
+name: Cutey Honey FX v0.18 emucap Story ADPCM Probe
+permissions:
+  contents: write
+on:
+  push:
+    branches: [tmp-cutey-poc01]
+    paths: ['.github/workflows/cutey_v018_emucap_story_probe.yml']
+  workflow_dispatch:
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with: {ref: tmp-cutey-poc01}
+      - name: Install dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq build-essential autoconf automake pkg-config libsdl2-dev libflac-dev libsndfile1-dev liblzo2-dev libmpcdec-dev libzstd-dev zlib1g-dev gettext p7zip-full curl python3 git
+      - name: Build pinned emucap PC-FX adapter
+        run: |
+          set -euxo pipefail
+          git clone -q https://github.com/mcpads/emucap.git /tmp/emucap
+          cd /tmp/emucap
+          git checkout -q 3887f9e9de7525087c30ca4434d9cb8c3ff15103
+          adapters/mednafen/build.sh
+          test -x adapters/mednafen/work/mednafen/src/mednafen
+          git rev-parse HEAD >/tmp/emucap_commit.txt
+      - name: Prepare exact CLEAN game and BIOS
+        run: |
+          set -euxo pipefail
+          curl -L --retry 3 --fail -o /tmp/cutey.7z 'https://archive.org/download/noaen-redump-nec-pc-fx-pc-fxga/Cutey%20Honey%20FX%20%28Japan%29.7z'
+          mkdir -p /tmp/game /tmp/probe/screens analysis/cutey_full/v018_emucap
+          7z x -y /tmp/cutey.7z -o/tmp/game >/dev/null
+          T1=$(find /tmp/game -maxdepth 1 -type f -name '*Track 1*.bin' | head -1)
+          T2=$(find /tmp/game -maxdepth 1 -type f -name '*Track 2*.bin' | head -1)
+          echo 'ffae85763f581d312abb6b5096f6f7d62e771aae  '"$T1" | sha1sum -c -
+          echo '1dd574364e40cb90dd0ff25940fe8df9e6793edf  '"$T2" | sha1sum -c -
+          B1=$(basename "$T1"); B2=$(basename "$T2")
+          cat >/tmp/game/game.cue <<EOF
+          FILE "$B1" BINARY
+            TRACK 01 AUDIO
+              INDEX 01 00:00:00
+          FILE "$B2" BINARY
+            TRACK 02 MODE1/2352
+              INDEX 00 00:00:00
+              INDEX 01 00:03:00
+          EOF
+          curl -L --retry 3 --fail -o /tmp/pcfx.rom https://raw.githubusercontent.com/Abdess/retrobios/master/bios/NEC/PC-FX/pcfx.rom
+          echo '4b44ccf5d84cc83daa2e6a2bee00fdafa14eb58bdf5859e96d8861a891675417  /tmp/pcfx.rom' | sha256sum -c -
+      - name: Trace deterministic early paths with emucap
+        run: |
+          set -euxo pipefail
+          cat >/tmp/probe/probe.py <<'PY'
+          import socket,subprocess,os,json,time,base64,hashlib,traceback,signal
+          from pathlib import Path
+          ROOT='/tmp/emucap'; CUE='/tmp/game/game.cue'; OUT=Path('/tmp/probe'); SC=OUT/'screens'; SC.mkdir(parents=True,exist_ok=True)
+          port=47820; trace=[]; rpc=[]
+          srv=socket.socket(); srv.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEADDR,1); srv.bind(('127.0.0.1',port)); srv.listen(1); srv.settimeout(120)
+          env=os.environ.copy(); env.update({'EMUCAP_PCFX_BIOS':'/tmp/pcfx.rom','MEDNAFEN_FORCE_MODULE':'pcfx','EMUCAP_HEADLESS':'1','EMUCAP_START_FROZEN':'1','SDL_VIDEODRIVER':'dummy','SDL_AUDIODRIVER':'dummy'})
+          medlog=open(OUT/'mednafen.log','w')
+          p=subprocess.Popen([ROOT+'/adapters/mednafen/launch.sh',CUE,str(port)],cwd=ROOT+'/adapters/mednafen',env=env,stdout=medlog,stderr=subprocess.STDOUT)
+          conn=None
+          try:
+            conn,_=srv.accept(); conn.settimeout(90); f=conn.makefile('rwb',buffering=0); rid=[0]
+            def req(method,params=None):
+              rid[0]+=1; i=rid[0]; f.write((json.dumps({'v':1,'id':i,'method':method,'params':params or {}},separators=(',',':'))+'\n').encode())
+              while True:
+                line=f.readline()
+                if not line: raise RuntimeError('adapter EOF')
+                v=json.loads(line)
+                if v.get('id')!=i: continue
+                rpc.append({'id':i,'method':method,'ok':v.get('ok'),'error':v.get('error')})
+                if not v.get('ok',False): raise RuntimeError(method+': '+json.dumps(v))
+                return v.get('result')
+            def wait_frozen():
+              for _ in range(200):
+                s=req('status',{})
+                if str(s.get('state','')).lower() in ('frozen','paused','stopped'): return s
+                time.sleep(.05)
+              raise TimeoutError('freeze')
+            def step(n): req('step',{'frames':n}); return wait_frozen()
+            def pulse(b): req('set_input',{'port':0,'buttons':[b]}); step(3); req('set_input',{'port':0,'buttons':[]}); step(2)
+            def st():
+              r=req('get_state',{'groups':['g4','SndBox']}); return r.get('state',r) if isinstance(r,dict) else {}
+            keys=['g4.ADPCMCTRL','g4.ADPCMBM0','g4.ADPCMBM1','g4.ADPCMPA0','g4.ADPCMPA1','g4.ADPCMSA0','g4.ADPCMSA1','g4.ADPCMIA0','g4.ADPCMIA1','g4.ADPCMEA0','g4.ADPCMEA1','g4.ADPCMStat','SndBox.CH0LVol','SndBox.CH0RVol','SndBox.CH1LVol','SndBox.CH1RVol','SndBox.CH0Prc','SndBox.CH1Prc']
+            def audio():
+              z=st(); return {k:z.get(k) for k in keys}
+            def shot(name):
+              try:
+                r=req('screenshot',{}); b64=r.get('png_base64') if isinstance(r,dict) else None
+                if not b64:return {'error':'no_png'}
+                raw=base64.b64decode(b64); path=SC/(name+'.png'); path.write_bytes(raw)
+                return {'file':path.name,'sha256':hashlib.sha256(raw).hexdigest()}
+              except Exception as e:return {'error':repr(e)}
+            hello=req('hello',{}); trace.append({'hello':{'system':hello.get('system'),'build':hello.get('build'),'state_groups':hello.get('state_groups')}})
+            step(720); trace.append({'boot720':{'audio':audio(),'screen':shot('boot720')}})
+            req('save_state',{'path':'/tmp/probe/base.mcstate'}); wait_frozen()
+            branches=[('run_only',[('run',0)]),('run_then_i',[('run',0),('i',240)])]
+            candidates=[]
+            for name,seq in branches:
+              req('load_state',{'path':'/tmp/probe/base.mcstate'}); wait_frozen(); step(2)
+              for b,gap in seq:
+                if gap: step(gap)
+                pulse(b)
+              last=audio(); row={'branch':name,'start_audio':last,'start_screen':shot(name+'_start'),'transitions':[]}
+              for fr in range(15,1201,15):
+                step(15); cur=audio()
+                if cur!=last:
+                  ch={k:[last.get(k),cur.get(k)] for k in keys if last.get(k)!=cur.get(k)}
+                  rec={'frame':fr,'changed':ch,'screen':shot(f'{name}_{fr:04d}')}; row['transitions'].append(rec)
+                  if any(k.startswith('g4.ADPCM') for k in ch): candidates.append({'branch':name,'frame':fr,'changed':ch,'screen':rec['screen']})
+                  last=cur
+              trace.append(row)
+            summary={'status':'DYNAMIC_TRACE_COMPLETE','clean_track1_sha1':'ffae85763f581d312abb6b5096f6f7d62e771aae','clean_track2_sha1':'1dd574364e40cb90dd0ff25940fe8df9e6793edf','emucap_commit':'3887f9e9de7525087c30ca4434d9cb8c3ff15103','candidate_adpcm_events':candidates,'branch_count':2,'frames_each':1200}
+            (OUT/'SUMMARY.json').write_text(json.dumps(summary,ensure_ascii=False,indent=2),encoding='utf-8')
+          except Exception as e:
+            trace.append({'fatal':repr(e),'traceback':traceback.format_exc()}); raise
+          finally:
+            (OUT/'TRACE.json').write_text(json.dumps(trace,ensure_ascii=False,indent=2),encoding='utf-8'); (OUT/'RPC.json').write_text(json.dumps(rpc,ensure_ascii=False,indent=2),encoding='utf-8')
+            try:
+              if conn: conn.close()
+              srv.close()
+            except: pass
+            try: p.send_signal(signal.SIGINT); p.wait(timeout=10)
+            except Exception:
+              try: p.terminate(); p.wait(timeout=5)
+              except Exception:
+                try:p.kill()
+                except:pass
+            medlog.close()
+          PY
+          python3 /tmp/probe/probe.py
+      - name: Stage and commit evidence
+        if: always()
+        run: |
+          mkdir -p analysis/cutey_full/v018_emucap/screens
+          cp /tmp/probe/SUMMARY.json analysis/cutey_full/v018_emucap/ 2>/dev/null || true
+          cp /tmp/probe/TRACE.json analysis/cutey_full/v018_emucap/ 2>/dev/null || true
+          cp /tmp/probe/RPC.json analysis/cutey_full/v018_emucap/ 2>/dev/null || true
+          cp /tmp/emucap_commit.txt analysis/cutey_full/v018_emucap/EMUCAP_COMMIT.txt 2>/dev/null || true
+          tail -500 /tmp/probe/mednafen.log > analysis/cutey_full/v018_emucap/MEDNAFEN_LOG_TAIL.txt 2>/dev/null || true
+          cp /tmp/probe/screens/*.png analysis/cutey_full/v018_emucap/screens/ 2>/dev/null || true
+          git config user.name 'Cutey v0.18 emucap tracer'
+          git config user.email 'actions@users.noreply.github.com'
+          git add analysis/cutey_full/v018_emucap
+          git diff --cached --quiet || git commit -m 'analysis: add v0.18 emucap runtime evidence [skip ci]'
+          git pull --rebase origin tmp-cutey-poc01 || true
+          git push origin HEAD:tmp-cutey-poc01 || true
+      - name: Upload evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: CuteyHoneyFX_v018_emucap_story_probe
+          path: analysis/cutey_full/v018_emucap
+          compression-level: 0
