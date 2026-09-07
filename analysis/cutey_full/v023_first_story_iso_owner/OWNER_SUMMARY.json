@@ -1,0 +1,20 @@
+{
+  "ownership_status": "NO_ISO9660_PVD_TRACK2_CUSTOM_FS_OR_NON_ISO",
+  "pvd_candidates": [],
+  "cd001_hits": [],
+  "sector_mode_histogram": {
+    "0": 75,
+    "1": 279070
+  },
+  "story_raw_sectors": [
+    166298,
+    166299,
+    166476,
+    166477,
+    166508,
+    166509,
+    166541,
+    166572
+  ],
+  "owners": {}
+}
