@@ -1,52 +1,60 @@
 name: Cutey Honey FX KR v0.17 Early Story Voice Probe
 permissions:
-  contents: write
-on:
+  contents: read
+"on":
   push:
-    branches: [tmp-cutey-poc01]
-    paths: ['.github/workflows/cutey_v017_early_story_probe.yml']
-  workflow_dispatch:
+    branches:
+      - tmp-cutey-poc01
+    paths:
+      - .github/workflows/cutey_v017_early_story_probe.yml
+  workflow_dispatch: {}
 jobs:
   probe:
     runs-on: ubuntu-latest
     timeout-minutes: 90
     steps:
       - uses: actions/checkout@v4
-        with: {ref: tmp-cutey-poc01}
+        with:
+          ref: tmp-cutey-poc01
       - name: Dependencies
         run: |
+          set -euxo pipefail
           sudo apt-get update -qq
           sudo apt-get install -y -qq build-essential autoconf automake pkg-config libsdl2-dev libflac-dev libsndfile1-dev liblzo2-dev libmpcdec-dev libzstd-dev zlib1g-dev gettext p7zip-full curl python3 git
       - name: Build pinned emucap PC-FX adapter
         run: |
           set -euxo pipefail
           git clone -q https://github.com/mcpads/emucap.git /tmp/emucap
-          cd /tmp/emucap && git checkout -q 3887f9e9de7525087c30ca4434d9cb8c3ff15103
+          cd /tmp/emucap
+          git checkout -q 3887f9e9de7525087c30ca4434d9cb8c3ff15103
           adapters/mednafen/build.sh
           test -x adapters/mednafen/work/mednafen/src/mednafen
       - name: Prepare canonical CLEAN parent and BIOS
         run: |
           set -euxo pipefail
           curl -L --retry 3 --fail -o /tmp/cutey.7z 'https://archive.org/download/noaen-redump-nec-pc-fx-pc-fxga/Cutey%20Honey%20FX%20%28Japan%29.7z'
-          mkdir -p /tmp/game /tmp/v017 analysis/cutey_full/v017_early_story_probe
+          mkdir -p /tmp/game /tmp/v017
           7z x -y /tmp/cutey.7z -o/tmp/game >/dev/null
           T1=$(find /tmp/game -maxdepth 1 -type f -name '*Track 1*.bin' | head -1)
           T2=$(find /tmp/game -maxdepth 1 -type f -name '*Track 2*.bin' | head -1)
           echo 'ffae85763f581d312abb6b5096f6f7d62e771aae  '"$T1" | sha1sum -c -
           echo '1dd574364e40cb90dd0ff25940fe8df9e6793edf  '"$T2" | sha1sum -c -
-          B1=$(basename "$T1"); B2=$(basename "$T2")
+          B1=$(basename "$T1")
+          B2=$(basename "$T2")
           printf 'FILE "%s" BINARY\n  TRACK 01 AUDIO\n    INDEX 01 00:00:00\nFILE "%s" BINARY\n  TRACK 02 MODE1/2352\n    INDEX 00 00:00:00\n    INDEX 01 00:03:00\n' "$B1" "$B2" >/tmp/game/game.cue
           curl -L --retry 3 --fail -o /tmp/pcfx.rom https://raw.githubusercontent.com/Abdess/retrobios/master/bios/NEC/PC-FX/pcfx.rom
           echo '4b44ccf5d84cc83daa2e6a2bee00fdafa14eb58bdf5859e96d8861a891675417  /tmp/pcfx.rom' | sha256sum -c -
-      - name: Drive title into earliest story and capture voice windows
+      - name: Probe earliest story and voice state
         run: |
           cat >/tmp/v017/probe.py <<'PY'
-          import socket,subprocess,os,json,time,base64,traceback,re
+          import socket,subprocess,os,json,time,base64,traceback
           from pathlib import Path
           ROOT='/tmp/emucap'; CUE='/tmp/game/game.cue'; OUT=Path('/tmp/v017'); OUT.mkdir(exist_ok=True)
-          port=47800; srv=socket.socket(); srv.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEADDR,1); srv.bind(('127.0.0.1',port)); srv.listen(1); srv.settimeout(120)
+          port=47800
+          srv=socket.socket(); srv.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEADDR,1); srv.bind(('127.0.0.1',port)); srv.listen(1); srv.settimeout(120)
           env=os.environ.copy(); env.update({'EMUCAP_PCFX_BIOS':'/tmp/pcfx.rom','MEDNAFEN_FORCE_MODULE':'pcfx','EMUCAP_HEADLESS':'1','EMUCAP_START_FROZEN':'1','SDL_VIDEODRIVER':'dummy','SDL_AUDIODRIVER':'dummy'})
-          log=open(OUT/'mednafen.log','w'); proc=subprocess.Popen([ROOT+'/adapters/mednafen/launch.sh',CUE,str(port)],cwd=ROOT+'/adapters/mednafen',env=env,stdout=log,stderr=subprocess.STDOUT)
+          log=open(OUT/'mednafen.log','w')
+          proc=subprocess.Popen([ROOT+'/adapters/mednafen/launch.sh',CUE,str(port)],cwd=ROOT+'/adapters/mednafen',env=env,stdout=log,stderr=subprocess.STDOUT)
           summary={'captures':[],'audio_transitions':[],'input_sequence':[]}
           conn=None
           try:
@@ -78,39 +86,35 @@ jobs:
               r=req('get_state',{'groups':['g4','SndBox']}); st=r.get('state',r)
               return {k:st.get(k) for k in ['g4.ADPCMCTRL','g4.ADPCMPA0','g4.ADPCMEA0','g4.ADPCMStat','SndBox.CH0LVol','SndBox.CH0RVol']}
             def capture(label):
-              shot=req('screenshot',{})
-              b64=shot.get('png_base64') or shot.get('data_base64') or shot.get('png')
-              if not b64: raise RuntimeError('screenshot payload missing keys '+repr(list(shot) if isinstance(shot,dict) else type(shot)))
-              p=OUT/(f'{frame[0]:05d}_{label}.png'); p.write_bytes(base64.b64decode(b64))
-              a=state_audio(); s=req('status',{})
-              summary['captures'].append({'abs_frame':frame[0],'label':label,'file':p.name,'audio':a,'status':s})
-              return a
-            hello=req('hello',{}); summary['identity']={'build':hello.get('build'),'system':hello.get('system'),'has_screenshot':'screenshot' in hello.get('methods',[])}
-            # Known stable title/menu route from v5.
+              rec={'abs_frame':frame[0],'label':label,'audio':state_audio(),'status':req('status',{})}
+              try:
+                shot=req('screenshot',{})
+                b64=shot.get('png_base64') or shot.get('data_base64') or shot.get('png')
+                if b64:
+                  p=OUT/(f'{frame[0]:05d}_{label}.png'); p.write_bytes(base64.b64decode(b64)); rec['file']=p.name
+              except Exception as e:
+                rec['screenshot_error']=repr(e)
+              summary['captures'].append(rec)
+              return rec['audio']
+            hello=req('hello',{})
+            summary['identity']={'build':hello.get('build'),'system':hello.get('system'),'methods':hello.get('methods',[])}
             frames(720); capture('boot720')
             tap('run',3); frames(241); capture('menu_after_run')
             req('save_state',{'path':'/tmp/v017/menu.mcstate'}); wait()
-
-            # Scenario A: select the default/first title choice with PC-FX I and then let the earliest sequence play naturally.
             tap('i',3); capture('after_i_select')
-            last=state_audio()
+            last=state_audio(); rel=0
             checkpoints=[30,60,120,180,240,300,360,420,480,520,540,546,560,600,660,720,840,960,1080,1200,1440,1680,1920]
-            rel=0
             for target in checkpoints:
               while rel<target:
                 step=min(10,target-rel); frames(step); rel+=step
                 cur=state_audio()
                 if cur!=last:
-                  summary['audio_transitions'].append({'scenario':'A','rel_after_i':rel,'abs_frame':frame[0],'before':last,'after':cur})
-                  last=cur
+                  summary['audio_transitions'].append({'scenario':'A','rel_after_i':rel,'abs_frame':frame[0],'before':last,'after':cur}); last=cur
               capture('A_rel_%04d'%target)
-
-            # Scenario B: restore the menu and actively advance with I every 180f, useful when dialogue waits for confirmation.
             req('load_state',{'path':'/tmp/v017/menu.mcstate'}); wait(); frame[0]=964
             capture('B_menu_restore'); tap('i',3); capture('B_start')
             for k in range(1,13):
               frames(180); capture('B_before_tap_%02d'%k); tap('i',2); capture('B_after_tap_%02d'%k)
-
           except Exception as e:
             summary['fatal']=repr(e); summary['traceback']=traceback.format_exc(); raise
           finally:
@@ -118,29 +122,25 @@ jobs:
             try:
               if conn: conn.close()
               srv.close()
-            except: pass
-            try: proc.terminate(); proc.wait(timeout=5)
-            except:
+            except Exception: pass
+            try:
+              proc.terminate(); proc.wait(timeout=5)
+            except Exception:
               try: proc.kill()
-              except: pass
+              except Exception: pass
             log.close()
           PY
           python3 /tmp/v017/probe.py
-      - name: Stage evidence
+      - name: Prepare evidence
         if: always()
         run: |
-          cp /tmp/v017/SUMMARY.json analysis/cutey_full/v017_early_story_probe/ 2>/dev/null || true
-          cp /tmp/v017/*.png analysis/cutey_full/v017_early_story_probe/ 2>/dev/null || true
-          tail -300 /tmp/v017/mednafen.log > analysis/cutey_full/v017_early_story_probe/MEDNAFEN_LOG.txt 2>/dev/null || true
-          git config user.name 'Cutey v0.17 story tracer'
-          git config user.email 'actions@users.noreply.github.com'
-          git add analysis/cutey_full/v017_early_story_probe
-          git diff --cached --quiet || git commit -m 'analysis: capture v0.17 earliest story and voice windows [skip ci]'
-          git pull --rebase origin tmp-cutey-poc01 || true
-          git push origin HEAD:tmp-cutey-poc01 || true
+          set +e
+          tail -300 /tmp/v017/mednafen.log > /tmp/v017/MEDNAFEN_LOG_TAIL.txt
+          ls -lah /tmp/v017
       - name: Upload evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: CuteyHoneyFX_v017_EarlyStoryVoiceProbe
-          path: analysis/cutey_full/v017_early_story_probe
+          path: /tmp/v017
+          if-no-files-found: error
