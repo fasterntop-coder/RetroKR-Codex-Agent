@@ -1,0 +1,122 @@
+name: ReSONANCE ST2 Run17 full PS4 PKG build
+on:
+  push:
+    branches: [resonance-st2-ps4-build]
+  workflow_dispatch:
+jobs:
+  ps4-compile-package:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    permissions:
+      contents: read
+    env:
+      OPENORBIS: /opt/pacbrew/ps4/openorbis
+      RESONANCE_VERSION: "01.42"
+      JOBS: "4"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Install Clang 21 and host tools
+        shell: bash
+        run: |
+          set -euxo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends ca-certificates curl git cmake ninja-build python3 xz-utils tar rsync file pkg-config build-essential libxml2 libtinfo6 libxml2-dev gnupg
+          curl -fsSL https://apt.llvm.org/llvm-snapshot.gpg.key -o /tmp/llvm-key
+          gpg --batch --yes --dearmor -o /tmp/llvm-keyring.gpg /tmp/llvm-key
+          sudo install -m 0644 /tmp/llvm-keyring.gpg /usr/share/keyrings/resonance-llvm.gpg
+          echo 'deb [signed-by=/usr/share/keyrings/resonance-llvm.gpg] https://apt.llvm.org/noble/ llvm-toolchain-noble-21 main' | sudo tee /etc/apt/sources.list.d/llvm21.list
+          sudo apt-get update -qq
+          sudo apt-get install -y clang-21 lld-21 llvm-21
+          clang-21 --version
+          mkdir -p "$HOME/resonance-build/logs"
+      - name: Restore verified PS4 SDK v2 and PacBrew
+        shell: bash
+        run: |
+          set -euxo pipefail
+          mkdir -p "$RUNNER_TEMP/sdk-v2" "$HOME/resonance-build/build"
+          curl -fL --retry 4 --retry-all-errors --connect-timeout 30 https://github.com/Phoenixx1202/PS4SX2-SDK/releases/download/sdk-v2/ps4sx2-sdk-v2.tar.gz -o "$RUNNER_TEMP/ps4sdk.tar.gz"
+          echo "0d7261c3e6c8e8d8e2e71d13ee9f39bcba8936fa1d50dbfce6e279c3c4e99822  $RUNNER_TEMP/ps4sdk.tar.gz" | sha256sum -c -
+          tar -xzf "$RUNNER_TEMP/ps4sdk.tar.gz" -C "$RUNNER_TEMP/sdk-v2"
+          curl -fL --retry 4 --retry-all-errors --connect-timeout 30 https://github.com/PacBrew/pacbrew-packages/releases/download/1.0.0/pacbrew-ps4-openorbis-1.0.0.tar.xz -o "$RUNNER_TEMP/pacbrew.tar.xz"
+          echo "38ab724d12a681fa905a0e917041432210da83c8c1e59ecb8415b382afd38954  $RUNNER_TEMP/pacbrew.tar.xz" | sha256sum -c -
+          sudo tar -xJf "$RUNNER_TEMP/pacbrew.tar.xz" -C / --no-same-owner
+          test -s "$OPENORBIS/bin/create-fself"
+          test -f "$OPENORBIS/ps4vars.sh"
+          test -s "$RUNNER_TEMP/sdk-v2/linux/mesa/src/amd/vulkan/libvulkan_radeon.a"
+          ln -s "$RUNNER_TEMP/sdk-v2/linux/sysroot" "$HOME/resonance-build/sysroot"
+          ln -s "$RUNNER_TEMP/sdk-v2/linux/mesa" "$HOME/resonance-build/build/mesa"
+          cp -n "$RUNNER_TEMP/sdk-v2/linux/prefix/lib/"*.a "$HOME/resonance-build/sysroot/lib/" || true
+          cp -r -n "$RUNNER_TEMP/sdk-v2/linux/prefix/include/." "$HOME/resonance-build/sysroot/include/" || true
+          sudo chmod -R a+rX /opt/pacbrew
+      - name: Clone pinned Flycast and ReSONANCE sources
+        shell: bash
+        run: |
+          set -euxo pipefail
+          git clone https://github.com/iHaiDeeZ/Resonance.git "$HOME/resonance"
+          git -C "$HOME/resonance" checkout 6b87389033d4f239e97d36c605bf7eea384d1e23
+          mkdir -p "$HOME/resonance-build/src"
+          git clone --branch v2.7 --depth 1 https://github.com/flyinghead/flycast.git "$HOME/resonance-build/src/flycast"
+          test "$(git -C "$HOME/resonance-build/src/flycast" rev-parse HEAD)" = 5aa091fde632fb332c8d8c34e280d62dc951954c
+          git -C "$HOME/resonance-build/src/flycast" submodule sync --recursive
+          git -C "$HOME/resonance-build/src/flycast" submodule update --init --recursive --jobs 4
+          git -C "$HOME/resonance-build/src/flycast" apply --check "$HOME/resonance/patches/flycast-ps4.patch"
+          git -C "$HOME/resonance-build/src/flycast" apply "$HOME/resonance/patches/flycast-ps4.patch"
+      - name: Merge exact Run8 to Run17 ST2 fixes
+        shell: bash
+        run: |
+          set -euxo pipefail
+          mkdir -p "$RUNNER_TEMP/patches"
+          base64 -d resonance-ps4/patchstack.tar.xz.b64 > "$RUNNER_TEMP/patchstack.tar.xz"
+          echo "cc6d13fe0d3c236cbce89c5758f7abd994ef66a6a668028c5a2db37bbde56a92  $RUNNER_TEMP/patchstack.tar.xz" | sha256sum -c -
+          tar -xJf "$RUNNER_TEMP/patchstack.tar.xz" -C "$RUNNER_TEMP/patches"
+          cd "$HOME/resonance-build/src/flycast"
+          for n in 01_st2_diagnostics.patch 03_fpcb_bounds.patch 04_fpcb_map_fail.patch 05_fpcb_reset.patch 07_fpcb_failure_propagation.patch RUN12_BIOS_FALLBACK.patch RUN14_READ_EXACT_AND_FLASH.patch RUN15_STORAGE_EXCEPTION_GUARD.patch RUN17_ST2_EXACT_BIOS_DIAGNOSTICS.patch; do
+            git apply --check "$RUNNER_TEMP/patches/$n"
+            git apply "$RUNNER_TEMP/patches/$n"
+            echo "APPLIED $n"
+          done
+          git -C "$HOME/resonance" apply "$RUNNER_TEMP/patches/01_safe_rebuild.patch"
+          grep -q 'BIOS decision: HLE=%d attempted=%d loaded=%d' "$HOME/resonance-build/src/flycast/core/emulator.cpp"
+          grep -q '/data/Resonance/games/dc_boot.bin' "$HOME/resonance-build/src/flycast/core/hw/flashrom/nvmem.cpp"
+      - name: Compile real PS4 eboot.bin
+        shell: bash
+        run: |
+          set -euxo pipefail
+          export PS4_BUILD_ROOT="$HOME/resonance-build" FLYCAST_SRC="$HOME/resonance-build/src/flycast"
+          export PS4_SYSROOT="$PS4_BUILD_ROOT/sysroot"
+          bash "$HOME/resonance/scripts/rebuild-flycast.sh" clean 2>&1 | tee "$PS4_BUILD_ROOT/logs/compile-console.log"
+          test -s "$PS4_BUILD_ROOT/build/flycast/shell/ps4/flycast_eboot/eboot.bin"
+          file "$PS4_BUILD_ROOT/build/flycast/shell/ps4/flycast_eboot/eboot.bin"
+      - name: Package installable ReSONANCE 01.42 PS4 PKG
+        shell: bash
+        run: |
+          set -euxo pipefail
+          export PS4_BUILD_ROOT="$HOME/resonance-build" PS4_SYSROOT="$HOME/resonance-build/sysroot" FLYCAST_SRC="$HOME/resonance-build/src/flycast"
+          RESONANCE_VERSION=01.42 bash "$HOME/resonance/scripts/package-resonance.sh" 2>&1 | tee "$PS4_BUILD_ROOT/logs/package-console.log"
+          pkg="$HOME/resonance/out/Resonance-v01.42.pkg"
+          test -s "$pkg"
+          test "$(head -c4 "$pkg" | xxd -p)" = 7f434e54
+          mkdir -p release
+          cp "$pkg" release/
+          cp "$PS4_BUILD_ROOT/build/flycast/shell/ps4/flycast_eboot/eboot.bin" release/
+          ( cd release && sha256sum Resonance-v01.42.pkg eboot.bin > SHA256SUMS.txt )
+      - name: Upload real PS4 PKG only after successful compile
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: resonance-st2-run17-ps4-pkg
+          path: release/
+          retention-days: 10
+          if-no-files-found: error
+      - name: Upload failure logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: resonance-st2-run17-build-logs
+          path: |
+            ~/resonance-build/logs/
+            release/SHA256SUMS.txt
+          retention-days: 10
+          if-no-files-found: warn
