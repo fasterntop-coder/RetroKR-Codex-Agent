@@ -1,8 +1,5 @@
 name: ReSONANCE ST2 PS4 SDK bootstrap
 on:
-  push:
-    branches:
-      - resonance-st2-ps4-build
   workflow_dispatch:
 jobs:
   sdk-preflight:
