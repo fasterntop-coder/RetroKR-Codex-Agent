@@ -61,6 +61,19 @@ jobs:
           test "$(git -C "$HOME/resonance-build/src/flycast" rev-parse HEAD)" = 5aa091fde632fb332c8d8c34e280d62dc951954c
           git -C "$HOME/resonance-build/src/flycast" submodule sync --recursive
           git -C "$HOME/resonance-build/src/flycast" submodule update --init --recursive --jobs 4
+          python3 - "$HOME/resonance/patches/flycast-ps4.patch" <<'PY'
+          import pathlib,sys,hashlib
+          p=pathlib.Path(sys.argv[1])
+          s=p.read_text(encoding='utf-8')
+          old='@@ -151,6 +160,9 @@ bool VulkanContext::InitInstance(const char** extensions, uint32_t extensions_co'
+          new='@@ -151,4 +160,7 @@ bool VulkanContext::InitInstance(const char** extensions, uint32_t extensions_co'
+          apple=' #elif defined(__APPLE__) && defined(USE_SDL)\n \t\tvkGetInstanceProcAddr = reinterpret_cast<PFN_vkGetInstanceProcAddr>(SDL_Vulkan_GetVkGetInstanceProcAddr());\n'
+          assert s.count(old)==1 and s.count(apple)==1, 'Unexpected upstream Vulkan patch context'
+          s=s.replace(old,new).replace(apple,'')
+          assert hashlib.sha256(s.encode('utf-8')).hexdigest()=='b89d9c83310db68891046c6cf0cc8e0d8f83437bd7707b2739438985ca4a7774', 'v2.7 patch hash mismatch'
+          p.write_text(s,encoding='utf-8')
+          print('PASS: upstream PS4 patch adapted exactly to verified Run8 Flycast v2.7 patch')
+          PY
           git -C "$HOME/resonance-build/src/flycast" apply --check "$HOME/resonance/patches/flycast-ps4.patch"
           git -C "$HOME/resonance-build/src/flycast" apply "$HOME/resonance/patches/flycast-ps4.patch"
       - name: Merge exact Run8 to Run17 ST2 fixes
