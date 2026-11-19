@@ -102,6 +102,26 @@ jobs:
           git -C "$HOME/resonance-build/src/libnfs" checkout 7613236464317bee2d9636f087f995148de4db27
           git clone https://github.com/sahlberg/libsmb2.git "$HOME/resonance-build/src/libsmb2"
           git -C "$HOME/resonance-build/src/libsmb2" checkout e94eee9465d55ed094ace2c038a8705b4822dada
+          python3 - "$HOME/resonance-build/src/libnfs/lib/socket.c" <<'PY'
+          from pathlib import Path
+          import sys
+          source=Path(sys.argv[1])
+          raw=source.read_text()
+          old="#ifdef HAVE_SOCKADDR_LEN\\n"
+          # Only the two IPv6 sockaddr_in6 length writes are invalid on PS4.
+          # Change only their preprocessor guards; preserve IPv4 handling.
+          found=0
+          import re
+          def fix(m):
+              global found
+              found+=1
+              return m.group(0).replace("#ifdef HAVE_SOCKADDR_LEN", "#if defined(HAVE_SOCKADDR_LEN) && !defined(__PS4__) && !defined(__ORBIS__)")
+          pattern=r"#ifdef HAVE_SOCKADDR_LEN\n[^#]{0,180}sin6_len\s*="
+          result=re.sub(pattern,fix,raw)
+          assert found==2, f"expected exactly two IPv6 length references, found {found}"
+          source.write_text(result)
+          print("PS4 libnfs sockaddr_in6 compatibility: 2 protected sites")
+          PY
           export PS4_BUILD_ROOT="$HOME/resonance-build" PS4_SYSROOT="$HOME/resonance-build/sysroot"
           bash "$HOME/resonance/scripts/build-netfs.sh" 2>&1 | tee "$PS4_BUILD_ROOT/logs/netfs-build.log"
           test -s "$PS4_SYSROOT/lib/libnfs.a"
