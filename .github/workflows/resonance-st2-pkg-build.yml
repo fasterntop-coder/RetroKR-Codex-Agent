@@ -137,16 +137,7 @@ jobs:
             git clone --branch openssl-3.3.2 --depth 1 https://github.com/openssl/openssl.git "$PS4_BUILD_ROOT/src/openssl"
             (
               cd "$PS4_BUILD_ROOT/src/openssl"
-              python3 - crypto/bio/bss_dgram.c <<'PY'
-              from pathlib import Path
-              import sys
-              p=Path(sys.argv[1]); s=p.read_text()
-              old='# if defined(__FreeBSD__) && defined(IN6_IS_ADDR_V4MAPPED)'
-              new='# if defined(__FreeBSD__) && defined(IN6_IS_ADDR_V4MAPPED) && !defined(__PS4__)'
-              assert s.count(old)==1, 'OpenSSL IPv6 macro source version mismatch'
-              p.write_text(s.replace(old,new))
-              print('OpenSSL: preserve PS4 in6_addr layout (avoid unsupported __u6_addr union)')
-              PY
+              python3 -c 'from pathlib import Path; p=Path("crypto/bio/bss_dgram.c"); s=p.read_text(); old="# if defined(__FreeBSD__) && defined(IN6_IS_ADDR_V4MAPPED)"; assert s.count(old)==1, "OpenSSL IPv6 macro source mismatch"; p.write_text(s.replace(old,old+" && !defined(__PS4__)"))'
               perl ./Configure BSD-x86_64 no-shared no-tests no-module no-asm no-dso no-engine no-async no-threads --prefix="$PS4_SYSROOT" --openssldir="$PS4_SYSROOT/ssl" --libdir=lib
               make -j4 build_sw
               make install_sw
