@@ -139,8 +139,8 @@ jobs:
               cd "$PS4_BUILD_ROOT/src/openssl"
               python3 -c 'from pathlib import Path; p=Path("crypto/bio/bss_dgram.c"); s=p.read_text(); old="# if defined(__FreeBSD__) && defined(IN6_IS_ADDR_V4MAPPED)"; assert s.count(old)==1, "OpenSSL IPv6 macro source mismatch"; p.write_text(s.replace(old,old+" && !defined(__PS4__)"))'
               perl ./Configure BSD-x86_64 no-shared no-tests no-module no-asm no-dso no-engine no-async no-threads --prefix="$PS4_SYSROOT" --openssldir="$PS4_SYSROOT/ssl" --libdir=lib
-              make -j4 build_sw
-              make install_sw
+              make -j4 libcrypto.a libssl.a
+              make install_dev
             ) 2>&1 | tee "$PS4_BUILD_ROOT/logs/openssl-ps4.log"
           fi
           test -s "$PS4_SYSROOT/lib/libcrypto.a"
