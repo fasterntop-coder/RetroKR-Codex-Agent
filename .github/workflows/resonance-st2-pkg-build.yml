@@ -148,11 +148,12 @@ jobs:
           test -s "$PS4_SYSROOT/lib/libssl.a"
           if [[ ! -s "$PS4_SYSROOT/lib/libcurl.a" ]]; then
             git clone --branch curl-8_11_1 --depth 1 https://github.com/curl/curl.git "$PS4_BUILD_ROOT/src/curl"
+            python3 -c 'from pathlib import Path; p=Path(__import__("sys").argv[1]); s=p.read_text(); old="set(CMAKE_TRY_COMPILE_TARGET_TYPE \\"EXECUTABLE\\")"; assert s.count(old)==1, "curl CMake cross-test source mismatch"; p.write_text(s.replace(old,"set(CMAKE_TRY_COMPILE_TARGET_TYPE \\"STATIC_LIBRARY\\")"))' "$PS4_BUILD_ROOT/src/curl/CMakeLists.txt"
             env -u CFLAGS -u CXXFLAGS -u CPPFLAGS -u LDFLAGS -u LIBS \
               cmake -S "$PS4_BUILD_ROOT/src/curl" -B "$PS4_BUILD_ROOT/build/curl" -G Ninja \
                 -DCMAKE_TOOLCHAIN_FILE="$HOME/resonance/toolchain/ps4-deps.cmake" \
                 -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="$PS4_SYSROOT" \
-                -DBUILD_SHARED_LIBS=OFF -DBUILD_CURL_EXE=OFF -DBUILD_TESTING=OFF \
+                -DBUILD_SHARED_LIBS=OFF -DBUILD_STATIC_LIBS=ON -DBUILD_CURL_EXE=OFF -DBUILD_TESTING=OFF \
                 -DENABLE_THREADED_RESOLVER=OFF \
                 -DCURL_USE_OPENSSL=ON -DOPENSSL_ROOT_DIR="$PS4_SYSROOT" \
                 -DCURL_DISABLE_LDAP=ON -DCURL_DISABLE_LDAPS=ON \
