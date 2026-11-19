@@ -126,6 +126,40 @@ jobs:
           bash "$HOME/resonance/scripts/build-netfs.sh" 2>&1 | tee "$PS4_BUILD_ROOT/logs/netfs-build.log"
           test -s "$PS4_SYSROOT/lib/libnfs.a"
           test -s "$PS4_SYSROOT/lib/libsmb2.a"
+      - name: Build static PS4 OpenSSL and libcurl for HTTPS functionality
+        shell: bash
+        run: |
+          set -euxo pipefail
+          export PS4_BUILD_ROOT="$HOME/resonance-build" PS4_SYSROOT="$HOME/resonance-build/sysroot"
+          export CC=clang-21 AR=llvm-ar-21 RANLIB=llvm-ranlib-21
+          export CFLAGS="--target=x86_64-pc-freebsd12-elf --sysroot=$OPENORBIS -isystem $PS4_SYSROOT/libc-overlay -isystem $OPENORBIS/include -isystem $PS4_SYSROOT/include -fPIC -march=btver2 -D__PS4__ -D__ORBIS__ -D__OPENORBIS__"
+          if [[ ! -s "$PS4_SYSROOT/lib/libcrypto.a" || ! -s "$PS4_SYSROOT/lib/libssl.a" ]]; then
+            git clone --branch openssl-3.3.2 --depth 1 https://github.com/openssl/openssl.git "$PS4_BUILD_ROOT/src/openssl"
+            (
+              cd "$PS4_BUILD_ROOT/src/openssl"
+              perl ./Configure BSD-x86_64 no-shared no-tests no-module no-asm no-dso no-engine no-async no-threads --prefix="$PS4_SYSROOT" --openssldir="$PS4_SYSROOT/ssl" --libdir=lib
+              make -j4 build_sw
+              make install_sw
+            ) 2>&1 | tee "$PS4_BUILD_ROOT/logs/openssl-ps4.log"
+          fi
+          test -s "$PS4_SYSROOT/lib/libcrypto.a"
+          test -s "$PS4_SYSROOT/lib/libssl.a"
+          if [[ ! -s "$PS4_SYSROOT/lib/libcurl.a" ]]; then
+            git clone --branch curl-8_11_1 --depth 1 https://github.com/curl/curl.git "$PS4_BUILD_ROOT/src/curl"
+            env -u CFLAGS -u CXXFLAGS -u CPPFLAGS -u LDFLAGS -u LIBS \
+              cmake -S "$PS4_BUILD_ROOT/src/curl" -B "$PS4_BUILD_ROOT/build/curl" -G Ninja \
+                -DCMAKE_TOOLCHAIN_FILE="$HOME/resonance/toolchain/ps4-deps.cmake" \
+                -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="$PS4_SYSROOT" \
+                -DBUILD_SHARED_LIBS=OFF -DBUILD_CURL_EXE=OFF -DBUILD_TESTING=OFF \
+                -DCURL_USE_OPENSSL=ON -DOPENSSL_ROOT_DIR="$PS4_SYSROOT" \
+                -DCURL_DISABLE_LDAP=ON -DCURL_DISABLE_LDAPS=ON \
+                -DCURL_USE_LIBPSL=OFF -DUSE_LIBIDN2=OFF -DCURL_ZLIB=OFF \
+                -DCURL_BROTLI=OFF -DCURL_ZSTD=OFF
+            ninja -C "$PS4_BUILD_ROOT/build/curl" -j4 2>&1 | tee "$PS4_BUILD_ROOT/logs/libcurl-ps4.log"
+            ninja -C "$PS4_BUILD_ROOT/build/curl" install
+          fi
+          test -s "$PS4_SYSROOT/lib/libcurl.a"
+          ls -lh "$PS4_SYSROOT/lib/libcurl.a" "$PS4_SYSROOT/lib/libssl.a" "$PS4_SYSROOT/lib/libcrypto.a"
       - name: Compile real PS4 eboot.bin
         shell: bash
         run: |
