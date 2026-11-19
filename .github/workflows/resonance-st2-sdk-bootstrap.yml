@@ -1,0 +1,55 @@
+name: ReSONANCE ST2 PS4 SDK bootstrap
+on:
+  push:
+    branches:
+      - resonance-st2-ps4-build
+  workflow_dispatch:
+jobs:
+  sdk-preflight:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    permissions:
+      contents: read
+    steps:
+      - name: Host and tool checks
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p logs
+          { date -u; uname -a; which clang || :; which ld.lld || :; which cmake; which ninja; } | tee logs/host.txt
+      - name: Fetch PS4SX2 SDK v2
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl -fL --retry 4 --retry-all-errors --connect-timeout 30 \
+            https://github.com/Phoenixx1202/PS4SX2-SDK/releases/download/sdk-v2/ps4sx2-sdk-v2.tar.gz \
+            -o /tmp/ps4sx2-sdk-v2.tar.gz
+          echo '0d7261c3e6c8e8d8e2e71d13ee9f39bcba8936fa1d50dbfce6e279c3c4e99822  /tmp/ps4sx2-sdk-v2.tar.gz' | sha256sum -c - | tee logs/sdk-checksum.txt
+          mkdir -p /tmp/sdk-v2
+          tar -xzf /tmp/ps4sx2-sdk-v2.tar.gz -C /tmp/sdk-v2
+          for n in linux/openorbis/bin/create-fself linux/sysroot/lib/libc++.a linux/sysroot/lib/libc++abi.a linux/mesa/src/amd/vulkan/libvulkan_radeon.a; do
+            test -s "/tmp/sdk-v2/$n" || { echo "MISSING: $n" | tee -a logs/sdk-preflight.txt; exit 8; }
+            ls -lh "/tmp/sdk-v2/$n" | tee -a logs/sdk-preflight.txt
+          done
+          find /tmp/sdk-v2/linux/openorbis/bin -maxdepth 1 -type f -printf '%f\n' | sort | tee logs/sdk-tools.txt
+      - name: Fetch PacBrew OpenOrbis snapshot
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl -fL --retry 4 --retry-all-errors --connect-timeout 30 \
+            https://github.com/PacBrew/pacbrew-packages/releases/download/1.0.0/pacbrew-ps4-openorbis-1.0.0.tar.xz \
+            -o /tmp/pacbrew-ps4-openorbis-1.0.0.tar.xz
+          test "$(stat -c %s /tmp/pacbrew-ps4-openorbis-1.0.0.tar.xz)" = 387400260
+          sha256sum /tmp/pacbrew-ps4-openorbis-1.0.0.tar.xz | tee logs/pacbrew-sha256.txt
+          mkdir -p /tmp/pacbrew
+          tar -xJf /tmp/pacbrew-ps4-openorbis-1.0.0.tar.xz -C /tmp/pacbrew --no-same-owner
+          find /tmp/pacbrew -type f \( -name 'create-fself' -o -name 'ps4vars.sh' -o -name 'PkgTool.Core' -o -name 'create-gp4' \) | tee logs/pacbrew-tools.txt
+          test -s logs/pacbrew-tools.txt
+      - name: Publish build environment verification logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: resonance-sdk-bootstrap-logs
+          path: logs/
+          if-no-files-found: warn
+          retention-days: 7
